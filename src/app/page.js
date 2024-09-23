@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
-  const [iframeHeight, setIframeHeight] = useState('495px'); // Default height
+  const [iframeHeight, setIframeHeight] = useState('500px'); // Default height
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -31,7 +31,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center px-4 bg-gray-900 text-white">
+    <div className="flex flex-col min-h-screen items-center justify-center px-4 bg-black text-white">
       <header className="text-center">
         <h1 className="text-5xl lg:text-7xl font-semibold mb-2">#RYDEBLK</h1>
         <h1 className="text-3xl lg:text-5xl font-semibold mb-2">WITH JAMIE</h1>
