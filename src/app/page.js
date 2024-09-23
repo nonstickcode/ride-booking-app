@@ -31,10 +31,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center px-4 bg-black text-white">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4 text-white">
       <header className="text-center">
-        <h1 className="text-5xl lg:text-7xl font-semibold mb-2">#RYDEBLK</h1>
-        <h1 className="text-3xl lg:text-5xl font-semibold mb-2">WITH JAMIE</h1>
+        <h1 className="mb-2 text-5xl font-semibold lg:text-7xl">#RYDEBLK</h1>
+        <h1 className="mb-2 text-3xl font-semibold lg:text-5xl">WITH JAMIE</h1>
         <p className="text-xl lg:text-2xl">Phoenix and Los Angeles</p>
       </header>
 
@@ -46,9 +46,9 @@ export default function Home() {
           height={350}
           alt="escalade"
         />
-        
+
         <Button
-          className="mt-6 p-8 font-semibold text-xl rounded-md bg-blue-600 text-white transition hover:bg-blue-700"
+          className="mt-6 rounded-md bg-blue-600 p-8 text-xl font-semibold text-white transition hover:bg-blue-700"
           onClick={openBooking}
         >
           Book Ride Now
@@ -57,7 +57,7 @@ export default function Home() {
 
       {showIframe && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
           aria-modal="true"
           role="dialog"
           onClick={closeBooking}
