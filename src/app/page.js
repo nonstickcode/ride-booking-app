@@ -20,7 +20,6 @@ export default function Home() {
           alt="escalade"
         />
 
-        {/* BookingForm component with the same width as the image */}
         <BookingForm />
       </main>
 
