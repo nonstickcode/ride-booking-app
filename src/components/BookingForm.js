@@ -89,7 +89,7 @@ const BookingForm = () => {
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full my-4 rounded-md bg-blue-600 text-white transition hover:bg-blue-700"
+          className="w-full mt-4 rounded-md bg-blue-600 text-white transition hover:bg-blue-700"
         >
           Submit
         </Button>

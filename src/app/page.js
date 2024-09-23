@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
-  const [iframeHeight, setIframeHeight] = useState('500px'); // Default height
+  const [iframeHeight, setIframeHeight] = useState('495px'); // Default height
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -48,7 +48,7 @@ export default function Home() {
         />
         
         <Button
-          className="mt-6 text-lg font-bold bg-blue-600 py-2 px-4 rounded-md hover:bg-blue-700 transition"
+          className="mt-6 p-8 font-semibold text-xl rounded-md bg-blue-600 text-white transition hover:bg-blue-700"
           onClick={openBooking}
         >
           Book Ride Now
@@ -57,7 +57,7 @@ export default function Home() {
 
       {showIframe && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 backdrop-blur-sm"
           aria-modal="true"
           role="dialog"
           onClick={closeBooking}
