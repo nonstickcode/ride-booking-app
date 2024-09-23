@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -17,54 +17,54 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="p-4 max-w-lg mx-auto bg-white shadow-md rounded-md">
-      <h2 className="text-xl font-semibold mb-4">Book a Ride</h2>
+    <div className="mx-auto max-w-lg rounded-md bg-white p-4 shadow-md">
+      <h2 className="mb-4 text-xl font-semibold">Book a Ride</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Select Date:</label>
+          <label className="mb-2 block text-sm font-medium">Select Date:</label>
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date)}
-            className="w-full p-2 border rounded"
+            className="w-full rounded border p-2"
             minDate={new Date()}
             placeholderText="Select a date"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Select Time:</label>
+          <label className="mb-2 block text-sm font-medium">Select Time:</label>
           <input
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full rounded border p-2"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Your Name:</label>
+          <label className="mb-2 block text-sm font-medium">Your Name:</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full rounded border p-2"
             placeholder="Enter your name"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Your Email:</label>
+          <label className="mb-2 block text-sm font-medium">Your Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full rounded border p-2"
             placeholder="Enter your email"
             required
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full rounded-md bg-blue-600 py-2 text-white transition hover:bg-blue-700"
         >
           Submit
         </button>
