@@ -17,7 +17,7 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="mx-auto max-w-lg rounded-md bg-white p-4 shadow-md">
+    <div className="mx-auto w-64 rounded-md bg-white p-4 shadow-md">
       <h2 className="mb-4 text-xl font-semibold">Book a Ride</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
