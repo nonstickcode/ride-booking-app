@@ -1,16 +1,11 @@
 'use client';
 import { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { Button } from './ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@/components/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Input } from './ui/input';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react'; // Added Clock icon for time
 import { cn } from '@/lib/utils';
 
 const BookingForm = () => {
@@ -22,31 +17,30 @@ const BookingForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Send data to backend or API route
-    const bookingData = { startDate, time, name, email };
+    const bookingData = { date, time, name, email };
     console.log('Booking Data:', bookingData);
   };
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-md bg-black p-6  shadow-lg">
-      <h2 className="mb-4 text-center text-2xl text-white font-semibold">Book a Ride</h2>
+    <div className="mx-auto w-full max-w-md rounded-md bg-black p-6 shadow-lg">
+      <h2 className="mb-8 text-center text-2xl text-white font-bold">Book a Ride</h2>
       <form onSubmit={handleSubmit}>
         {/* Date Picker */}
-        <div className="mb-4 w-full">
+        <div className="mb-8 w-full">
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-[280px] justify-start text-left font-normal',
-                  !date && 'text-muted-foreground'
+                  'w-full justify-start text-left font-normal text-white',  // Added uniform font color
+                  !date && 'text-gray-500' // Muted color when no date is selected
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, 'PPP') : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-2 bg-gray-800 rounded-md shadow-lg">
               <Calendar
                 mode="single"
                 selected={date}
@@ -57,32 +51,42 @@ const BookingForm = () => {
           </Popover>
         </div>
 
-        {/* Time Picker */}
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium" htmlFor="time">
-            Select Time:
-          </label>
-          <input
-            id="time"
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            className="w-full rounded border p-2"
-            required
-          />
+        {/* Time Picker with Popover */}
+        <div className="mb-8 w-full">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                className={cn(
+                  'w-full justify-start text-left font-normal text-white',  // Same style as date picker
+                  !time && 'text-gray-500' // Muted color when no time is selected
+                )}
+              >
+                <Clock className="mr-2 h-4 w-4" />
+                {time ? time : <span>Select Time</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-2 bg-gray-800 rounded-md shadow-lg">
+              <Input
+                id="time"
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="w-full p-2 bg-white text-black rounded-md border"
+                required
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         {/* Name Input */}
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium" htmlFor="name">
-            Your Name:
-          </label>
-          <input
+        <div className="mb-8">
+          <Input
             id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded border p-2"
+            className="w-full p-2 bg-white text-black rounded-md border"
             placeholder="Enter your name"
             required
             aria-required="true"
@@ -90,16 +94,13 @@ const BookingForm = () => {
         </div>
 
         {/* Email Input */}
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium" htmlFor="email">
-            Your Email:
-          </label>
-          <input
+        <div className="mb-8">
+          <Input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded border p-2"
+            className="w-full p-2 bg-white text-black rounded-md border"
             placeholder="Enter your email"
             required
             aria-required="true"
@@ -109,7 +110,7 @@ const BookingForm = () => {
         {/* Submit Button */}
         <Button
           type="submit"
-          className="mt-4 w-full rounded-md bg-blue-600 text-white transition hover:bg-blue-700"
+          className="mb-1 w-full rounded-md bg-blue-600 text-white transition hover:bg-blue-700 p-2 text-lg font-semibold"
         >
           Submit
         </Button>

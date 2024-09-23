@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
-  const [iframeHeight, setIframeHeight] = useState('500px'); // Default height
+  const [iframeHeight, setIframeHeight] = useState('420px'); // Default height
 
   useEffect(() => {
     const handleMessage = (event) => {
