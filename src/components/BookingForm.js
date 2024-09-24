@@ -2,10 +2,14 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover';
 import { Input } from './ui/input';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react'; // Added Clock icon for time
+import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BookingForm = () => {
@@ -23,7 +27,9 @@ const BookingForm = () => {
 
   return (
     <div className="mx-auto w-full max-w-md rounded-md bg-black p-3 shadow-lg">
-      <h2 className="mb-8 text-center text-2xl text-white font-bold">Book a Ride</h2>
+      <h2 className="mb-8 text-center text-2xl font-bold text-white">
+        Book a Ride
+      </h2>
       <form onSubmit={handleSubmit}>
         {/* Date Picker */}
         <div className="mb-8 w-full">
@@ -32,15 +38,15 @@ const BookingForm = () => {
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-full justify-start text-left font-normal text-white',  // Added uniform font color
-                  !date && 'text-gray-500' // Muted color when no date is selected
+                  'w-full justify-start text-left font-normal text-white',
+                  !date && 'text-gray-500'
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, 'PPP') : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-2 bg-gray-800 rounded-md shadow-lg">
+            <PopoverContent className="w-auto rounded-md bg-gray-800 p-2 shadow-lg">
               <Calendar
                 mode="single"
                 selected={date}
@@ -58,21 +64,21 @@ const BookingForm = () => {
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-full justify-start text-left font-normal text-white',  // Same style as date picker
-                  !time && 'text-gray-500' // Muted color when no time is selected
+                  'w-full justify-start text-left font-normal text-white',
+                  !time && 'text-gray-500'
                 )}
               >
                 <Clock className="mr-2 h-4 w-4" />
                 {time ? time : <span>Select Time</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-2 bg-gray-800 rounded-md shadow-lg">
+            <PopoverContent className="w-auto rounded-md bg-gray-800 p-2 shadow-lg">
               <Input
                 id="time"
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full p-2 bg-white text-black rounded-md border"
+                className="w-full rounded-md border bg-white p-2 text-black"
                 required
               />
             </PopoverContent>
@@ -86,7 +92,7 @@ const BookingForm = () => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 bg-white text-black rounded-md border"
+            className="w-full rounded-md border bg-white p-2 text-black"
             placeholder="Enter your name"
             required
             aria-required="true"
@@ -100,7 +106,7 @@ const BookingForm = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 bg-white text-black rounded-md border"
+            className="w-full rounded-md border bg-white p-2 text-black"
             placeholder="Enter your email"
             required
             aria-required="true"
@@ -110,7 +116,7 @@ const BookingForm = () => {
         {/* Submit Button */}
         <Button
           type="submit"
-          className="mb-1 w-full rounded-md bg-blue-600 text-white transition hover:bg-blue-700 p-2 text-lg font-semibold"
+          className="mb-1 w-full rounded-md bg-blue-600 p-2 text-lg font-semibold text-white transition hover:bg-blue-700"
         >
           Submit
         </Button>

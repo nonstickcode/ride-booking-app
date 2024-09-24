@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import BookingForm from '@/components/BookingForm';
-import { X } from 'lucide-react'; // Import the 'X' icon for the close button
+import { X } from 'lucide-react';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -51,13 +51,13 @@ export default function Home() {
           onClick={closeBooking} // Click outside the modal to close it
         >
           <div
-            className="relative w-[90vw] border border-gray-300 max-w-sm rounded-md bg-black p-6 shadow-lg"
+            className="relative w-[90vw] max-w-sm rounded-md border border-gray-300 bg-black p-6 shadow-lg"
             onClick={(e) => e.stopPropagation()} // Prevent closing on modal content click
           >
             {/* Close Button */}
             <button
               onClick={closeBooking}
-              className="absolute top-2 right-2 text-gray-300 hover:text-white"
+              className="absolute right-2 top-2 text-gray-300 hover:text-white"
             >
               <X className="h-6 w-6" />
             </button>
