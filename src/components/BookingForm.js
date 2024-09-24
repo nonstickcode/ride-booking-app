@@ -8,6 +8,7 @@ import { Input } from './ui/input';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FaGoogle, FaEnvelope, FaSignOutAlt, FaCheck } from 'react-icons/fa'; // For icons
 
 // Initialize Supabase client
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
@@ -19,6 +20,8 @@ const BookingForm = () => {
   const [email, setEmail] = useState('');
   const [date, setDate] = useState(null);
   const [user, setUser] = useState(null);
+  const [signingInWithEmail, setSigningInWithEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   // Handle Google Sign In
   const handleGoogleSignIn = async () => {
@@ -29,6 +32,30 @@ const BookingForm = () => {
       },
     });
     if (error) console.error('Error signing in:', error);
+  };
+
+  // Handle Email Sign In
+  const handleEmailSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+    });
+    if (error) {
+      console.error('Error signing in with email:', error);
+    } else {
+      setEmailSent(true);
+    }
+  };
+
+  // Handle Sign Out
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      setUser(null);
+      setName('');
+      setEmail('');
+    }
   };
 
   // Fetch session and user data
@@ -55,15 +82,52 @@ const BookingForm = () => {
 
   return (
     <div className="mx-auto w-full max-w-md rounded-md bg-black p-3 shadow-lg">
-      <h2 className="mb-8 text-center text-2xl font-bold text-white">Book a Ride</h2>
+      <h2 className="mb-8 text-center text-2xl font-bold text-white">
+        {user ? 'Book a Ride' : 'Sign in to book a ride'}
+      </h2>
 
       {!user ? (
-        <Button onClick={handleGoogleSignIn} className="mb-8 w-full bg-blue-600 text-white">
-          Sign in with Google
-        </Button>
+        <>
+          {signingInWithEmail ? (
+            <>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mb-4 w-full rounded-md border bg-white p-2 text-black"
+                placeholder="Enter your email"
+                required
+              />
+              {emailSent ? (
+                <p className="text-white">Check your email for the sign-in link.</p>
+              ) : (
+                <Button onClick={handleEmailSignIn} className="mb-8 w-full bg-blue-600 text-white">
+                  <FaEnvelope className="mr-2" /> Send Sign-in Link
+                </Button>
+              )}
+              <Button onClick={() => setSigningInWithEmail(false)} className="mb-8 w-full bg-gray-600 text-white">
+                Use Google Sign In
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={handleGoogleSignIn} className="mb-8 w-full bg-blue-600 text-white">
+                <FaGoogle className="mr-2" /> Sign in with Google
+              </Button>
+              <Button onClick={() => setSigningInWithEmail(true)} className="mb-8 w-full bg-gray-600 text-white">
+                <FaEnvelope className="mr-2" /> Sign in with Email
+              </Button>
+            </>
+          )}
+        </>
       ) : (
         <>
-          <p className="text-white mb-4">Welcome, {name} ({email})</p>
+          <p className="text-white mb-8">Welcome, {name} ({email})</p>
+
+          <Button onClick={handleSignOut} className="mb-8 w-full bg-red-600 text-white">
+            <FaSignOutAlt className="mr-2" /> Sign Out
+          </Button>
 
           <form onSubmit={handleSubmit}>
             {/* Date Picker */}
@@ -115,7 +179,7 @@ const BookingForm = () => {
               </Popover>
             </div>
 
-            {/* Name Input */}
+            {/* Name Input - Disabled when signed in */}
             <div className="mb-8">
               <Input
                 id="name"
@@ -125,10 +189,11 @@ const BookingForm = () => {
                 className="w-full rounded-md border bg-white p-2 text-black"
                 placeholder="Enter your name"
                 required
+                disabled // Disabled when user is signed in
               />
             </div>
 
-            {/* Email Input */}
+            {/* Email Input - Disabled when signed in */}
             <div className="mb-8">
               <Input
                 id="email"
@@ -138,6 +203,7 @@ const BookingForm = () => {
                 className="w-full rounded-md border bg-white p-2 text-black"
                 placeholder="Enter your email"
                 required
+                disabled // Disabled when user is signed in
               />
             </div>
 
@@ -146,7 +212,7 @@ const BookingForm = () => {
               type="submit"
               className="mb-1 w-full rounded-md bg-blue-600 p-2 text-lg font-semibold text-white transition hover:bg-blue-700"
             >
-              Submit
+              <FaCheck className="mr-2" /> Submit
             </Button>
           </form>
         </>
