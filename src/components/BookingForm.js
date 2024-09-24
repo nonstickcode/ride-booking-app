@@ -22,7 +22,7 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-md bg-black p-6 shadow-lg">
+    <div className="mx-auto w-full max-w-md rounded-md bg-black p-3 shadow-lg">
       <h2 className="mb-8 text-center text-2xl text-white font-bold">Book a Ride</h2>
       <form onSubmit={handleSubmit}>
         {/* Date Picker */}

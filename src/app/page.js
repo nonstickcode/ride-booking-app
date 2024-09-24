@@ -1,33 +1,20 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import BookingForm from '@/components/BookingForm';
+import { X } from 'lucide-react'; // Import the 'X' icon for the close button
 
 export default function Home() {
-  const [iframeHeight, setIframeHeight] = useState('420px'); // Default height
-
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.data?.iframeHeight) {
-        setIframeHeight(`${event.data.iframeHeight}px`);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
-
-  const [showIframe, setShowIframe] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const openBooking = () => {
-    setShowIframe(true);
+    setShowModal(true);
   };
 
-  const closeBooking = () => {
-    setShowIframe(false);
+  const closeBooking = (e) => {
+    e.stopPropagation(); // Prevent closing modal when clicking inside the modal
+    setShowModal(false);
   };
 
   return (
@@ -55,24 +42,29 @@ export default function Home() {
         </Button>
       </main>
 
-      {showIframe && (
+      {/* Modal */}
+      {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
           aria-modal="true"
           role="dialog"
-          onClick={closeBooking}
+          onClick={closeBooking} // Click outside the modal to close it
         >
-          <iframe
-            src="/booking"
-            className="w-full max-w-[90%] rounded-2xl border md:max-w-96"
-            title="Book a Ride"
-            style={{
-              height: iframeHeight,
-              backgroundColor: 'transparent',
-              overflow: 'hidden', // Disable iframe scroll
-            }}
-            scrolling="no" // Deprecated but may help in some browsers
-          />
+          <div
+            className="relative w-[90vw] border border-gray-300 max-w-sm rounded-md bg-black p-6 shadow-lg"
+            onClick={(e) => e.stopPropagation()} // Prevent closing on modal content click
+          >
+            {/* Close Button */}
+            <button
+              onClick={closeBooking}
+              className="absolute top-2 right-2 text-gray-300 hover:text-white"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* Booking Form */}
+            <BookingForm />
+          </div>
         </div>
       )}
 
