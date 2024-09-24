@@ -38,7 +38,7 @@ const BookingForm = () => {
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-full justify-start text-left font-normal text-white',
+                  'w-full justify-start text-left font-normal text-gray-950',
                   !date && 'text-gray-500'
                 )}
               >
@@ -46,7 +46,7 @@ const BookingForm = () => {
                 {date ? format(date, 'PPP') : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto rounded-md bg-gray-800 p-2 shadow-lg">
+            <PopoverContent className="w-auto rounded-md bg-white p-2 shadow-lg">
               <Calendar
                 mode="single"
                 selected={date}
@@ -64,7 +64,7 @@ const BookingForm = () => {
               <Button
                 variant={'outline'}
                 className={cn(
-                  'w-full justify-start text-left font-normal text-white',
+                  'w-full justify-start text-left font-normal text-gray-950',
                   !time && 'text-gray-500'
                 )}
               >
@@ -72,13 +72,13 @@ const BookingForm = () => {
                 {time ? time : <span>Select Time</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto rounded-md bg-gray-800 p-2 shadow-lg">
+            <PopoverContent className="w-60 rounded-md bg-white p-2 shadow-lg">
               <Input
                 id="time"
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full rounded-md border bg-white p-2 text-black"
+                className="w-full rounded-md border text-4xl flex justify-between bg-white p-2 text-black"
                 required
               />
             </PopoverContent>

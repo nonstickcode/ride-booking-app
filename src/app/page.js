@@ -22,7 +22,7 @@ export default function Home() {
       <header className="text-center">
         {/* Apply the main-title class for Bebas Neue font */}
         <h1 className="main-title mb-2 text-6xl lg:text-7xl">#RYDEBLK</h1>
-        <h1 className="mb-2 text-2xl text-gray-300 font-semibold lg:text-4xl">WITH JAMIE</h1>
+        <h1 className="mb-2 text-2xl text-gray-300 font-semibold lg:text-4xl">With Jamie</h1>
         <p className="text-xl text-gray-300 lg:text-2xl">Phoenix and Los Angeles</p>
       </header>
 
@@ -70,7 +70,7 @@ export default function Home() {
       )}
 
       <footer className="mt-8 text-center">
-        <p className="text-lg text-gray-300">or text 310-947-9464</p>
+        <p className="text-xl text-gray-300">or text 310-947-9464</p>
       </footer>
     </div>
   );

@@ -12,7 +12,7 @@ body {
 .main-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 4rem; /* Adjust size as needed */
-  letter-spacing: 0.3rem;
+  letter-spacing: 0.5rem;
   text-transform: uppercase;
 }
 
