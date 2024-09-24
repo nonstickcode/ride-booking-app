@@ -42,8 +42,8 @@ export default function Home() {
         <Image
           className="rounded-lg shadow-lg"
           src="/images/escalade.jpg"
-          width={350}
-          height={350}
+          width={275}
+          height={275}
           alt="escalade"
         />
 
