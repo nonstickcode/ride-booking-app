@@ -34,7 +34,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4 text-white">
       <header className="text-center">
         <h1 className="mb-2 text-5xl font-semibold lg:text-7xl">#RYDEBLK</h1>
-        <h1 className="mb-2 text-3xl font-semibold lg:text-5xl">WITH JAMIE</h1>
+        <h1 className="mb-2 text-2xl font-semibold lg:text-4xl">WITH JAMIE</h1>
         <p className="text-xl lg:text-2xl">Phoenix and Los Angeles</p>
       </header>
 
