@@ -18,11 +18,12 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4 text-white">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4 --font-oxygen text-white">
       <header className="text-center">
-        <h1 className="mb-2 text-5xl font-semibold lg:text-7xl">#RYDEBLK</h1>
-        <h1 className="mb-2 text-2xl font-semibold lg:text-4xl">WITH JAMIE</h1>
-        <p className="text-xl lg:text-2xl">Phoenix and Los Angeles</p>
+        {/* Apply the main-title class for Bebas Neue font */}
+        <h1 className="main-title mb-2 text-6xl lg:text-7xl">#RYDEBLK</h1>
+        <h1 className="mb-2 text-2xl text-gray-300 font-semibold lg:text-4xl">WITH JAMIE</h1>
+        <p className="text-xl text-gray-300 lg:text-2xl">Phoenix and Los Angeles</p>
       </header>
 
       <main className="mt-8 flex flex-col items-center space-y-6">
@@ -69,7 +70,7 @@ export default function Home() {
       )}
 
       <footer className="mt-8 text-center">
-        <p className="text-lg">or text 310-947-9464</p>
+        <p className="text-lg text-gray-300">or text 310-947-9464</p>
       </footer>
     </div>
   );
