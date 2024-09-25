@@ -20,8 +20,7 @@ export default function Home() {
   return (
     <div className="--font-oxygen flex min-h-screen flex-col items-center justify-center bg-black px-4 text-white">
       <header className="text-center">
-        {/* Improved title and subheading styling */}
-        <h1 className="main-title mb-4 text-7xl lg:text-8xl font-extrabold tracking-wide">
+        <h1 className="main-title mb-4 text-7xl font-extrabold tracking-wide lg:text-8xl">
           #RYDEBLK
         </h1>
         <h2 className="mb-4 text-2xl font-semibold text-gray-400 lg:text-5xl">
@@ -33,9 +32,8 @@ export default function Home() {
       </header>
 
       <main className="mt-10 flex flex-col items-center space-y-8">
-        {/* Improved image styling */}
         <Image
-          className="rounded-lg border mb-4 border-gray-400 shadow-2xl transition-transform transform hover:scale-105"
+          className="mb-4 transform rounded-lg border border-gray-400 shadow-2xl transition-transform hover:scale-105"
           src="/images/escalade.jpg"
           width={300}
           height={200}
@@ -44,7 +42,6 @@ export default function Home() {
           style={{ width: 'auto', height: 'auto' }} // Ensures aspect ratio is maintained
         />
 
-        {/* Improved button styling */}
         <Button
           className="mb-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-2xl font-semibold text-white shadow-lg transition hover:bg-gradient-to-l hover:from-blue-700 hover:to-blue-500"
           onClick={openBooking}
@@ -68,7 +65,7 @@ export default function Home() {
             {/* Close Button */}
             <button
               onClick={closeBooking}
-              className="absolute right-2 top-2 text-gray-400 hover:text-white transition"
+              className="absolute right-2 top-2 text-gray-400 transition hover:text-white"
             >
               <X className="h-6 w-6" />
             </button>

@@ -12,7 +12,7 @@ import { Input } from './ui/input';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { FaGoogle, FaEnvelope, FaSignOutAlt, FaCheck } from 'react-icons/fa'; // For icons
+import { FaGoogle, FaEnvelope, FaSignOutAlt, FaCheck } from 'react-icons/fa';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -133,12 +133,12 @@ const BookingForm = () => {
               >
                 <FaGoogle className="mr-2" /> Sign in with Google
               </Button>
-              {/* Add line with 'or' in the middle */}
-      <div className="flex items-center my-4">
-        <div className="flex-grow border-t border-gray-500"></div>
-        <span className="mx-4 text-gray-400">or</span>
-        <div className="flex-grow border-t border-gray-500"></div>
-      </div>
+              {/* Line break with 'or' in the middle */}
+              <div className="my-4 flex items-center">
+                <div className="flex-grow border-t border-gray-500"></div>
+                <span className="mx-4 text-gray-400">or</span>
+                <div className="flex-grow border-t border-gray-500"></div>
+              </div>
               <Button
                 onClick={() => setSigningInWithEmail(true)}
                 className="my-2 w-full rounded-lg bg-gray-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-gray-700"
@@ -150,9 +150,9 @@ const BookingForm = () => {
         </>
       ) : (
         <>
-          <div className="text-center text-white mb-6">
+          <div className="mb-6 text-center text-white">
             <p className="mb-2 text-lg">Welcome, {name} 👋</p>
-            <p className="mb-4 text-md">{email}</p>
+            <p className="text-md mb-4">{email}</p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -163,7 +163,7 @@ const BookingForm = () => {
                   <Button
                     variant={'outline'}
                     className={cn(
-                      'w-full justify-start text-left font-normal text-white bg-gray-800 border border-gray-500',
+                      'w-full justify-start border border-gray-500 bg-gray-800 text-left font-normal text-white',
                       !date && 'text-gray-500'
                     )}
                   >
@@ -189,7 +189,7 @@ const BookingForm = () => {
                   <Button
                     variant={'outline'}
                     className={cn(
-                      'w-full justify-start text-left font-normal text-white bg-gray-800 border border-gray-500',
+                      'w-full justify-start border border-gray-500 bg-gray-800 text-left font-normal text-white',
                       !time && 'text-gray-500'
                     )}
                   >
