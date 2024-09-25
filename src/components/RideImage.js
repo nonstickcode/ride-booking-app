@@ -5,7 +5,7 @@ import Image from 'next/image';
 export default function RideImage() {
   return (
     <Image
-      className="rounded-lg border mb-4 border-gray-400 shadow-2xl transition-transform transform hover:scale-105"
+      className="rounded-lg border mb-4 transition-transform transform hover:scale-105"
       src="/images/escalade.jpg"
       width={300}
       height={200}
