@@ -56,7 +56,7 @@ export default function Home() {
       {showModal && <BookingModal onClose={closeBooking} />}
 
       <footer className="mt-8 text-center">
-        <p className="text-lg text-gray-400">or text 310-947-9464</p>
+        <p className="text-lg text-gray-200">or text 310-947-9464</p>
       </footer>
     </div>
   );
