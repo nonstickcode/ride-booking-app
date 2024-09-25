@@ -3,7 +3,15 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaGoogle, FaEnvelope } from 'react-icons/fa';
 
-const AuthButtons = ({ handleGoogleSignIn, handleEmailSignIn, signingInWithEmail, setSigningInWithEmail, email, setEmail, emailSent }) => {
+const AuthButtons = ({
+  handleGoogleSignIn,
+  handleEmailSignIn,
+  signingInWithEmail,
+  setSigningInWithEmail,
+  email,
+  setEmail,
+  emailSent,
+}) => {
   return (
     <>
       {signingInWithEmail ? (
@@ -18,9 +26,7 @@ const AuthButtons = ({ handleGoogleSignIn, handleEmailSignIn, signingInWithEmail
             required
           />
           {emailSent ? (
-            <p className="text-white">
-              Check your email for the sign-in link.
-            </p>
+            <p className="text-white">Check your email for the sign-in link.</p>
           ) : (
             <Button
               onClick={handleEmailSignIn}

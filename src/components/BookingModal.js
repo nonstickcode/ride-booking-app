@@ -17,7 +17,7 @@ export default function BookingModal({ onClose }) {
       >
         <button
           onClick={onClose}
-          className="absolute right-2 top-2 text-gray-400 hover:text-white transition"
+          className="absolute right-2 top-2 text-gray-400 transition hover:text-white"
         >
           <X className="h-6 w-6" />
         </button>

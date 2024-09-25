@@ -1,5 +1,9 @@
 'use client';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,7 +27,12 @@ const DatePicker = ({ date, setDate }) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto rounded-md bg-white p-2 shadow-lg">
-          <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            initialFocus
+          />
         </PopoverContent>
       </Popover>
     </div>
