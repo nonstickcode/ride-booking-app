@@ -1,43 +1,20 @@
-'use client';
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@/components/ui/popover';
-import { Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import React from 'react';
+import TimePicker from 'react-time-picker';
+import 'react-time-picker/dist/TimePicker.css';  // Import default styles
 
-const TimePicker = ({ time, setTime }) => {
+const TimePickerComponent = ({ time, setTime }) => {
   return (
-    <div className="mb-6 w-full">
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant={'outline'}
-            className={cn(
-              'w-full justify-start border border-gray-500 bg-gray-800 text-left font-normal text-white',
-              !time && 'text-gray-500'
-            )}
-          >
-            <Clock className="mr-2 h-4 w-4" />
-            {time ? time : <span>Pick a Time</span>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-60 rounded-md bg-white p-2 shadow-lg">
-          <Input
-            id="time"
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            className="flex w-full justify-between rounded-md border bg-white p-2 text-2xl text-black"
-            required
-          />
-        </PopoverContent>
-      </Popover>
+    <div className="flex flex-col items-center w-full mb-6">
+      {/* <label className="text-white mb-2">Select Time:</label> */}
+      <TimePicker
+        onChange={setTime}
+        value={time}
+        disableClock={true}  // Disable the clock icon for simplicity
+        className="text-center text-lg p-2 rounded-lg w-full border border-gray-500 bg-gray-800 text-white"
+        clockClassName="hidden"  // Optional: Ensures clock is not rendered
+      />
     </div>
   );
 };
 
-export default TimePicker;
+export default TimePickerComponent;
