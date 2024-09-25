@@ -41,7 +41,7 @@ export default function Home() {
         />
 
         <Button
-          className="mt-6 rounded-md bg-blue-600 p-8 text-xl font-semibold text-white transition hover:bg-blue-700"
+          className="mt-8 rounded-md bg-blue-600 p-6 text-xl font-semibold text-white transition hover:bg-blue-700"
           onClick={openBooking}
         >
           Book Ride Now

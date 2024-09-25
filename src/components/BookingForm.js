@@ -89,7 +89,7 @@ const BookingForm = () => {
 
   return (
     <div className="mx-auto w-full max-w-md rounded-md bg-black p-3 shadow-lg">
-      <h2 className="mb-8 text-center text-2xl font-bold text-white">
+      <h2 className="mb-4 text-center text-2xl font-bold text-white">
         {user ? 'Book a Ride' : 'Sign in to book a ride'}
       </h2>
 
@@ -144,16 +144,10 @@ const BookingForm = () => {
         </>
       ) : (
         <>
-          <p className="mb-8 text-white">
-            Welcome, {name} ({email})
-          </p>
-
-          <Button
-            onClick={handleSignOut}
-            className="mb-8 w-full bg-red-600 text-white"
-          >
-            <FaSignOutAlt className="mr-2" /> Sign Out
-          </Button>
+          <div className="text-center">
+            <p className="mb-2">Welcome, {name} 👋</p>
+            <p className="mb-4">{email}</p>
+          </div>
 
           <form onSubmit={handleSubmit}>
             {/* Date Picker */}
@@ -211,7 +205,7 @@ const BookingForm = () => {
             </div>
 
             {/* Name Input - Disabled when signed in */}
-            <div className="mb-8">
+            {/* <div className="mb-8">
               <Input
                 id="name"
                 type="text"
@@ -222,10 +216,10 @@ const BookingForm = () => {
                 required
                 disabled // Disabled when user is signed in
               />
-            </div>
+            </div> */}
 
             {/* Email Input - Disabled when signed in */}
-            <div className="mb-8">
+            {/* <div className="mb-8">
               <Input
                 id="email"
                 type="email"
@@ -236,14 +230,20 @@ const BookingForm = () => {
                 required
                 disabled // Disabled when user is signed in
               />
-            </div>
+            </div> */}
 
             {/* Submit Button */}
             <Button
               type="submit"
-              className="mb-1 w-full rounded-md bg-blue-600 p-2 text-lg font-semibold text-white transition hover:bg-blue-700"
+              className="mb-8 w-full rounded-md bg-blue-600 p-2 text-lg text-white transition hover:bg-blue-700"
             >
               <FaCheck className="mr-2" /> Submit
+            </Button>
+            <Button
+              onClick={handleSignOut}
+              className="mb-1 w-full bg-red-600 text-lg text-white"
+            >
+              <FaSignOutAlt className="mr-2" /> Sign Out
             </Button>
           </form>
         </>
