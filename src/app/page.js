@@ -8,16 +8,19 @@ import { X } from 'lucide-react';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true); // Add a loading state to smooth out flicker
   const router = useRouter();
 
-  // Check if the booking modal is open before sign-in and open the modal after sign in complete if needed
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const isBooking = localStorage.getItem('isBooking'); // Check if user was booking before sign-in
+      const isBooking = localStorage.getItem('isBooking'); // Check if the user was booking before sign-in
+
       if (isBooking === 'true') {
-        setShowModal(true);
+        setShowModal(true); // Open modal if user was in the booking process
         localStorage.removeItem('isBooking'); // Clear the flag after modal is opened
       }
+
+      setLoading(false); // Turn off loading state once check is complete
     }
   }, []);
 
@@ -30,6 +33,11 @@ export default function Home() {
     e.stopPropagation(); // Prevent closing modal when clicking inside the modal
     setShowModal(false);
   };
+
+  // Don't show anything until the check is complete to avoid flickering
+  if (loading) {
+    return null;
+  }
 
   return (
     <div
