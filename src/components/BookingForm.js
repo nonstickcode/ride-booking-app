@@ -88,8 +88,8 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-md bg-black p-3 shadow-lg">
-      <h2 className="mb-4 text-center text-2xl font-bold text-white">
+    <div className="mx-auto w-full max-w-md rounded-lg bg-black p-3 shadow-xl">
+      <h2 className="mb-8 text-center text-2xl font-bold text-white">
         {user ? 'Book a Ride' : 'Sign in to book a ride'}
       </h2>
 
@@ -102,7 +102,7 @@ const BookingForm = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mb-4 w-full rounded-md border bg-white p-2 text-black"
+                className="mb-4 w-full rounded-md border bg-white p-3 text-black"
                 placeholder="Enter your email"
                 required
               />
@@ -113,14 +113,14 @@ const BookingForm = () => {
               ) : (
                 <Button
                   onClick={handleEmailSignIn}
-                  className="mb-8 w-full bg-blue-600 text-white"
+                  className="mb-6 w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-3 text-lg font-semibold text-white shadow-md hover:bg-gradient-to-l"
                 >
                   <FaEnvelope className="mr-2" /> Send Sign-in Link
                 </Button>
               )}
               <Button
                 onClick={() => setSigningInWithEmail(false)}
-                className="mb-8 w-full bg-gray-600 text-white"
+                className="mb-6 w-full rounded-lg bg-gray-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-gray-700"
               >
                 Use Google Sign In
               </Button>
@@ -129,13 +129,19 @@ const BookingForm = () => {
             <>
               <Button
                 onClick={handleGoogleSignIn}
-                className="mb-8 w-full bg-blue-600 text-white"
+                className="mb-2 w-full rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-3 text-lg font-semibold text-white shadow-md hover:bg-gradient-to-l"
               >
                 <FaGoogle className="mr-2" /> Sign in with Google
               </Button>
+              {/* Add line with 'or' in the middle */}
+      <div className="flex items-center my-4">
+        <div className="flex-grow border-t border-gray-500"></div>
+        <span className="mx-4 text-gray-400">or</span>
+        <div className="flex-grow border-t border-gray-500"></div>
+      </div>
               <Button
                 onClick={() => setSigningInWithEmail(true)}
-                className="mb-8 w-full bg-gray-600 text-white"
+                className="my-2 w-full rounded-lg bg-gray-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-gray-700"
               >
                 <FaEnvelope className="mr-2" /> Sign in with Email
               </Button>
@@ -144,20 +150,20 @@ const BookingForm = () => {
         </>
       ) : (
         <>
-          <div className="text-center">
-            <p className="mb-2">Welcome, {name} 👋</p>
-            <p className="mb-4">{email}</p>
+          <div className="text-center text-white mb-6">
+            <p className="mb-2 text-lg">Welcome, {name} 👋</p>
+            <p className="mb-4 text-md">{email}</p>
           </div>
 
           <form onSubmit={handleSubmit}>
             {/* Date Picker */}
-            <div className="mb-8 w-full">
+            <div className="mb-6 w-full">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={'outline'}
                     className={cn(
-                      'w-full justify-start text-left font-normal text-gray-950',
+                      'w-full justify-start text-left font-normal text-white bg-gray-800 border border-gray-500',
                       !date && 'text-gray-500'
                     )}
                   >
@@ -177,13 +183,13 @@ const BookingForm = () => {
             </div>
 
             {/* Time Picker */}
-            <div className="mb-8 w-full">
+            <div className="mb-6 w-full">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={'outline'}
                     className={cn(
-                      'w-full justify-start text-left font-normal text-gray-950',
+                      'w-full justify-start text-left font-normal text-white bg-gray-800 border border-gray-500',
                       !time && 'text-gray-500'
                     )}
                   >
@@ -197,51 +203,23 @@ const BookingForm = () => {
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="flex w-full justify-between rounded-md border bg-white p-2 text-4xl text-black"
+                    className="flex w-full justify-between rounded-md border bg-white p-2 text-2xl text-black"
                     required
                   />
                 </PopoverContent>
               </Popover>
             </div>
 
-            {/* Name Input - Disabled when signed in */}
-            {/* <div className="mb-8">
-              <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-md border bg-white p-2 text-black"
-                placeholder="Enter your name"
-                required
-                disabled // Disabled when user is signed in
-              />
-            </div> */}
-
-            {/* Email Input - Disabled when signed in */}
-            {/* <div className="mb-8">
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-md border bg-white p-2 text-black"
-                placeholder="Enter your email"
-                required
-                disabled // Disabled when user is signed in
-              />
-            </div> */}
-
             {/* Submit Button */}
             <Button
               type="submit"
-              className="mb-8 w-full rounded-md bg-blue-600 p-2 text-lg text-white transition hover:bg-blue-700"
+              className="mb-6 w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
             >
               <FaCheck className="mr-2" /> Submit
             </Button>
             <Button
               onClick={handleSignOut}
-              className="mb-1 w-full bg-red-600 text-lg text-white"
+              className="w-full rounded-lg bg-red-600 p-3 text-lg text-white shadow-md hover:bg-red-700"
             >
               <FaSignOutAlt className="mr-2" /> Sign Out
             </Button>

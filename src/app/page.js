@@ -20,28 +20,33 @@ export default function Home() {
   return (
     <div className="--font-oxygen flex min-h-screen flex-col items-center justify-center bg-black px-4 text-white">
       <header className="text-center">
-        <h1 className="main-title mb-2 text-6xl lg:text-7xl">#RYDEBLK</h1>
-        <h1 className="mb-2 text-2xl font-semibold text-gray-300 lg:text-4xl">
-          With Jamie
+        {/* Improved title and subheading styling */}
+        <h1 className="main-title mb-4 text-7xl lg:text-8xl font-extrabold tracking-wide">
+          #RYDEBLK
         </h1>
-        <p className="text-xl text-gray-300 lg:text-2xl">
+        <h2 className="mb-4 text-2xl font-semibold text-gray-400 lg:text-5xl">
+          With Jamie
+        </h2>
+        <p className="text-lg text-gray-400 lg:text-xl">
           Phoenix and Los Angeles
         </p>
       </header>
 
-      <main className="mt-8 flex flex-col items-center space-y-6">
+      <main className="mt-10 flex flex-col items-center space-y-8">
+        {/* Improved image styling */}
         <Image
-          className="rounded-lg shadow-lg"
+          className="rounded-lg border border-gray-400 shadow-2xl transition-transform transform hover:scale-105"
           src="/images/escalade.jpg"
-          width={275}
-          height={275}
+          width={300}
+          height={200}
           alt="Jamie's Escalade"
           priority
           style={{ width: 'auto', height: 'auto' }} // Ensures aspect ratio is maintained
         />
 
+        {/* Improved button styling */}
         <Button
-          className="mt-8 rounded-md bg-blue-600 p-6 text-xl font-semibold text-white transition hover:bg-blue-700"
+          className="mt-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-2xl font-semibold text-white shadow-lg transition hover:bg-gradient-to-l hover:from-blue-700 hover:to-blue-500"
           onClick={openBooking}
         >
           Book Ride Now
@@ -57,13 +62,13 @@ export default function Home() {
           onClick={closeBooking} // Click outside the modal to close it
         >
           <div
-            className="relative w-[90vw] max-w-sm rounded-md border border-gray-300 bg-black p-6 shadow-lg"
+            className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-6 shadow-xl"
             onClick={(e) => e.stopPropagation()} // Prevent closing on modal content click
           >
             {/* Close Button */}
             <button
               onClick={closeBooking}
-              className="absolute right-2 top-2 text-gray-300 hover:text-white"
+              className="absolute right-2 top-2 text-gray-400 hover:text-white transition"
             >
               <X className="h-6 w-6" />
             </button>
@@ -74,8 +79,8 @@ export default function Home() {
         </div>
       )}
 
-      <footer className="mt-8 text-center">
-        <p className="text-xl text-gray-300">or text 310-947-9464</p>
+      <footer className="mt-12 text-center">
+        <p className="text-lg text-gray-400">or text 310-947-9464</p>
       </footer>
     </div>
   );
