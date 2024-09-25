@@ -168,7 +168,7 @@ const BookingForm = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                    {date ? format(date, 'PPP') : <span>Pick a Date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto rounded-md bg-white p-2 shadow-lg">
@@ -194,7 +194,7 @@ const BookingForm = () => {
                     )}
                   >
                     <Clock className="mr-2 h-4 w-4" />
-                    {time ? time : <span>Select Time</span>}
+                    {time ? time : <span>Pick a Time</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-60 rounded-md bg-white p-2 shadow-lg">

@@ -35,7 +35,7 @@ export default function Home() {
       <main className="mt-10 flex flex-col items-center space-y-8">
         {/* Improved image styling */}
         <Image
-          className="rounded-lg border border-gray-400 shadow-2xl transition-transform transform hover:scale-105"
+          className="rounded-lg border mb-4 border-gray-400 shadow-2xl transition-transform transform hover:scale-105"
           src="/images/escalade.jpg"
           width={300}
           height={200}
@@ -46,7 +46,7 @@ export default function Home() {
 
         {/* Improved button styling */}
         <Button
-          className="mt-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-2xl font-semibold text-white shadow-lg transition hover:bg-gradient-to-l hover:from-blue-700 hover:to-blue-500"
+          className="mb-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-2xl font-semibold text-white shadow-lg transition hover:bg-gradient-to-l hover:from-blue-700 hover:to-blue-500"
           onClick={openBooking}
         >
           Book Ride Now
@@ -79,7 +79,7 @@ export default function Home() {
         </div>
       )}
 
-      <footer className="mt-12 text-center">
+      <footer className="mt-8 text-center">
         <p className="text-lg text-gray-400">or text 310-947-9464</p>
       </footer>
     </div>
