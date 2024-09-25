@@ -3,7 +3,11 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Button } from './ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover';
 import { Input } from './ui/input';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
@@ -11,7 +15,10 @@ import { cn } from '@/lib/utils';
 import { FaGoogle, FaEnvelope, FaSignOutAlt, FaCheck } from 'react-icons/fa'; // For icons
 
 // Initialize Supabase client
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 const BookingForm = () => {
   const [startDate, setStartDate] = useState(null);
@@ -28,7 +35,7 @@ const BookingForm = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}`,  // Redirect back to the home page after login
+        redirectTo: `${window.location.origin}`, // Redirect back to the home page after login
       },
     });
     if (error) console.error('Error signing in:', error);
@@ -100,22 +107,36 @@ const BookingForm = () => {
                 required
               />
               {emailSent ? (
-                <p className="text-white">Check your email for the sign-in link.</p>
+                <p className="text-white">
+                  Check your email for the sign-in link.
+                </p>
               ) : (
-                <Button onClick={handleEmailSignIn} className="mb-8 w-full bg-blue-600 text-white">
+                <Button
+                  onClick={handleEmailSignIn}
+                  className="mb-8 w-full bg-blue-600 text-white"
+                >
                   <FaEnvelope className="mr-2" /> Send Sign-in Link
                 </Button>
               )}
-              <Button onClick={() => setSigningInWithEmail(false)} className="mb-8 w-full bg-gray-600 text-white">
+              <Button
+                onClick={() => setSigningInWithEmail(false)}
+                className="mb-8 w-full bg-gray-600 text-white"
+              >
                 Use Google Sign In
               </Button>
             </>
           ) : (
             <>
-              <Button onClick={handleGoogleSignIn} className="mb-8 w-full bg-blue-600 text-white">
+              <Button
+                onClick={handleGoogleSignIn}
+                className="mb-8 w-full bg-blue-600 text-white"
+              >
                 <FaGoogle className="mr-2" /> Sign in with Google
               </Button>
-              <Button onClick={() => setSigningInWithEmail(true)} className="mb-8 w-full bg-gray-600 text-white">
+              <Button
+                onClick={() => setSigningInWithEmail(true)}
+                className="mb-8 w-full bg-gray-600 text-white"
+              >
                 <FaEnvelope className="mr-2" /> Sign in with Email
               </Button>
             </>
@@ -123,9 +144,14 @@ const BookingForm = () => {
         </>
       ) : (
         <>
-          <p className="text-white mb-8">Welcome, {name} ({email})</p>
+          <p className="mb-8 text-white">
+            Welcome, {name} ({email})
+          </p>
 
-          <Button onClick={handleSignOut} className="mb-8 w-full bg-red-600 text-white">
+          <Button
+            onClick={handleSignOut}
+            className="mb-8 w-full bg-red-600 text-white"
+          >
             <FaSignOutAlt className="mr-2" /> Sign Out
           </Button>
 
@@ -146,7 +172,12 @@ const BookingForm = () => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto rounded-md bg-white p-2 shadow-lg">
-                  <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
                 </PopoverContent>
               </Popover>
             </div>
@@ -172,7 +203,7 @@ const BookingForm = () => {
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full rounded-md border text-4xl flex justify-between bg-white p-2 text-black"
+                    className="flex w-full justify-between rounded-md border bg-white p-2 text-4xl text-black"
                     required
                   />
                 </PopoverContent>
