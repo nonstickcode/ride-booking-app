@@ -39,7 +39,7 @@ export default function Home() {
   }
 
   return (
-    <div className="--font-oxygen flex flex-col items-center justify-center bg-black px-4 text-white" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
+    <div className="--font-oxygen flex flex-col items-center justify-center px-4 text-white" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
       <Header />
 
       <main className="mt-10 flex flex-col items-center space-y-8">

@@ -6,7 +6,7 @@ export default function RideImage() {
   return (
     <Image
       className="rounded-lg border mb-4 transition-transform transform hover:scale-105"
-      src="/images/escalade.jpg"
+      src="/images/jamies-escalade.jpeg"
       width={300}
       height={200}
       alt="Jamie's Escalade"

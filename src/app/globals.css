@@ -11,7 +11,7 @@ body {
 /* Main title style for #RYDEBLK using Bebas Neue */
 .main-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 4rem; /* Adjust size as needed */
+  font-size: 4rem;
   letter-spacing: 0.5rem;
   text-transform: uppercase;
 }
@@ -26,4 +26,14 @@ body {
   :root {
     --radius: 0.5rem;
   }
+}
+
+/* Apply the background image to the html element */
+html {
+  background-image: url('/images/black-leather-background.jpeg'); /* Correct path to the image */
+  background-size: cover; /* Ensures the image covers the screen */
+  background-position: center center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevent tiling */
+  background-attachment: fixed; /* Keeps the background fixed during scroll */
+  min-height: 100vh; /* Ensures the background covers the full viewport height */
 }
