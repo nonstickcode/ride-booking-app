@@ -11,14 +11,25 @@ import { FaSignOutAlt, FaCheck, FaSpinner } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { calculateRoute, calculateDistanceToCity } from '@/utils/routeCalculations';
+import { motion } from 'framer-motion'; // Import Framer Motion
 
 // Supabase Initialization
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
+// Load Google Maps
+const libraries = ['places'];
+
+// Framer Motion Variants for smooth animation
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.95 },
+};
+
 const BookingForm = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries: ['places'],
+    libraries,
   });
 
   const [date, setDate] = useState(null);
@@ -30,11 +41,7 @@ const BookingForm = () => {
   const [loading, setLoading] = useState(false);
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
-  const [signingInWithEmail, setSigningInWithEmail] = useState(false);
-  const [email, setEmail] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
 
-  // Fetch user session
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -44,45 +51,6 @@ const BookingForm = () => {
     };
     fetchUser();
   }, []);
-
-  // Handle sign-in and sign-out
-  const handleGoogleSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}`,
-      },
-    });
-    if (error) console.error('Error signing in with Google:', error);
-  };
-
-  const handleEmailSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) {
-      console.error('Error signing in with email:', error);
-    } else {
-      setEmailSent(true);
-    }
-  };
-
-  const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setUser(null);
-      setSigningInWithEmail(false); // Reset to show auth buttons
-      setEmail('');
-      setEmailSent(false);
-    } else {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const bookingData = { date, time, pickupLocation, dropoffLocation, distance, duration };
-    console.log('Booking Data:', bookingData);
-  };
 
   useEffect(() => {
     if (pickupLocation || dropoffLocation) {
@@ -97,26 +65,60 @@ const BookingForm = () => {
     }
   }, [pickupLocation, dropoffLocation]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const bookingData = { date, time, pickupLocation, dropoffLocation, distance, duration };
+    console.log('Booking Data:', bookingData);
+  };
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}`, // Redirect back to the home page after login
+      },
+    });
+    if (error) console.error('Error signing in:', error);
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Error signing out:', error);
+    else setUser(null);
+  };
+
   if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-lg bg-black p-3 shadow-xl">
+    <motion.div
+      variants={modalVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={{ duration: 0.3, ease: 'easeInOut' }} // Control animation timing
+      className="mx-auto w-full max-w-md rounded-lg bg-black p-3 shadow-xl"
+    >
       <h2 className="mb-8 text-center text-2xl font-bold text-white">
-        {user ? 'Book a Ride' : 'Sign in to book a ride'}
+        {user ? 'Book a Ride' : 'Sign in to Book a Ride'}
       </h2>
 
       {!user ? (
-        <AuthButtons
-          handleGoogleSignIn={handleGoogleSignIn}
-          handleEmailSignIn={handleEmailSignIn}
-          signingInWithEmail={signingInWithEmail}
-          setSigningInWithEmail={setSigningInWithEmail}
-          email={email}
-          setEmail={setEmail}
-          emailSent={emailSent}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
+          <AuthButtons handleGoogleSignIn={handleGoogleSignIn} />
+        </motion.div>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <motion.form
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          onSubmit={handleSubmit}
+        >
           <DatePicker date={date} setDate={setDate} />
           <TimePicker time={time} setTime={setTime} />
 
@@ -162,9 +164,9 @@ const BookingForm = () => {
           >
             <FaSignOutAlt className="mr-2" /> Sign Out
           </Button>
-        </form>
+        </motion.form>
       )}
-    </div>
+    </motion.div>
   );
 };
 
