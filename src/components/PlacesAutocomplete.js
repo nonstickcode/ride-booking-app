@@ -59,7 +59,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
   };
 
   return (
-    <div className="flex flex-col border border-gray-600 rounded-md p-2 mb-6 w-full">
+    <div className="flex flex-col border border-gray-600 rounded-md p-2 mb-3 w-full">
       <label className="text-white mb-2">{label}</label>
       <Input
         value={value}
