@@ -42,6 +42,11 @@ const BookingForm = () => {
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
 
+  // New states for email sign-in
+  const [signingInWithEmail, setSigningInWithEmail] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
+
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -81,6 +86,20 @@ const BookingForm = () => {
     if (error) console.error('Error signing in:', error);
   };
 
+  const handleEmailSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        redirectTo: window.location.origin // Redirect to home after magic link is clicked
+      }
+    });
+    if (error) {
+      console.error('Error sending magic link:', error);
+    } else {
+      setEmailSent(true);
+    }
+  };
+
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error('Error signing out:', error);
@@ -98,9 +117,20 @@ const BookingForm = () => {
       transition={{ duration: 0.3, ease: 'easeInOut' }} // Control animation timing
       className="mx-auto w-full max-w-md rounded-lg bg-black p-3 shadow-xl"
     >
-      <h2 className="mb-8 text-center text-2xl font-bold text-white">
+      <h2 className="mb-4 text-center text-2xl font-bold text-white">
         {user ? 'Book a Ride' : 'Sign in to Book a Ride'}
       </h2>
+
+      {user && (
+        <>
+          <p className="mb-1 text-center text-lg text-white">
+            Welcome, {user.user_metadata?.full_name || 'User'} 👋
+          </p>
+          <p className="mb-4 text-center text-white">
+            {user.email}
+          </p>
+        </>
+      )}
 
       {!user ? (
         <motion.div
@@ -109,7 +139,15 @@ const BookingForm = () => {
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
-          <AuthButtons handleGoogleSignIn={handleGoogleSignIn} />
+          <AuthButtons
+            handleGoogleSignIn={handleGoogleSignIn}
+            handleEmailSignIn={handleEmailSignIn}
+            signingInWithEmail={signingInWithEmail}
+            setSigningInWithEmail={setSigningInWithEmail}
+            email={email}
+            setEmail={setEmail}
+            emailSent={emailSent}
+          />
         </motion.div>
       ) : (
         <motion.form
