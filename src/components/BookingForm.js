@@ -177,7 +177,7 @@ const BookingForm = () => {
 
           {/* Show an alert if the range exceeds */}
           {exceedsRange && (
-            <p className="text-red-500">Driver's range of {DRIVER_RANGE} miles exceeded.</p>
+            <p className="text-red-500 mb-4 font-bold">Driver's range of {DRIVER_RANGE} miles exceeded.</p>
           )}
 
           {/* Display Distance and Duration */}
