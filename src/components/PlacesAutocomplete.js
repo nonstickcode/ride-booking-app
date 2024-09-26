@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { Input } from '@/components/ui/input';
+import { FaCrosshairs, FaSpinner } from 'react-icons/fa'; // Import target-like icon and spinner
 
 const PlacesAutocomplete = ({ setSelected, label }) => {
   const [currentLocationLoading, setCurrentLocationLoading] = useState(false); // For loading state
@@ -59,15 +60,33 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
   };
 
   return (
-    <div className="flex flex-col border border-gray-600 rounded-md p-2 mb-3 w-full">
+    <div className="flex flex-col mb-6 w-full">
       <label className="text-white mb-2">{label}</label>
-      <Input
-        value={value}
-        onChange={handleInput}
-        disabled={!ready || currentLocationLoading}  // Disable if API isn't ready or loading location
-        placeholder="Search for an address"
-        className="w-full p-2 rounded-lg border border-gray-500 bg-gray-800 text-white"
-      />
+      <div className="flex items-center space-x-2">
+        {/* Input Field */}
+        <Input
+          value={value}
+          onChange={handleInput}
+          disabled={!ready || currentLocationLoading}  // Disable if API isn't ready or loading location
+          placeholder="Search for an address"
+          className="flex-grow p-2 rounded-lg border border-gray-500 bg-gray-800 text-white"
+        />
+
+        {/* Current Location Button */}
+        <button
+          onClick={handleCurrentLocation}
+          className="flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-blue-800"
+          style={{ height: '35px', width: '40px' }} // Make button square
+          disabled={currentLocationLoading}  // Disable when loading
+          title="Use current location"  // Tooltip text
+        >
+          {currentLocationLoading ? (
+            <FaSpinner className="animate-spin" /> // Spinner while loading
+          ) : (
+            <FaCrosshairs /> // Target icon when not loading
+          )}
+        </button>
+      </div>
       {status === 'OK' && (
         <div className="bg-gray-500 shadow-lg rounded-lg mt-2">
           {data.map(({ place_id, description }) => (
@@ -81,14 +100,6 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           ))}
         </div>
       )}
-      {/* Current Location Button */}
-      <button
-        onClick={handleCurrentLocation}
-        className="mt-2 mx-auto w-fit px-2 py-1 bg-green-600 text-white rounded-lg hover:bg-blue-800"
-        disabled={currentLocationLoading}  // Disable when loading
-      >
-        {currentLocationLoading ? "Getting Location..." : "Use Current Location"}
-      </button>
     </div>
   );
 };

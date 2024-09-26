@@ -8,6 +8,8 @@ import DatePicker from '@/components/DatePicker';
 import TimePicker from '@/components/TimePicker';
 import PlacesAutocomplete from './PlacesAutocomplete';
 import { FaSignOutAlt, FaCheck, FaSpinner } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -18,13 +20,12 @@ const supabase = createClient(
 // Load Google Maps with the places library
 const libraries = ['places'];
 
-// Hardcoded driver locations / Later set in Admin Panel for Driver
+// Hardcoded driver locations / TODO: Later set in Admin Panel for Driver
 const DRIVER_LOCATION_PHOENIX = { lat: 33.4484, lng: -112.0740 }; // Phoenix, AZ
 const DRIVER_LOCATION_LA = { lat: 34.0522, lng: -118.2437 }; // Los Angeles, CA
 
-// Hardcoded driver distance limit / Later set in Admin Panel for Driver
+// Hardcoded driver distance limit / TODO: Later set in Admin Panel for Driver
 const DRIVER_RANGE = 200; // 200 miles
-
 
 // Function to calculate the route between two locations
 const calculateRoute = async (origin, destination, setDistance, setDuration, setLoading, setExceedsRange) => {
@@ -160,10 +161,19 @@ const BookingForm = () => {
           <TimePicker time={time} setTime={setTime} />
 
           {/* Pickup Location */}
-          <PlacesAutocomplete setSelected={setPickupLocation} label="Pickup Location" />
+          <div className="mb-2">
+            <PlacesAutocomplete setSelected={setPickupLocation} label="Pickup Location" />
+          </div>
+
+          {/* Arrow indicating from pickup to dropoff */}
+          <div className="flex justify-center mb-2">
+            <FontAwesomeIcon icon={faArrowDown} className="text-white text-xl" />
+          </div>
 
           {/* Drop-off Location */}
-          <PlacesAutocomplete setSelected={setDropoffLocation} label="Drop-off Location" />
+          <div className="mb-4">
+            <PlacesAutocomplete setSelected={setDropoffLocation} label="Drop-off Location" />
+          </div>
 
           {/* Show an alert if the range exceeds */}
           {exceedsRange && (
