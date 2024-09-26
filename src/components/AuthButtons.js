@@ -22,12 +22,14 @@ const AuthButtons = ({
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mb-6 w-full text-xl rounded-md border bg-white p-3 text-black"
+            className="mb-6 w-full rounded-md border bg-white p-3 text-xl text-black"
             placeholder="Enter your email"
             required
           />
           {emailSent ? (
-            <p className="text-blue-500 font-semibold mb-4">Check your email for the sign-in link.</p>
+            <p className="mb-4 font-semibold text-blue-500">
+              Check your email for the sign-in link.
+            </p>
           ) : (
             <Button
               onClick={handleEmailSignIn}
@@ -40,7 +42,8 @@ const AuthButtons = ({
             onClick={() => setSigningInWithEmail(false)}
             className="mb-6 w-full rounded-lg bg-gray-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-gray-700"
           >
-            <FaArrowLeft className="mr-2" />Return to sign-in options
+            <FaArrowLeft className="mr-2" />
+            Return to sign-in options
           </Button>
         </>
       ) : (

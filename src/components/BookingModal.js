@@ -12,12 +12,13 @@ export default function BookingModal({ onClose }) {
       onClick={onClose}
     >
       <div
-        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-6 shadow-xl"
+        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-2 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute right-2 top-2 text-gray-400 transition hover:text-white"
+          className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center text-gray-400 transition hover:text-white"
+          aria-label="Close"
         >
           <X className="h-6 w-6" />
         </button>

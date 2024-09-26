@@ -53,7 +53,8 @@ export default function Home() {
           className="mb-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           onClick={openBooking}
         >
-          <FaCheckCircle  className="mr-2"/>Book Ride Now
+          <FaCheckCircle className="mr-2" />
+          Book Ride Now
         </Button>
       </main>
 

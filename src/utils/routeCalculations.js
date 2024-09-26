@@ -1,5 +1,12 @@
 // Function to calculate the route between two locations
-export const calculateRoute = async (origin, destination, setDistance, setDuration, setLoading, setExceedsRange) => {
+export const calculateRoute = async (
+  origin,
+  destination,
+  setDistance,
+  setDuration,
+  setLoading,
+  setExceedsRange
+) => {
   const directionsService = new google.maps.DirectionsService();
 
   directionsService.route(
@@ -13,7 +20,7 @@ export const calculateRoute = async (origin, destination, setDistance, setDurati
         const distanceText = result.routes[0].legs[0].distance.text;
         const duration = result.routes[0].legs[0].duration.text;
         const distanceInMiles = parseFloat(distanceText);
-        
+
         setDistance(distanceText);
         setDuration(duration);
         setLoading(false);
@@ -37,7 +44,7 @@ export const calculateDistanceToCity = (location, setExceedsRange) => {
 
   distanceService.getDistanceMatrix(
     {
-      origins: [{ lat: 33.4484, lng: -112.0740 }], // Phoenix, AZ
+      origins: [{ lat: 33.4484, lng: -112.074 }], // Phoenix, AZ
       destinations: [location],
       travelMode: google.maps.TravelMode.DRIVING,
     },
