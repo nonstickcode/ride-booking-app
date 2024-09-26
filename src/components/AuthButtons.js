@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaGoogle, FaEnvelope } from 'react-icons/fa';
+import { Input } from './ui/input';
 
 const AuthButtons = ({
   handleGoogleSignIn,

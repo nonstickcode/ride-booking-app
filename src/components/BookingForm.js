@@ -15,13 +15,10 @@ import { calculateRoute, calculateDistanceToCity } from '@/utils/routeCalculatio
 // Supabase Initialization
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-// Load Google Maps
-const libraries = ['places'];
-
 const BookingForm = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries,
+    libraries: ['places'],
   });
 
   const [date, setDate] = useState(null);
@@ -33,7 +30,11 @@ const BookingForm = () => {
   const [loading, setLoading] = useState(false);
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
+  const [signingInWithEmail, setSigningInWithEmail] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
+  // Fetch user session
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -43,6 +44,45 @@ const BookingForm = () => {
     };
     fetchUser();
   }, []);
+
+  // Handle sign-in and sign-out
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}`,
+      },
+    });
+    if (error) console.error('Error signing in with Google:', error);
+  };
+
+  const handleEmailSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOtp({ email });
+    if (error) {
+      console.error('Error signing in with email:', error);
+    } else {
+      setEmailSent(true);
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      setUser(null);
+      setSigningInWithEmail(false); // Reset to show auth buttons
+      setEmail('');
+      setEmailSent(false);
+    } else {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const bookingData = { date, time, pickupLocation, dropoffLocation, distance, duration };
+    console.log('Booking Data:', bookingData);
+  };
 
   useEffect(() => {
     if (pickupLocation || dropoffLocation) {
@@ -57,12 +97,6 @@ const BookingForm = () => {
     }
   }, [pickupLocation, dropoffLocation]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const bookingData = { date, time, pickupLocation, dropoffLocation, distance, duration };
-    console.log('Booking Data:', bookingData);
-  };
-
   if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
@@ -72,12 +106,20 @@ const BookingForm = () => {
       </h2>
 
       {!user ? (
-        <AuthButtons />
+        <AuthButtons
+          handleGoogleSignIn={handleGoogleSignIn}
+          handleEmailSignIn={handleEmailSignIn}
+          signingInWithEmail={signingInWithEmail}
+          setSigningInWithEmail={setSigningInWithEmail}
+          email={email}
+          setEmail={setEmail}
+          emailSent={emailSent}
+        />
       ) : (
         <form onSubmit={handleSubmit}>
           <DatePicker date={date} setDate={setDate} />
           <TimePicker time={time} setTime={setTime} />
-          
+
           {/* Pickup & Drop-off */}
           <div className="mb-2">
             <PlacesAutocomplete setSelected={setPickupLocation} label="Pickup Location" />
@@ -106,7 +148,6 @@ const BookingForm = () => {
             )}
           </div>
 
-          
           <Button
             type="submit"
             disabled={!date || !time || !pickupLocation || !dropoffLocation || exceedsRange}
@@ -115,9 +156,8 @@ const BookingForm = () => {
             <FaCheck className="mr-2" /> Submit Request
           </Button>
 
-          
           <Button
-            onClick={() => supabase.auth.signOut()}
+            onClick={handleSignOut}
             className="w-full rounded-lg bg-red-500 p-3 text-lg font-bold text-white shadow-md hover:bg-red-700"
           >
             <FaSignOutAlt className="mr-2" /> Sign Out
