@@ -191,14 +191,14 @@ const BookingForm = () => {
           <Button
             type="submit"
             disabled={!date || !time || !pickupLocation || !dropoffLocation || exceedsRange}
-            className="mb-6 w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+            className="mb-6 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           >
             <FaCheck className="mr-2" /> Submit Request
           </Button>
 
           <Button
             onClick={handleSignOut}
-            className="w-full rounded-lg bg-red-500 p-3 text-lg font-bold text-white shadow-md hover:bg-red-700"
+            className="mb-6 w-full rounded-lg bg-gradient-to-r from-red-600 to-red-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           >
             <FaSignOutAlt className="mr-2" /> Sign Out
           </Button>

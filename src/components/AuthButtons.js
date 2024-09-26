@@ -47,7 +47,7 @@ const AuthButtons = ({
         <>
           <Button
             onClick={handleGoogleSignIn}
-            className="mb-2 mt-3 w-full rounded-lg bg-blue-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-blue-700"
+            className="mb-2 w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           >
             <FaGoogle className="mr-2" /> Sign in with Google
           </Button>
@@ -58,7 +58,7 @@ const AuthButtons = ({
           </div>
           <Button
             onClick={() => setSigningInWithEmail(true)}
-            className="my-2 w-full rounded-lg bg-green-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-green-700"
+            className="my-2 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           >
             <FaEnvelope className="mr-2" /> Sign in with Email
           </Button>

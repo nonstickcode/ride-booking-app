@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import RideImage from '@/components/RideImage';
 import BookingModal from '@/components/BookingModal';
+import { FaCheckCircle } from 'react-icons/fa';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -49,10 +50,10 @@ export default function Home() {
         <RideImage />
 
         <Button
-          className="mb-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-6 text-2xl font-semibold text-white shadow-lg transition hover:bg-gradient-to-l hover:from-blue-700 hover:to-blue-500"
+          className="mb-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           onClick={openBooking}
         >
-          Book Ride Now
+          <FaCheckCircle  className="mr-2"/>Book Ride Now
         </Button>
       </main>
 

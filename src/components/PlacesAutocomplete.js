@@ -80,7 +80,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
         {/* Current Location Button */}
         <button
           onClick={handleCurrentLocation}
-          className="flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-blue-800"
+          className="flex items-center justify-center bg-gray-600 text-white rounded-md hover:bg-blue-800"
           style={{ height: '35px', width: '40px' }}  // Make button square
           disabled={currentLocationLoading}  // Disable when loading
           title="Use current location"  // Tooltip text
