@@ -11,7 +11,6 @@ const TimePickerComponent = ({ time, setTime }) => {
         value={time}
         disableClock={true} // Disable the clock icon for simplicity
         className="w-full rounded-lg border border-gray-500 bg-gray-800 p-2 text-sm text-white"
-        
       />
     </div>
   );

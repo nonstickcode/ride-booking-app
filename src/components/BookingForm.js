@@ -88,8 +88,9 @@ const BookingForm = () => {
     }
   }, [pickupLocation, dropoffLocation]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const bookingData = {
       date,
       time,
@@ -98,7 +99,25 @@ const BookingForm = () => {
       distance,
       duration,
     };
-    console.log('Booking Data:', bookingData);
+
+    try {
+      const response = await fetch('/api/sendEmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        console.log('Email sent successfully');
+      } else {
+        console.error('Failed to send email:', result.error);
+      }
+    } catch (error) {
+      console.error('Error submitting booking:', error);
+    }
   };
 
   const handleGoogleSignIn = async () => {
