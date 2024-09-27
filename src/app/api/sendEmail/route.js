@@ -33,8 +33,8 @@ export async function POST(request) {
 
     // Email content
     const mailOptions = {
-      from: 'rydeblk@gmail.com', // Verified sender email
-      to: 'rydeblk@gmail.com', // Destination email (driver's email or any internal email)
+      from: 'rydeblk@gmail.com', // Verified sender email / verified on Brevo dashboard
+      to: 'rydeblk@gmail.com', // Destination email
       subject: 'New Booking Request',
       text: `Hello,
 
