@@ -31,7 +31,9 @@ export default function Home() {
   };
 
   const closeBooking = (e) => {
-    e.stopPropagation();
+    if (e) {
+      e.stopPropagation();
+    }
     setShowModal(false);
   };
 

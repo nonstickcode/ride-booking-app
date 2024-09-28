@@ -23,7 +23,7 @@ export default function BookingModal({ onClose }) {
           <X className="h-6 w-6" />
         </button>
 
-        <BookingForm />
+        <BookingForm closeModal={onClose} />
       </div>
     </div>
   );

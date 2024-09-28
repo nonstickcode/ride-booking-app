@@ -4,7 +4,7 @@ export const calculateRoute = async (
   destination,
   setDistance,
   setDuration,
-  setLoading,
+  setLoadingRoute,
   setExceedsRange
 ) => {
   const directionsService = new google.maps.DirectionsService();
@@ -23,7 +23,7 @@ export const calculateRoute = async (
 
         setDistance(distanceText);
         setDuration(duration);
-        setLoading(false);
+        setLoadingRoute(false);
 
         if (distanceInMiles > 200) {
           setExceedsRange(true);
@@ -32,7 +32,7 @@ export const calculateRoute = async (
         }
       } else {
         console.error('Error fetching directions:', status);
-        setLoading(false);
+        setLoadingRoute(false);
       }
     }
   );

@@ -16,6 +16,7 @@ import {
 } from '@/utils/routeCalculations';
 import { motion } from 'framer-motion'; // Import Framer Motion
 
+
 // Supabase Initialization
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -32,7 +33,7 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.95 },
 };
 
-const BookingForm = () => {
+const BookingForm = ({ closeModal }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -44,9 +45,11 @@ const BookingForm = () => {
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingRoute, setLoadingRoute] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
 
   // New states for email sign-in
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
@@ -76,13 +79,13 @@ const BookingForm = () => {
 
   useEffect(() => {
     if (pickupLocation && dropoffLocation) {
-      setLoading(true);
+      setLoadingRoute(true);
       calculateRoute(
         pickupLocation,
         dropoffLocation,
         setDistance,
         setDuration,
-        setLoading,
+        setLoadingRoute,
         setExceedsRange
       );
     }
@@ -90,6 +93,8 @@ const BookingForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoadingSubmit(true);
 
     const bookingData = {
       date,
@@ -112,11 +117,21 @@ const BookingForm = () => {
       const result = await response.json();
       if (result.success) {
         console.log('Email sent successfully');
+        // Show the success alert
+        setShowAlert(true);
+        
+        // After 2 seconds, hide the alert and redirect to the home page
+        setTimeout(() => {
+          setShowAlert(false); // Hide alert after 2 seconds
+          closeModal(); // Close the modal
+        }, 5000);
       } else {
         console.error('Failed to send email:', result.error);
       }
     } catch (error) {
       console.error('Error submitting booking:', error);
+    } finally {
+      setLoadingSubmit(false);
     }
   };
 
@@ -227,7 +242,7 @@ const BookingForm = () => {
             </p>
           )}
           <div className="mb-4 text-white">
-            {loading ? (
+            {loadingRoute ? (
               <div className="flex items-center space-x-2">
                 <FaSpinner className="animate-spin" />
                 <p>Calculating distance and time...</p>
@@ -243,6 +258,13 @@ const BookingForm = () => {
             )}
           </div>
 
+          {/* Alert message */}
+      {showAlert && (
+        <div className="fixed top-0 left-0 right-0 p-4 bg-green-500 text-white text-center z-50">
+          Submission successful! Please await an email response.
+        </div>
+      )}
+
           <Button
             type="submit"
             disabled={
@@ -250,11 +272,17 @@ const BookingForm = () => {
               !time ||
               !pickupLocation ||
               !dropoffLocation ||
-              exceedsRange
+              exceedsRange ||
+              loadingSubmit // Disable the button while loading
             }
             className="mb-6 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           >
-            <FaCheck className="mr-2" /> Submit Request
+            {loadingSubmit ? (
+              <FaSpinner className="animate-spin mr-2" />
+            ) : (
+              <FaCheck className="mr-2" />
+            )}
+            {loadingSubmit ? 'Submitting...' : 'Submit Request'}
           </Button>
 
           <Button
