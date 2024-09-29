@@ -55,6 +55,15 @@ const BookingForm = ({ closeModal, setUserProp }) => {
   }, []);
 
   useEffect(() => {
+    if (pickupLocation || dropoffLocation) {
+      calculateDistanceToCity(
+        pickupLocation || dropoffLocation,
+        setExceedsRange
+      );
+    }
+  }, [pickupLocation, dropoffLocation]);
+
+  useEffect(() => {
     if (pickupLocation && dropoffLocation) {
       setLoadingRoute(true);
       calculateRoute(
@@ -133,6 +142,8 @@ const BookingForm = ({ closeModal, setUserProp }) => {
         {user ? 'Book a Ride' : 'Sign in to Book a Ride'}
       </h2>
 
+      
+
       {!user ? (
         <AuthButtons setUser={setUser} />
       ) : (
@@ -154,11 +165,7 @@ const BookingForm = ({ closeModal, setUserProp }) => {
               setSelected={setDropoffLocation}
               label="Drop-off Location"
             />
-            {exceedsRange && (
-              <p className="mb-4 font-bold text-red-500">
-                Driver&apos;s range exceeded.
-              </p>
-            )}
+            
             <div className="mb-4 text-white">
               {loadingRoute ? (
                 <div className="flex items-center space-x-2">
@@ -173,6 +180,12 @@ const BookingForm = ({ closeModal, setUserProp }) => {
                 </>
               ) : null}
             </div>
+
+            {exceedsRange && (
+              <p className="mb-4 text-xl font-bold text-red-500">
+                Driver&apos;s range exceeded.
+              </p>
+            )}
 
             {showAlert && (
               <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-white">

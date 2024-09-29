@@ -40,3 +40,27 @@ export const calculateRoute = async (
     }
   );
 };
+
+
+// Function to calculate distance to the driver's location (Phoenix)
+export const calculateDistanceToCity = (location, setExceedsRange) => {
+  const distanceService = new google.maps.DistanceMatrixService();
+
+  distanceService.getDistanceMatrix(
+    {
+      origins: [{ lat: 33.4484, lng: -112.074 }], // Phoenix, AZ
+      destinations: [location],
+      travelMode: google.maps.TravelMode.DRIVING,
+    },
+    (result, status) => {
+      if (status === google.maps.DistanceMatrixStatus.OK) {
+        const distanceInMeters = result.rows[0].elements[0].distance.value;
+        const distanceInMiles = distanceInMeters * 0.000621371;
+
+        setExceedsRange(distanceInMiles > 200);
+      } else {
+        console.error('Error calculating distance to city:', status);
+      }
+    }
+  );
+};
