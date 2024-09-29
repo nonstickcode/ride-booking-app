@@ -3,16 +3,41 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { Input } from './ui/input';
+import supabase from '@/utils/supabaseClient';
 
-const AuthButtons = ({
-  handleGoogleSignIn,
-  handleEmailSignIn,
-  signingInWithEmail,
-  setSigningInWithEmail,
-  email,
-  setEmail,
-  emailSent,
-}) => {
+const AuthButtons = ({ setUser }) => {
+  const [signingInWithEmail, setSigningInWithEmail] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    const { error, session } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}`, // Redirect back to the home page after login
+      },
+    });
+    if (error) {
+      console.error('Error signing in:', error);
+    } else if (session?.user) {
+      setUser(session.user);
+    }
+  };
+
+  const handleEmailSignIn = async () => {
+    const { error, session } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        redirectTo: window.location.origin, // Redirect to home after magic link is clicked
+      },
+    });
+    if (error) {
+      console.error('Error sending magic link:', error);
+    } else {
+      setEmailSent(true);
+    }
+  };
+
   return (
     <>
       {signingInWithEmail ? (

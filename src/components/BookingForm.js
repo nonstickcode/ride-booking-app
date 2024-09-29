@@ -1,27 +1,19 @@
+// BookingForm.js
 'use client';
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { useLoadScript } from '@react-google-maps/api';
-import { Button } from '@/components/ui/button';
 import AuthButtons from '@/components/AuthButtons';
 import DatePicker from '@/components/DatePicker';
 import TimePicker from '@/components/TimePicker';
 import PlacesAutocomplete from './PlacesAutocomplete';
-import { FaSignOutAlt, FaCheck, FaSpinner } from 'react-icons/fa';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '@/components/ui/button';
+import { FaCheck, FaSpinner, FaSignOutAlt } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import {
   calculateRoute,
   calculateDistanceToCity,
 } from '@/utils/routeCalculations';
-import { motion } from 'framer-motion'; // Import Framer Motion
-
-
-// Supabase Initialization
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import supabase from '@/utils/supabaseClient';
 
 // Load Google Maps
 const libraries = ['places'];
@@ -33,7 +25,7 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.95 },
 };
 
-const BookingForm = ({ closeModal }) => {
+const BookingForm = ({ closeModal, setUserProp }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -51,31 +43,15 @@ const BookingForm = ({ closeModal }) => {
   const [user, setUser] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
 
-  // New states for email sign-in
-  const [signingInWithEmail, setSigningInWithEmail] = useState(false);
-  const [email, setEmail] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
-
   useEffect(() => {
     const fetchUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUser(session.user);
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        setUser(data.session.user);
       }
     };
     fetchUser();
   }, []);
-
-  useEffect(() => {
-    if (pickupLocation || dropoffLocation) {
-      calculateDistanceToCity(
-        pickupLocation || dropoffLocation,
-        setExceedsRange
-      );
-    }
-  }, [pickupLocation, dropoffLocation]);
 
   useEffect(() => {
     if (pickupLocation && dropoffLocation) {
@@ -91,10 +67,16 @@ const BookingForm = ({ closeModal }) => {
     }
   }, [pickupLocation, dropoffLocation]);
 
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Error signing out:', error);
+    else setUser(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingSubmit(true);
-  
+
     const bookingData = {
       date,
       time,
@@ -103,9 +85,8 @@ const BookingForm = ({ closeModal }) => {
       distance,
       duration,
     };
-  
+
     try {
-      // Send the email
       const emailResponse = await fetch('/api/sendEmail', {
         method: 'POST',
         headers: {
@@ -113,11 +94,10 @@ const BookingForm = ({ closeModal }) => {
         },
         body: JSON.stringify(bookingData),
       });
-  
+
       const emailResult = await emailResponse.json();
       if (emailResult.success) {
         console.log('Email sent successfully');
-        // Handle success and show alert
         setShowAlert(true);
         setTimeout(() => {
           setShowAlert(false);
@@ -126,69 +106,11 @@ const BookingForm = ({ closeModal }) => {
       } else {
         console.error('Failed to send email:', emailResult.error);
       }
-
-      // // Send the SMS
-      // const smsResponse = await fetch('/api/sendSMS', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     recipient: '14805220108',  // Example recipient number
-      //     content: 'This is a test SMS from RYDEBLK.',  // Example SMS content
-      //   }),
-      // });
-
-      // const smsResult = await smsResponse.json();
-      // if (!smsResponse.ok) {
-      //   throw new Error('Failed to send SMS');
-      // }
-
-      // if (smsResult.success) {
-      //   console.log('SMS sent successfully');
-      // } else {
-      //   console.error('Failed to send SMS:', smsResult.error);
-      // }
-
     } catch (error) {
       console.error('Error submitting booking:', error);
     } finally {
       setLoadingSubmit(false);
     }
-  };
-
-  
-
-
-
-  const handleGoogleSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}`, // Redirect back to the home page after login
-      },
-    });
-    if (error) console.error('Error signing in:', error);
-  };
-
-  const handleEmailSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        redirectTo: window.location.origin, // Redirect to home after magic link is clicked
-      },
-    });
-    if (error) {
-      console.error('Error sending magic link:', error);
-    } else {
-      setEmailSent(true);
-    }
-  };
-
-  const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.error('Error signing out:', error);
-    else setUser(null);
   };
 
   if (!isLoaded) return <div>Loading Google Maps...</div>;
@@ -199,125 +121,84 @@ const BookingForm = ({ closeModal }) => {
       initial="hidden"
       animate="visible"
       exit="exit"
-      transition={{ duration: 0.3, ease: 'easeInOut' }} // Control animation timing
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="mx-auto w-fit max-w-md rounded-lg p-3 shadow-xl"
     >
       <h2 className="mx-auto mb-5 text-center text-2xl font-bold text-white">
         {user ? 'Book a Ride' : 'Sign in to Book a Ride'}
       </h2>
 
-      {user && (
-        <>
-          <p className="mb-1 text-center text-lg text-white">
-            Welcome, {user.user_metadata?.full_name || 'User'} 👋
-          </p>
-          <p className="mb-4 text-center text-white">{user.email}</p>
-        </>
-      )}
-
       {!user ? (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-        >
-          <AuthButtons
-            handleGoogleSignIn={handleGoogleSignIn}
-            handleEmailSignIn={handleEmailSignIn}
-            signingInWithEmail={signingInWithEmail}
-            setSigningInWithEmail={setSigningInWithEmail}
-            email={email}
-            setEmail={setEmail}
-            emailSent={emailSent}
-          />
-        </motion.div>
+        <AuthButtons setUser={setUser} />
       ) : (
-        <motion.form
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          onSubmit={handleSubmit}
-        >
-          <div>
+        <>
+          <motion.form
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            onSubmit={handleSubmit}
+          >
             <DatePicker date={date} setDate={setDate} />
             <TimePicker time={time} setTime={setTime} />
-
-            {/* Pickup & Drop-off */}
-            <div className="mb-2">
-              <PlacesAutocomplete
-                setSelected={setPickupLocation}
-                label="Pickup Location"
-              />
-            </div>
-            {/* <div className="flex justify-center mb-2">
-            <FontAwesomeIcon icon={faArrowDown} className="text-white text-xl" />
-          </div> */}
-            <div className="mb-8">
-              <PlacesAutocomplete
-                setSelected={setDropoffLocation}
-                label="Drop-off Location"
-              />
-            </div>
-          </div>
-
-          {exceedsRange && (
-            <p className="mb-4 font-bold text-red-500">
-              Driver's range exceeded.
-            </p>
-          )}
-          <div className="mb-4 text-white">
-            {loadingRoute ? (
-              <div className="flex items-center space-x-2">
-                <FaSpinner className="animate-spin" />
-                <p>Calculating distance and time...</p>
-              </div>
-            ) : (
-              distance &&
-              duration && (
+            <PlacesAutocomplete
+              setSelected={setPickupLocation}
+              label="Pickup Location"
+            />
+            <PlacesAutocomplete
+              setSelected={setDropoffLocation}
+              label="Drop-off Location"
+            />
+            {exceedsRange && (
+              <p className="mb-4 font-bold text-red-500">
+                Driver&apos;s range exceeded.
+              </p>
+            )}
+            <div className="mb-4 text-white">
+              {loadingRoute ? (
+                <div className="flex items-center space-x-2">
+                  <FaSpinner className="animate-spin" />
+                  <p>Calculating distance and time...</p>
+                </div>
+              ) : (
                 <>
                   <p>Estimated Distance: {distance}</p>
                   <p>Estimated Time: {duration}</p>
                 </>
-              )
+              )}
+            </div>
+            {showAlert && (
+              <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-white">
+                Submission successful! Please await an email response.
+              </div>
             )}
-          </div>
-
-          {/* Alert message */}
-      {showAlert && (
-        <div className="fixed top-0 left-0 right-0 p-4 bg-green-500 text-white text-center z-50">
-          Submission successful! Please await an email response.
-        </div>
-      )}
-
-          <Button
-            type="submit"
-            disabled={
-              !date ||
-              !time ||
-              !pickupLocation ||
-              !dropoffLocation ||
-              exceedsRange ||
-              loadingSubmit // Disable the button while loading
-            }
-            className="mb-6 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
-          >
-            {loadingSubmit ? (
-              <FaSpinner className="animate-spin mr-2" />
-            ) : (
-              <FaCheck className="mr-2" />
-            )}
-            {loadingSubmit ? 'Submitting...' : 'Submit Request'}
-          </Button>
-
-          <Button
-            onClick={handleSignOut}
-            className="mb-1 w-full rounded-lg bg-gradient-to-r from-red-600 to-red-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
-          >
-            <FaSignOutAlt className="mr-2" /> Sign Out
-          </Button>
-        </motion.form>
+            <Button
+              type="submit"
+              disabled={
+                !date ||
+                !time ||
+                !pickupLocation ||
+                !dropoffLocation ||
+                exceedsRange ||
+                loadingSubmit
+              }
+              className="mb-6 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+            >
+              {loadingSubmit ? (
+                <FaSpinner className="mr-2 animate-spin" />
+              ) : (
+                <FaCheck className="mr-2" />
+              )}
+              {loadingSubmit ? 'Submitting...' : 'Submit Request'}
+            </Button>
+            <Button
+              onClick={handleSignOut}
+              className="mb-1 w-full rounded-lg bg-gradient-to-r from-red-600 to-red-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+            >
+              <FaSignOutAlt className="mr-2" /> Sign Out
+            </Button>
+          </motion.form>
+        </>
       )}
     </motion.div>
   );
