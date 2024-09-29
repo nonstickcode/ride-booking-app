@@ -93,9 +93,8 @@ const BookingForm = ({ closeModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoadingSubmit(true);
-
+  
     const bookingData = {
       date,
       time,
@@ -104,36 +103,63 @@ const BookingForm = ({ closeModal }) => {
       distance,
       duration,
     };
-
+  
     try {
-      const response = await fetch('/api/sendEmail', {
+      // Send the email
+      const emailResponse = await fetch('/api/sendEmail', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(bookingData),
       });
-
-      const result = await response.json();
-      if (result.success) {
+  
+      const emailResult = await emailResponse.json();
+      if (emailResult.success) {
         console.log('Email sent successfully');
-        // Show the success alert
+        // Handle success and show alert
         setShowAlert(true);
-        
-        // After 2 seconds, hide the alert and redirect to the home page
         setTimeout(() => {
-          setShowAlert(false); // Hide alert after 2 seconds
-          closeModal(); // Close the modal
+          setShowAlert(false);
+          closeModal();
         }, 5000);
       } else {
-        console.error('Failed to send email:', result.error);
+        console.error('Failed to send email:', emailResult.error);
       }
+
+      // // Send the SMS
+      // const smsResponse = await fetch('/api/sendSMS', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     recipient: '14805220108',  // Example recipient number
+      //     content: 'This is a test SMS from RYDEBLK.',  // Example SMS content
+      //   }),
+      // });
+
+      // const smsResult = await smsResponse.json();
+      // if (!smsResponse.ok) {
+      //   throw new Error('Failed to send SMS');
+      // }
+
+      // if (smsResult.success) {
+      //   console.log('SMS sent successfully');
+      // } else {
+      //   console.error('Failed to send SMS:', smsResult.error);
+      // }
+
     } catch (error) {
       console.error('Error submitting booking:', error);
     } finally {
       setLoadingSubmit(false);
     }
   };
+
+  
+
+
 
   const handleGoogleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
