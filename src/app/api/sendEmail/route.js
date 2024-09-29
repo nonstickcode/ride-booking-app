@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 export async function POST(request) {
   try {
     // Parse the request body to extract booking details
-    const { date, time, pickupLocation, dropoffLocation, distance, duration } =
+    const { date, time, pickupLocation, dropoffLocation, distance, duration, cost } =
       await request.json();
 
     // Ensure all required fields are provided before sending the email
@@ -13,7 +13,8 @@ export async function POST(request) {
       !pickupLocation ||
       !dropoffLocation ||
       !distance ||
-      !duration
+      !duration ||
+      !cost
     ) {
       return new Response(
         JSON.stringify({ success: false, error: 'Missing required fields' }),
@@ -46,6 +47,7 @@ You have received a new booking request with the following details:
 - Dropoff Location: ${dropoffLocation}
 - Estimated Distance: ${distance}
 - Estimated Duration: ${duration}
+- Estimated Cost: $${cost}
 
 Please review the details and respond as soon as possible.
 

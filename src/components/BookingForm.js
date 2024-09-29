@@ -1,6 +1,6 @@
 // BookingForm.js
-'use client';
-import { useState, useEffect } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import AuthButtons from '@/components/AuthButtons';
 import DatePicker from '@/components/DatePicker';
@@ -13,6 +13,7 @@ import {
   calculateRoute,
   calculateDistanceToCity,
 } from '@/utils/routeCalculations';
+import { calculateCost } from '@/utils/costCalculations';
 import supabase from '@/utils/supabaseClient';
 
 // Load Google Maps
@@ -84,6 +85,7 @@ const BookingForm = ({ closeModal, setUserProp }) => {
       dropoffLocation,
       distance,
       duration,
+      cost
     };
 
     try {
@@ -114,6 +116,9 @@ const BookingForm = ({ closeModal, setUserProp }) => {
   };
 
   if (!isLoaded) return <div>Loading Google Maps...</div>;
+
+  // Calculate cost only when distance is available
+  const cost = distance ? calculateCost(parseFloat(distance)) : null;
 
   return (
     <motion.div
@@ -160,13 +165,18 @@ const BookingForm = ({ closeModal, setUserProp }) => {
                   <FaSpinner className="animate-spin" />
                   <p>Calculating distance and time...</p>
                 </div>
-              ) : (
+              ) : distance && duration && cost !== null ? (
                 <>
-                  <p>Estimated Distance: {distance}</p>
+                  <p>
+                    Estimated Distance: {distance}
+                    
+                  </p>
                   <p>Estimated Time: {duration}</p>
+                  <p>Estimated Cost: ${cost}</p>
                 </>
-              )}
+              ) : null}
             </div>
+
             {showAlert && (
               <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-white">
                 Submission successful! Please await an email response.

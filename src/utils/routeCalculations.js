@@ -18,14 +18,17 @@ export const calculateRoute = async (
     (result, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
         const distanceText = result.routes[0].legs[0].distance.text;
-        const duration = result.routes[0].legs[0].duration.text;
-        const distanceInMiles = parseFloat(distanceText);
+        const durationText = result.routes[0].legs[0].duration.text; // No conversion, use as is
 
-        setDistance(distanceText);
-        setDuration(duration);
+        // Extract numeric value for distance and round it up
+        const distanceInMiles = parseFloat(distanceText.replace(/[^\d.]/g, '')); // Remove non-numeric characters
+        const roundedDistance = Math.ceil(distanceInMiles);
+
+        setDistance(`${roundedDistance} miles`);
+        setDuration(durationText); // Set duration text directly
         setLoadingRoute(false);
 
-        if (distanceInMiles > 200) {
+        if (roundedDistance > 200) {
           setExceedsRange(true);
         } else {
           setExceedsRange(false);
@@ -33,29 +36,6 @@ export const calculateRoute = async (
       } else {
         console.error('Error fetching directions:', status);
         setLoadingRoute(false);
-      }
-    }
-  );
-};
-
-// Function to calculate distance to the driver's location (Phoenix)
-export const calculateDistanceToCity = (location, setExceedsRange) => {
-  const distanceService = new google.maps.DistanceMatrixService();
-
-  distanceService.getDistanceMatrix(
-    {
-      origins: [{ lat: 33.4484, lng: -112.074 }], // Phoenix, AZ
-      destinations: [location],
-      travelMode: google.maps.TravelMode.DRIVING,
-    },
-    (result, status) => {
-      if (status === google.maps.DistanceMatrixStatus.OK) {
-        const distanceInMeters = result.rows[0].elements[0].distance.value;
-        const distanceInMiles = distanceInMeters * 0.000621371;
-
-        setExceedsRange(distanceInMiles > 200);
-      } else {
-        console.error('Error calculating distance to city:', status);
       }
     }
   );
