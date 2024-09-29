@@ -85,7 +85,7 @@ const BookingForm = ({ closeModal, setUserProp }) => {
       dropoffLocation,
       distance,
       duration,
-      cost
+      cost,
     };
 
     try {
@@ -167,10 +167,7 @@ const BookingForm = ({ closeModal, setUserProp }) => {
                 </div>
               ) : distance && duration && cost !== null ? (
                 <>
-                  <p>
-                    Estimated Distance: {distance}
-                    
-                  </p>
+                  <p>Estimated Distance: {distance}</p>
                   <p>Estimated Time: {duration}</p>
                   <p>Estimated Cost: ${cost}</p>
                 </>

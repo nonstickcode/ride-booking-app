@@ -1,5 +1,3 @@
-// src/utils/costCalculations.js
-
 /**
  * Calculates the total cost of a ride based on distance.
  * @param {number} distance The distance of the ride in miles.

@@ -3,8 +3,15 @@ import nodemailer from 'nodemailer';
 export async function POST(request) {
   try {
     // Parse the request body to extract booking details
-    const { date, time, pickupLocation, dropoffLocation, distance, duration, cost } =
-      await request.json();
+    const {
+      date,
+      time,
+      pickupLocation,
+      dropoffLocation,
+      distance,
+      duration,
+      cost,
+    } = await request.json();
 
     // Ensure all required fields are provided before sending the email
     if (
