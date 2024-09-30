@@ -112,7 +112,7 @@ const BookingModal = ({ onClose }) => {
 
   // Ensure the API is loaded before rendering the PlacesAutocomplete component
   if (!isLoaded) {
-    return <div>Loading Google Maps...</div>;
+    return ;
   }
 
   const cost = distance ? calculateCost(parseFloat(distance)) : null;
@@ -129,7 +129,7 @@ const BookingModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-4"
+        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-2"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
@@ -142,7 +142,7 @@ const BookingModal = ({ onClose }) => {
         </button>
 
         {/* Modal Content */}
-        <div className="mx-auto w-full max-w-md rounded-lg p-3 shadow-xl">
+        <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
           <h2 className="mx-auto mb-5 text-center text-2xl font-bold text-white">
             Book a Ride
           </h2>
@@ -195,7 +195,7 @@ const BookingModal = ({ onClose }) => {
                 exceedsRange ||
                 loadingSubmit
               }
-              className="w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+              className="mt-8 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
             >
               {loadingSubmit ? (
                 <FaSpinner className="mr-2 animate-spin" />
