@@ -69,6 +69,14 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
                     My Rides
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="#settings"
+                    className="block px-4 py-2 text-lg text-white hover:bg-gray-600"
+                  >
+                    Settings
+                  </a>
+                </li>
                 <hr className="mx-auto my-1 w-[92%]" />
                 <li>
                   <a
