@@ -18,6 +18,17 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        setUser(data.session.user);
+      } else {
+        setUser(null); // Clear user if not logged in
+      }
+    };
+
+    fetchUser();
+
     if (typeof window !== 'undefined') {
       const isBooking = localStorage.getItem('isBooking');
 
@@ -28,15 +39,6 @@ export default function Home() {
 
       setLoading(false);
     }
-
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session?.user) {
-        setUser(data.session.user);
-      }
-    };
-
-    fetchUser();
   }, []);
 
   const openBooking = () => {
@@ -61,9 +63,19 @@ export default function Home() {
     setShowSignInModal(false); // Close sign-in modal
   };
 
-  const handleSignInComplete = () => {
-    setShowSignInModal(false); // Close sign-in modal after successful sign-in
-    setShowBookingModal(true);  // Open booking modal after successful sign-in
+  const handleSignInComplete = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session?.user) {
+      setUser(data.session.user); // Set user after successful sign-in
+      setShowSignInModal(false); // Close sign-in modal after successful sign-in
+      setShowBookingModal(true);  // Open booking modal after successful sign-in
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Error signing out:', error);
+    else setUser(null); // Clear user state on sign-out
   };
 
   if (loading) {
@@ -72,12 +84,16 @@ export default function Home() {
 
   return (
     <div
-      className="--font-oxygen flex flex-col max-w-96 mx-auto relative items-center justify-center px-4 text-white"
+      className="--font-oxygen flex flex-col max-w-96 mx-auto items-center justify-center px-4 text-white"
       style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
     >
-      {/* Pass openSignInModal as a prop */}
-      <HamburgerMenu openSignInModal={() => setShowSignInModal(true)} /> 
-      
+      {/* Pass openSignInModal and handleSignOut as props */}
+      <HamburgerMenu 
+        openSignInModal={() => setShowSignInModal(true)} 
+        user={user}
+        onSignOut={handleSignOut}
+      /> 
+
       <Header />
 
       <main className="mt-10 flex flex-col items-center space-y-8">
