@@ -37,7 +37,7 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
 
     // Add event listener for clicks
     document.addEventListener('mousedown', handleClickOutside);
-    
+
     return () => {
       // Cleanup the event listener when the component unmounts
       document.removeEventListener('mousedown', handleClickOutside);
@@ -45,16 +45,19 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
   }, [menuRef]);
 
   return (
-    <div className="absolute top-2 right-2 z-50">
+    <div className="absolute right-2 top-2 z-50">
       <Button
-        className="p-2 text-white rounded-md bg-transparent hover:text-gray-400 hover:bg-transparent focus:outline-none"
+        className="rounded-md bg-transparent p-2 text-white hover:bg-transparent hover:text-gray-400 focus:outline-none"
         onClick={toggleMenu}
       >
         {showMenu ? <FaTimes size={36} /> : <FaBars size={36} />}
       </Button>
 
       {showMenu && (
-        <div ref={menuRef} className="absolute right-0 mt-2 w-56 rounded-lg bg-gray-700 shadow-lg">
+        <div
+          ref={menuRef}
+          className="absolute right-0 mt-2 w-56 rounded-lg bg-gray-700 shadow-lg"
+        >
           <ul className="py-2">
             {user ? (
               <>
@@ -66,7 +69,7 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
                     My Rides
                   </a>
                 </li>
-                <hr className="w-[92%] mx-auto my-1" />
+                <hr className="mx-auto my-1 w-[92%]" />
                 <li>
                   <a
                     href="#logout"

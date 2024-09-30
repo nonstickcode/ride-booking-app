@@ -23,13 +23,13 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
         >
           <X className="h-6 w-6" />
         </button>
-<div className='p-8'>
-        <div className="mx-auto mb-5 w-[80%] text-center text-2xl font-bold text-white">
-          Sign in to Book a Ride
-        </div>
+        <div className="p-8">
+          <div className="mx-auto mb-5 w-[80%] text-center text-2xl font-bold text-white">
+            Sign in to Book a Ride
+          </div>
 
-        {/* Pass onSignInSuccess to AuthButtons */}
-        <AuthButtons onSignInSuccess={onSignInSuccess} />
+          {/* Pass onSignInSuccess to AuthButtons */}
+          <AuthButtons onSignInSuccess={onSignInSuccess} />
         </div>
       </div>
     </div>

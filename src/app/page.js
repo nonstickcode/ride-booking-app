@@ -68,7 +68,7 @@ export default function Home() {
     if (data?.session?.user) {
       setUser(data.session.user); // Set user after successful sign-in
       setShowSignInModal(false); // Close sign-in modal after successful sign-in
-      setShowBookingModal(true);  // Open booking modal after successful sign-in
+      setShowBookingModal(true); // Open booking modal after successful sign-in
     }
   };
 
@@ -84,15 +84,15 @@ export default function Home() {
 
   return (
     <div
-      className="--font-oxygen flex flex-col max-w-96 mx-auto items-center justify-center px-4 text-white"
+      className="--font-oxygen mx-auto flex max-w-96 flex-col items-center justify-center px-4 text-white"
       style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
     >
       {/* Pass openSignInModal and handleSignOut as props */}
-      <HamburgerMenu 
-        openSignInModal={() => setShowSignInModal(true)} 
+      <HamburgerMenu
+        openSignInModal={() => setShowSignInModal(true)}
         user={user}
         onSignOut={handleSignOut}
-      /> 
+      />
 
       <Header />
 
