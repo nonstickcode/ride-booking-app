@@ -94,7 +94,7 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
 
       {/* Sign-out alert banner */}
       {showSignOutAlert && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 p-4 text-center text-white">
+        <div className="fixed left-0 right-0 z-50 bg-red-600 p-4 text-center text-white">
           Signed out successfully!
         </div>
       )}
