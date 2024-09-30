@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaBars, FaSignOutAlt, FaTimes } from 'react-icons/fa';
 
 const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showSignOutAlert, setShowSignOutAlert] = useState(false); // State for sign-out alert
+  const menuRef = useRef(null); // Create a ref for the menu
 
   const toggleMenu = () => {
     setShowMenu((prevState) => !prevState);
@@ -26,6 +27,23 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
     }, 3000);
   };
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false); // Close the menu if clicked outside
+      }
+    };
+
+    // Add event listener for clicks
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      // Cleanup the event listener when the component unmounts
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuRef]);
+
   return (
     <div className="absolute top-2 right-2 z-50">
       <Button
@@ -36,7 +54,7 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
       </Button>
 
       {showMenu && (
-        <div className="absolute right-0 mt-2 w-56 rounded-lg bg-gray-700 shadow-lg">
+        <div ref={menuRef} className="absolute right-0 mt-2 w-56 rounded-lg bg-gray-700 shadow-lg">
           <ul className="py-2">
             {user ? (
               <>
