@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { useLoadScript } from '@react-google-maps/api';
 import DatePicker from '@/components/DatePicker';
 import TimePicker from '@/components/TimePicker';
-import PlacesAutocomplete from './PlacesAutocomplete'; // Make sure this is properly imported
+import PlacesAutocomplete from '@/components/PlacesAutocomplete';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -22,7 +22,7 @@ const libraries = ['places'];
 const BookingModal = ({ onClose }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries, // Make sure to pass libraries here
+    libraries,
   });
 
   const [date, setDate] = useState(null);
@@ -112,7 +112,7 @@ const BookingModal = ({ onClose }) => {
 
   // Ensure the API is loaded before rendering the PlacesAutocomplete component
   if (!isLoaded) {
-    return ;
+    return;
   }
 
   const cost = distance ? calculateCost(parseFloat(distance)) : null;
@@ -143,11 +143,11 @@ const BookingModal = ({ onClose }) => {
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
-          <h2 className="mx-auto mb-5 text-center text-2xl font-bold text-white">
+          <h2 className="mx-auto mb-6 text-center text-2xl font-bold text-white">
             Book a Ride
           </h2>
 
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+          <form onSubmit={handleSubmit} className="flex flex-col">
             <DatePicker date={date} setDate={setDate} />
             <TimePicker time={time} setTime={setTime} />
 
@@ -195,7 +195,7 @@ const BookingModal = ({ onClose }) => {
                 exceedsRange ||
                 loadingSubmit
               }
-              className="mt-8 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+              className="mt-4 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
             >
               {loadingSubmit ? (
                 <FaSpinner className="mr-2 animate-spin" />
