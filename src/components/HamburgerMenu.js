@@ -4,6 +4,7 @@ import { FaBars, FaSignOutAlt, FaTimes } from 'react-icons/fa';
 
 const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const [showSignOutAlert, setShowSignOutAlert] = useState(false); // State for sign-out alert
 
   const toggleMenu = () => {
     setShowMenu((prevState) => !prevState);
@@ -16,7 +17,13 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
 
   const handleSignOut = () => {
     setShowMenu(false);
-    onSignOut(); // Trigger sign out
+    onSignOut(); // Trigger sign-out action
+
+    // Show sign-out alert for 3 seconds
+    setShowSignOutAlert(true);
+    setTimeout(() => {
+      setShowSignOutAlert(false);
+    }, 3000);
   };
 
   return (
@@ -64,6 +71,13 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
               </li>
             )}
           </ul>
+        </div>
+      )}
+
+      {/* Sign-out alert banner */}
+      {showSignOutAlert && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 p-4 text-center text-white">
+          Signed out successfully!
         </div>
       )}
     </div>
