@@ -1,11 +1,12 @@
 'use client';
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { Input } from './ui/input';
 import supabase from '@/utils/supabaseClient';
 
-const AuthButtons = ({ setUser }) => {
+const AuthButtons = ({ onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
@@ -20,12 +21,12 @@ const AuthButtons = ({ setUser }) => {
     if (error) {
       console.error('Error signing in:', error);
     } else if (session?.user) {
-      setUser(session.user);
+      onSignInSuccess(); // Call this after a successful sign-in
     }
   };
 
   const handleEmailSignIn = async () => {
-    const { error, session } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         redirectTo: window.location.origin, // Redirect to home after magic link is clicked

@@ -5,11 +5,16 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import RideImage from '@/components/RideImage';
 import BookingModal from '@/components/BookingModal';
+import SignInModal from '@/components/SignInModal'; // Importing the SignInModal
+import HamburgerMenu from '@/components/HamburgerMenu';
 import { FaCheckCircle } from 'react-icons/fa';
+import supabase from '@/utils/supabaseClient';
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false); // Add state for the sign-in modal
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null); // Manage user state here
   const router = useRouter();
 
   useEffect(() => {
@@ -17,24 +22,48 @@ export default function Home() {
       const isBooking = localStorage.getItem('isBooking');
 
       if (isBooking === 'true') {
-        setShowModal(true);
+        setShowBookingModal(true);
         localStorage.removeItem('isBooking');
       }
 
       setLoading(false);
     }
+
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        setUser(data.session.user);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const openBooking = () => {
-    setShowModal(true);
-    localStorage.setItem('isBooking', 'true');
+    if (user) {
+      setShowBookingModal(true);
+    } else {
+      setShowSignInModal(true); // Open sign-in modal if no user
+    }
   };
 
   const closeBooking = (e) => {
     if (e) {
       e.stopPropagation();
     }
-    setShowModal(false);
+    setShowBookingModal(false);
+  };
+
+  const closeSignIn = (e) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    setShowSignInModal(false); // Close sign-in modal
+  };
+
+  const handleSignInComplete = () => {
+    setShowSignInModal(false); // Close sign-in modal after successful sign-in
+    setShowBookingModal(true);  // Open booking modal after successful sign-in
   };
 
   if (loading) {
@@ -43,9 +72,12 @@ export default function Home() {
 
   return (
     <div
-      className="--font-oxygen flex flex-col items-center justify-center px-4 text-white"
+      className="--font-oxygen flex flex-col max-w-96 mx-auto relative items-center justify-center px-4 text-white"
       style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
     >
+      {/* Pass openSignInModal as a prop */}
+      <HamburgerMenu openSignInModal={() => setShowSignInModal(true)} /> 
+      
       <Header />
 
       <main className="mt-10 flex flex-col items-center space-y-8">
@@ -60,7 +92,13 @@ export default function Home() {
         </Button>
       </main>
 
-      {showModal && <BookingModal onClose={closeBooking} />}
+      {showBookingModal && <BookingModal onClose={closeBooking} />}
+      {showSignInModal && (
+        <SignInModal
+          onClose={closeSignIn}
+          onSignInComplete={handleSignInComplete} // Handle post-sign-in action
+        />
+      )}
 
       <footer className="mt-8 text-center">
         <p className="text-lg text-gray-200">or text 310-947-9464</p>

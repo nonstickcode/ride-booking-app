@@ -41,7 +41,6 @@ export const calculateRoute = async (
   );
 };
 
-
 // Function to calculate distance to the driver's location (Phoenix)
 export const calculateDistanceToCity = (location, setExceedsRange) => {
   const distanceService = new google.maps.DistanceMatrixService();
