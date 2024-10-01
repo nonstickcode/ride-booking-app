@@ -123,18 +123,18 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 <Button
                   onClick={handleEmailSignIn}
                   disabled={!isEmailValid}
-                  variant={isEmailValid ? 'default' : 'default'}
-                  size="lg"
-                  className="mb-6 bg-green-700 w-full"
+                  variant="green"
+                  size="md"
+                  className="mb-6"
                 >
                   <FaEnvelope className="mr-2" /> Send Sign-in Link
                 </Button>
               )}
               <Button
                 onClick={() => setSigningInWithEmail(false)}
-                variant="default"
-                size="default"
-                className="mb-6 bg-gray-500 w-full"
+                variant="gray"
+                size="md"
+                className="mb-6"
               >
                 <FaArrowLeft className="mr-2" />
                 Return to sign-in options
@@ -144,9 +144,9 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
             <>
               <Button
                 onClick={handleGoogleSignIn}
-                variant="default"
-                size="default"
-                className="mb-2 bg-blue-700 w-full"
+                variant="blue"
+                size="md"
+                className="mb-2"
               >
                 <FaGoogle className="mr-2" /> Sign in with Google
               </Button>
@@ -157,9 +157,9 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
               </div>
               <Button
                 onClick={() => setSigningInWithEmail(true)}
-                variant="default"
-                size="default"
-                className="my-2 bg-gray-500 w-full"
+                variant="gray"
+                size="md"
+                className="my-2"
               >
                 <FaEnvelope className="mr-2" /> Sign in with Email
               </Button>

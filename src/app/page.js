@@ -104,14 +104,15 @@ function HomeContent() {
         <RideImage />
 
         <Button
-          onClick={openBooking}
-          variant="default" // Use the custom gradient variant you defined
-          size="lg" // Optionally set the size for a larger button
-          className="mb-6 bg-blue-700 px-12 py-6" // Keep the original styling for width and margin
-        >
-          <FaCheckCircle className="mr-2" />
-          Book Ride Now
-        </Button>
+  onClick={openBooking}
+  variant="blue" // Use blue as the default primary color
+  size="lg" // Large size for emphasis
+  className="mb-6"
+>
+  <FaCheckCircle className="mr-2" />
+  Book Ride Now
+</Button>
+
       </main>
 
       {showBookingModal && <BookingModal onClose={closeBooking} />}

@@ -239,9 +239,9 @@ const BookingModal = ({ onClose }) => {
                 exceedsRange ||
                 loadingSubmit
               }
-              variant="default" // Use the variant as per your custom styling
-              size="default" // Optionally set the size for a larger button
-              className="mt-4 bg-green-700 w-full" // Ensure it has full width
+              variant="green"
+              size="md"
+              className="mt-4"
             >
               {loadingSubmit ? (
                 <FaSpinner className="mr-2 animate-spin" />
