@@ -100,6 +100,8 @@ const NotificationsModal = ({ onClose }) => {
               Opt-in for Email Notifications (default)
             </label>
           </div>
+          <hr className="mb-4 border-gray-700" />
+
 
           {/* SMS Opt-in Section */}
           <div className="mb-4">
@@ -114,7 +116,7 @@ const NotificationsModal = ({ onClose }) => {
             </label>
           </div>
 
-          <hr className="mb-4 border-gray-700" />
+          {/* <hr className="mb-4 border-gray-700" /> */}
 
           {/* Phone Number Input */}
           <div className="mb-6">
@@ -140,10 +142,10 @@ const NotificationsModal = ({ onClose }) => {
               </p>
             )}
           </div>
-          <hr className="mb-6 border-gray-700" />
+          {/* <hr className="mb-4 border-gray-700" /> */}
 
           {/* Legal Notice */}
-          <div className="mb-6 text-sm">
+          <div className="mb-4 text-sm">
             <p>
               By opting in for SMS, you agree to receive a one-time SMS
               confirmation for each booking request submitted through this app.
