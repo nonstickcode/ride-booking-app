@@ -32,11 +32,11 @@ const Button = React.forwardRef(
 
     const Comp = asChild ? Slot : 'button';
 
-    const handleMouseDown = () => {
+    const handleInteractionStart = () => {
       setIsClicked(true);
     };
 
-    const handleMouseUp = () => {
+    const handleInteractionEnd = () => {
       setIsClicked(false);
     };
 
@@ -44,11 +44,13 @@ const Button = React.forwardRef(
       <Comp
         className={cn(
           buttonVariants({ variant, size, className }),
-          isClicked ? 'scale-95' : 'scale-100' // Animation on click
+          isClicked ? 'scale-95' : 'scale-100' // Animation on click or touch
         )}
         ref={ref}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        onMouseDown={handleInteractionStart}
+        onMouseUp={handleInteractionEnd}
+        onTouchStart={handleInteractionStart} // For touch devices
+        onTouchEnd={handleInteractionEnd}     // For touch devices
         {...props}
       />
     );
