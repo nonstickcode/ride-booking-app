@@ -85,7 +85,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           href={generateGoogleMapsLink()}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-blue-400 hover:underline"
+          className="text-sm text-gray-300 hover:underline"
         >
           Use Google Maps
         </a>

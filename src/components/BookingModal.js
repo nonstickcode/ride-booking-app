@@ -2,27 +2,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useLoadScript } from '@react-google-maps/api'; // Import useLoadScript
+import { useLoadScript } from '@react-google-maps/api';
 import DatePicker from '@/components/DatePicker';
 import TimePicker from '@/components/TimePicker';
 import PlacesAutocomplete from '@/components/PlacesAutocomplete';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import {
-  calculateRoute,
-  calculateDistanceToCity,
-} from '@/utils/routeCalculations';
+import { calculateRoute, calculateDistanceToCity } from '@/utils/routeCalculations';
 import { calculateCost } from '@/utils/costCalculations';
 import supabase from '@/utils/supabaseClient';
 
-// Specify the libraries to load for the Google Maps API
 const libraries = ['places'];
 
 const BookingModal = ({ onClose }) => {
-  // Load the Google Maps API asynchronously
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, // Replace with your Google Maps API key
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
   });
 
@@ -68,6 +63,10 @@ const BookingModal = ({ onClose }) => {
         setLoadingRoute,
         setExceedsRange
       );
+    } else {
+      // Reset the distance, time, and cost when either location is not provided
+      setDistance('');
+      setDuration('');
     }
   }, [pickupLocation, dropoffLocation]);
 
@@ -113,13 +112,23 @@ const BookingModal = ({ onClose }) => {
 
   const cost = distance ? calculateCost(parseFloat(distance)) : null;
 
+  // Generate Google Maps link for the trip
+  const generateGoogleMapsLinkForTrip = () => {
+    if (pickupLocation && dropoffLocation) {
+      const pickup = `${pickupLocation.lat},${pickupLocation.lng}`;
+      const dropoff = `${dropoffLocation.lat},${dropoffLocation.lng}`;
+      return `https://www.google.com/maps/dir/?api=1&origin=${pickup}&destination=${dropoff}&travelmode=driving`;
+    }
+    return '#';
+  };
+
   // Handle loading or error states
   if (loadError) {
     return <div>Error loading Google Maps API</div>;
   }
 
   if (!isLoaded) {
-    return;
+    return null;
   }
 
   return (
@@ -160,29 +169,45 @@ const BookingModal = ({ onClose }) => {
 
           <form onSubmit={handleSubmit} className="flex flex-col">
             <DatePicker date={date} setDate={setDate} />
+            <hr className="mb-4 border-gray-700" />
             <TimePicker time={time} setTime={setTime} />
-
+            <hr className="mb-4 border-gray-700" />
             <PlacesAutocomplete
               setSelected={setPickupLocation}
               label="Pickup Location"
             />
+            <hr className="mb-4 border-gray-700" />
             <PlacesAutocomplete
               setSelected={setDropoffLocation}
               label="Drop-off Location"
             />
 
-            {loadingRoute ? (
+            {/* Show only when both pickup and drop-off are present */}
+            {pickupLocation && dropoffLocation && !loadingRoute && distance && duration && cost !== null && (
+              <>
+                <hr className="mb-2 border-gray-700" />
+                {/* Google Maps Trip Link */}
+                <a
+                  href={generateGoogleMapsLinkForTrip()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 mb-2 underline mt-2"
+                >
+                  View trip on Google Maps
+                </a>
+                <p>Estimated Distance: {distance}</p>
+                <p>Estimated Time: {duration}</p>
+                <p>Estimated Cost: ${cost}</p>
+                
+              </>
+            )}
+
+            {loadingRoute && (
               <div className="flex items-center space-x-2">
                 <FaSpinner className="animate-spin" />
                 <p>Calculating distance and time...</p>
               </div>
-            ) : distance && duration && cost !== null ? (
-              <>
-                <p>Estimated Distance: {distance}</p>
-                <p>Estimated Time: {duration}</p>
-                <p>Estimated Cost: ${cost}</p>
-              </>
-            ) : null}
+            )}
 
             {exceedsRange && (
               <p className="mb-4 text-xl font-bold text-red-500">
@@ -191,10 +216,11 @@ const BookingModal = ({ onClose }) => {
             )}
 
             {showAlert && (
-              <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-white">
+              <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-xl text-center text-white">
                 Submission successful! Please await an email response.
               </div>
             )}
+
             <Button
               type="submit"
               disabled={

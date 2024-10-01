@@ -39,7 +39,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   }, [menuRef]);
 
   return (
-    <div className="absolute right-2 top-2 z-50">
+    <div className="absolute right-2 top-3 z-50">
       <Button
         className="rounded-md bg-transparent p-2 text-white hover:bg-transparent hover:text-gray-400 focus:outline-none"
         onClick={toggleMenu}
