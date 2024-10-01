@@ -40,19 +40,19 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
       });
-  
+
       // Log actual critical errors only
       if (error) {
         console.error('Error signing in with Google:', error.message || error);
         return false;
       }
-  
+
       // Supabase's OAuth often redirects, so treat data as a success if present
       if (data) {
         console.log('Google OAuth sign-in initiated.');
         return true;
       }
-  
+
       // Return success if no critical errors occur
       return true;
     } catch (criticalError) {
@@ -61,8 +61,6 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
       return false;
     }
   };
-  
-
 
   // Handle email sign-in
   const handleEmailSignIn = async () => {
@@ -91,13 +89,15 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
-        <button
+        <Button
           onClick={onClose}
-          className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center text-gray-400 transition hover:text-white"
+          variant="close"
+          size="icon"
+          className="absolute right-1 top-1"
           aria-label="Close"
         >
           <X className="h-6 w-6" />
-        </button>
+        </Button>
 
         <div className="p-8">
           <div className="mx-auto mb-6 w-[80%] text-center text-xl font-bold text-white">

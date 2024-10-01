@@ -52,8 +52,8 @@ function HomeContent() {
     setShowSignInModal(false);
   };
 
-   // Handle sign-in complete event
-   const handleSignInComplete = async () => {
+  // Handle sign-in complete event
+  const handleSignInComplete = async () => {
     const { data } = await supabase.auth.getSession();
     if (data?.session?.user) {
       setUser(data.session.user);
@@ -62,7 +62,6 @@ function HomeContent() {
       setShowBookingModal(true);
     }
   };
-  
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -104,15 +103,14 @@ function HomeContent() {
         <RideImage />
 
         <Button
-  onClick={openBooking}
-  variant="blue" // Use blue as the default primary color
-  size="lg" // Large size for emphasis
-  className="mb-6"
->
-  <FaCheckCircle className="mr-2" />
-  Book Ride Now
-</Button>
-
+          onClick={openBooking}
+          variant="blue" // Use blue as the default primary color
+          size="lg" // Large size for emphasis
+          className="mb-6"
+        >
+          <FaCheckCircle className="mr-2" />
+          Book Ride Now
+        </Button>
       </main>
 
       {showBookingModal && <BookingModal onClose={closeBooking} />}

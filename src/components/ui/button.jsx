@@ -4,23 +4,23 @@ import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md font-medium transition-all duration-200 transform cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-slate-300',
+  'inline-flex items-center justify-center rounded-md font-semibold transition-all duration-200 transform cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-slate-300',
   {
     variants: {
       variant: {
-        blue: 'bg-blue-700 text-white hover:bg-blue-800',
-        green: 'bg-green-600 text-white hover:bg-green-700',
-        gray: 'bg-gray-500 text-white hover:bg-gray-600',
-        outline: 'border border-slate-200 bg-white text-slate-900 hover:bg-slate-100',
-        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200',
+        blue: 'bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-500 hover:to-blue-700 transition',
+        green: 'bg-gradient-to-r from-green-500 to-green-700 text-white hover:from-green-400 hover:to-green-600 transition',
+        gray: 'bg-gradient-to-r from-gray-500 to-gray-700 text-white hover:from-gray-400 hover:to-gray-600 transition',
+        close: 'text-gray-400 hover:text-white transition',
+        hamburger: 'text-white hover:text-gray-400 transition',
       },
       size: {
         md: 'w-full h-9 py-5 text-base text-lg',
         lg: 'h-10 px-12 py-6 text-xl',
+        icon: 'h-10 w-10',
       },
     },
     defaultVariants: {
-      variant: 'default',
       size: 'md',
     },
   }
@@ -29,7 +29,7 @@ const buttonVariants = cva(
 const Button = React.forwardRef(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const [isClicked, setIsClicked] = React.useState(false);
-    
+
     const Comp = asChild ? Slot : 'button';
 
     const handleMouseDown = () => {

@@ -20,14 +20,13 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   const handleSignOut = () => {
     setShowMenu(false);
     onSignOut();
-
     showAlert('Signed out successfully!', 'error');
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowMenu(false); // Close the menu if clicked outside
+        setShowMenu(false);
       }
     };
 
@@ -41,8 +40,9 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   return (
     <div className="absolute right-2 top-3 z-50">
       <Button
-        className="rounded-md bg-transparent p-2 text-white hover:bg-transparent hover:text-gray-400 focus:outline-none"
         onClick={toggleMenu}
+        variant="hamburger" // Using the close variant for the menu button too
+        size="icon"
       >
         {showMenu ? <FaTimes size={36} /> : <FaBars size={36} />}
       </Button>
@@ -53,7 +53,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
           className="absolute right-0 mt-2 w-56 rounded-lg bg-gray-700 shadow-lg"
         >
           <ul className="py-2">
-            {user ? ( // Access user from AuthContext
+            {user ? (
               <>
                 <li>
                   <a

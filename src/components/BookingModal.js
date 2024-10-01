@@ -151,13 +151,15 @@ const BookingModal = ({ onClose }) => {
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
-        <button
+        <Button
           onClick={onClose}
-          className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center text-gray-400 transition hover:text-white"
+          variant="close"
+          size="icon"
+          className="absolute right-1 top-1"
           aria-label="Close"
         >
           <X className="h-6 w-6" />
-        </button>
+        </Button>
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
