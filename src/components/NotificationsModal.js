@@ -140,6 +140,7 @@ const NotificationsModal = ({ onClose }) => {
               </p>
             )}
           </div>
+          <hr className="mb-6 border-gray-700" />
 
           {/* Legal Notice */}
           <div className="mb-6 text-sm">
@@ -152,7 +153,7 @@ const NotificationsModal = ({ onClose }) => {
             </p>
           </div>
 
-          <hr className="mb-4 border-gray-700" />
+          <hr className="mb-6 border-gray-700" />
 
           {/* Save Button */}
           <Button
