@@ -5,7 +5,7 @@ import 'react-time-picker/dist/TimePicker.css'; // Import default styles
 const TimePickerComponent = ({ time, setTime }) => {
   return (
     <div className="mb-6 flex w-full flex-col">
-      <label className="mb-2 text-white">Select Time:</label>
+      <label className="mb-2 text-white">Time:</label>
       <TimePicker
         onChange={setTime}
         value={time}

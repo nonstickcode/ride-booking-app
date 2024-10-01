@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css'; // Import default styles
 const DatePickerComponent = ({ date, setDate }) => {
   return (
     <div className="mb-6 flex w-full flex-col">
-      <label className="mb-2 text-white">Select Date:</label>
+      <label className="mb-2 text-white">Date:</label>
       <DatePicker
         selected={date}
         onChange={setDate}
