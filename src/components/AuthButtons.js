@@ -1,27 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { Input } from './ui/input';
 import supabase from '@/utils/supabaseClient';
+import { useAuth } from '@/context/AuthContext';
 
 const AuthButtons = ({ onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
+  const { showAlert, setUser } = useAuth(); // Get setUser from context
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        // Update global user state and show alert
+        setUser(data.session.user);
+        showAlert('Signed in successfully!', 'success');
+        onSignInSuccess(); // Call the success callback
+      }
+    };
+
+    checkSession(); // Check session on component mount
+  }, [onSignInSuccess, showAlert, setUser]);
 
   const handleGoogleSignIn = async () => {
-    const { error, session } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}`, // Redirect back to the home page after login
-      },
     });
     if (error) {
       console.error('Error signing in:', error);
-    } else if (session?.user) {
-      onSignInSuccess(); // Call this after a successful sign-in
     }
   };
 

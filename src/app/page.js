@@ -1,45 +1,34 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import RideImage from '@/components/RideImage';
 import BookingModal from '@/components/BookingModal';
-import SignInModal from '@/components/SignInModal'; // Importing the SignInModal
+import SignInModal from '@/components/SignInModal';
 import HamburgerMenu from '@/components/HamburgerMenu';
 import { FaCheckCircle } from 'react-icons/fa';
 import supabase from '@/utils/supabaseClient';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 
-export default function Home() {
+function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [showSignInModal, setShowSignInModal] = useState(false); // Add state for the sign-in modal
+  const [showSignInModal, setShowSignInModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null); // Manage user state here
-  const router = useRouter();
+  const { user, authAlert, showAlert, setUser } = useAuth(); // Destructure user from useAuth
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
-        setUser(data.session.user);
+        setUser(data.session.user); // Set user state globally
       } else {
-        setUser(null); // Clear user if not logged in
+        setUser(null); // Clear global user state if not logged in
       }
+      setLoading(false); // Done loading
     };
 
     fetchUser();
-
-    if (typeof window !== 'undefined') {
-      const isBooking = localStorage.getItem('isBooking');
-
-      if (isBooking === 'true') {
-        setShowBookingModal(true);
-        localStorage.removeItem('isBooking');
-      }
-
-      setLoading(false);
-    }
-  }, []);
+  }, [setUser]);
 
   const openBooking = () => {
     if (user) {
@@ -67,19 +56,26 @@ export default function Home() {
     const { data } = await supabase.auth.getSession();
     if (data?.session?.user) {
       setUser(data.session.user); // Set user after successful sign-in
-      setShowSignInModal(false); // Close sign-in modal after successful sign-in
-      setShowBookingModal(true); // Open booking modal after successful sign-in
+      setShowSignInModal(false); // Close the Sign-In Modal immediately
+      setTimeout(() => {
+        showAlert('Signed in Successfully!', 'success'); // Show success alert
+        setShowBookingModal(true); // Open the Booking Modal
+      }, 2000); // 2 seconds delay
     }
   };
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) console.error('Error signing out:', error);
-    else setUser(null); // Clear user state on sign-out
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      setUser(null); // Clear global user state on sign-out
+      showAlert('Signed out successfully!', 'error'); // Show red alert for sign-out success
+    }
   };
 
   if (loading) {
-    return null;
+    return null; // Show nothing until loading is complete
   }
 
   return (
@@ -87,10 +83,19 @@ export default function Home() {
       className="--font-oxygen mx-auto flex max-w-96 flex-col items-center justify-center px-4 text-white"
       style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
     >
+      {authAlert?.message && ( // Check if authAlert exists and has a message
+        <div
+          className={`fixed left-0 right-0 top-0 z-50 p-4 text-xl text-center text-white ${
+            authAlert.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+          }`}
+        >
+          {authAlert.message}
+        </div>
+      )}
+
       {/* Pass openSignInModal and handleSignOut as props */}
       <HamburgerMenu
         openSignInModal={() => setShowSignInModal(true)}
-        user={user}
         onSignOut={handleSignOut}
       />
 
@@ -120,5 +125,13 @@ export default function Home() {
         <p className="text-lg text-gray-200">or text 310-947-9464</p>
       </footer>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <AuthProvider>
+      <HomeContent />
+    </AuthProvider>
   );
 }

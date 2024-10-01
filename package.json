@@ -33,7 +33,8 @@
     "react-time-picker": "^7.0.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "use-places-autocomplete": "^4.0.1"
+    "use-places-autocomplete": "^4.0.1",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "eslint": "^8",

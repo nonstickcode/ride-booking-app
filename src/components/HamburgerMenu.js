@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaBars, FaSignOutAlt, FaTimes } from 'react-icons/fa';
+import { useAuth } from '@/context/AuthContext'; // Import useAuth from context
 
-const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
+const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [showSignOutAlert, setShowSignOutAlert] = useState(false); // State for sign-out alert
   const menuRef = useRef(null); // Create a ref for the menu
+  const { user, showAlert } = useAuth(); // Access user and showAlert from AuthContext
 
   const toggleMenu = () => {
     setShowMenu((prevState) => !prevState);
@@ -20,11 +21,8 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
     setShowMenu(false);
     onSignOut(); // Trigger sign-out action
 
-    // Show sign-out alert for 3 seconds
-    setShowSignOutAlert(true);
-    setTimeout(() => {
-      setShowSignOutAlert(false);
-    }, 3000);
+    // Trigger global sign-out alert using context
+    showAlert('Signed out successfully!', 'error');
   };
 
   // Close menu when clicking outside
@@ -59,7 +57,7 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
           className="absolute right-0 mt-2 w-56 rounded-lg bg-gray-700 shadow-lg"
         >
           <ul className="py-2">
-            {user ? (
+            {user ? ( // Access user from AuthContext
               <>
                 <li>
                   <a
@@ -100,13 +98,6 @@ const HamburgerMenu = ({ openSignInModal, user, onSignOut }) => {
               </li>
             )}
           </ul>
-        </div>
-      )}
-
-      {/* Sign-out alert banner */}
-      {showSignOutAlert && (
-        <div className="fixed left-0 right-0 z-50 bg-red-600 p-4 text-center text-white">
-          Signed out successfully!
         </div>
       )}
     </div>
