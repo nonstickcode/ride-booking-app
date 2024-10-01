@@ -38,10 +38,10 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   }, [menuRef]);
 
   return (
-    <div className="absolute right-2 top-3 z-50">
+    <div className="absolute right-2 top-2 md:right-4 md:top-4 z-50">
       <Button
         onClick={toggleMenu}
-        variant="hamburger" // Using the close variant for the menu button too
+        variant="hamburger"
         size="icon"
       >
         {showMenu ? <FaTimes size={36} /> : <FaBars size={36} />}
