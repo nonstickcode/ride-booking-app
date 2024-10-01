@@ -9,7 +9,10 @@ import PlacesAutocomplete from '@/components/PlacesAutocomplete';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { calculateRoute, calculateDistanceToCity } from '@/utils/routeCalculations';
+import {
+  calculateRoute,
+  calculateDistanceToCity,
+} from '@/utils/routeCalculations';
 import { calculateCost } from '@/utils/costCalculations';
 import supabase from '@/utils/supabaseClient';
 
@@ -107,6 +110,7 @@ const BookingModal = ({ onClose }) => {
       console.error('Error submitting booking:', error);
     } finally {
       setLoadingSubmit(false);
+      console.log('Booking Request Email Sent to Jamie Successfully!');
     }
   };
 
@@ -183,24 +187,28 @@ const BookingModal = ({ onClose }) => {
             />
 
             {/* Show only when both pickup and drop-off are present */}
-            {pickupLocation && dropoffLocation && !loadingRoute && distance && duration && cost !== null && (
-              <>
-                <hr className="mb-2 border-gray-700" />
-                {/* Google Maps Trip Link */}
-                <a
-                  href={generateGoogleMapsLinkForTrip()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 mb-2 underline mt-2"
-                >
-                  View trip on Google Maps
-                </a>
-                <p>Estimated Distance: {distance}</p>
-                <p>Estimated Time: {duration}</p>
-                <p>Estimated Cost: ${cost}</p>
-                
-              </>
-            )}
+            {pickupLocation &&
+              dropoffLocation &&
+              !loadingRoute &&
+              distance &&
+              duration &&
+              cost !== null && (
+                <>
+                  <hr className="mb-2 border-gray-700" />
+                  {/* Google Maps Trip Link */}
+                  <a
+                    href={generateGoogleMapsLinkForTrip()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mb-2 mt-2 text-blue-500 underline"
+                  >
+                    View trip on Google Maps
+                  </a>
+                  <p>Estimated Distance: {distance}</p>
+                  <p>Estimated Time: {duration}</p>
+                  <p>Estimated Cost: ${cost}</p>
+                </>
+              )}
 
             {loadingRoute && (
               <div className="flex items-center space-x-2">
@@ -216,7 +224,7 @@ const BookingModal = ({ onClose }) => {
             )}
 
             {showAlert && (
-              <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-xl text-center text-white">
+              <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-xl text-white">
                 Submission successful! Please await an email response.
               </div>
             )}

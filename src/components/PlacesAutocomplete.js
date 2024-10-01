@@ -32,7 +32,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
     try {
       const results = await getGeocode({ address });
       const { lat, lng } = await getLatLng(results[0]);
-      setSelected({ lat, lng }); // Set selected lat/lng for the parent component
+      setSelected({ lat, lng, address }); // Set selected lat/lng and address for the parent component
     } catch (error) {
       console.error('Error getting location:', error);
     }
@@ -56,7 +56,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           });
           const address = results[0].formatted_address;
           setValue(address, false); // Set the input field to the current location's address
-          setSelected({ lat: latitude, lng: longitude });
+          setSelected({ lat: latitude, lng: longitude, address });
         } catch (error) {
           console.error('Error fetching location:', error);
         }

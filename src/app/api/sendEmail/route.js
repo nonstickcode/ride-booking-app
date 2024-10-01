@@ -29,6 +29,13 @@ export async function POST(request) {
       );
     }
 
+    // Create Google Maps links for pickup and dropoff locations
+    const pickupCoords = `${pickupLocation.lat},${pickupLocation.lng}`;
+    const dropoffCoords = `${dropoffLocation.lat},${dropoffLocation.lng}`;
+    const pickupGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoords}`;
+    const dropoffGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${dropoffCoords}`;
+    const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${pickupCoords}&destination=${dropoffCoords}&travelmode=driving`;
+
     // Configure Nodemailer with Brevo's SMTP service
     const transporter = nodemailer.createTransport({
       host: process.env.BREVO_SMTP_HOST,
@@ -39,27 +46,30 @@ export async function POST(request) {
       },
     });
 
-    // Email content
+    // Email content with links to Google Maps for the pickup and dropoff locations
     const mailOptions = {
       from: 'rydeblk@gmail.com', // Verified sender email / verified on Brevo dashboard
       to: 'rydeblk@gmail.com', // Destination email
       subject: 'New Booking Request',
-      text: `Hello,
+      html: `Hello,<br><br>
 
-You have received a new booking request with the following details:
+You have received a new booking request with the following details:<br><br>
 
-- Date: ${date}
-- Time: ${time}
-- Pickup Location: ${pickupLocation}
-- Dropoff Location: ${dropoffLocation}
-- Estimated Distance: ${distance}
-- Estimated Duration: ${duration}
-- Estimated Cost: $${cost}
+- Date: ${date}<br>
+- Time: ${time}<br>
+- Pickup Location: <a href="${pickupGoogleMapsLink}" target="_blank">${pickupLocation.address || 'View Location in Google Maps'}</a><br>
+- Dropoff Location: <a href="${dropoffGoogleMapsLink}" target="_blank">${dropoffLocation.address || 'View Location in Google Maps'}</a><br>
+- Estimated Distance: ${distance}<br>
+- Estimated Duration: ${duration}<br>
+- Estimated Cost: $${cost}<br><br>
 
-Please review the details and respond as soon as possible.
+You can view the full trip route on Google Maps by clicking the following link:<br>
+<a href="${googleMapsTripLink}" target="_blank">View trip on Google Maps</a><br><br>
 
-Thank you,
-Your Ride Booking System`,
+Please review the details and respond as soon as possible.<br><br>
+
+Thank you,<br>
+Your RYDEBLK Booking System`,
     };
 
     // Send the email
