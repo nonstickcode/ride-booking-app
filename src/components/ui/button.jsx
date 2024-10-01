@@ -15,8 +15,8 @@ const buttonVariants = cva(
         hamburger: 'text-white hover:text-gray-400 transition',
       },
       size: {
-        md: 'w-full h-9 py-5 text-base text-lg',
-        lg: 'h-10 px-12 py-6 text-xl',
+        md: 'w-full py-2 text-base text-lg',
+        lg: 'px-12 py-3 text-xl',
         icon: 'h-10 w-10',
       },
     },
