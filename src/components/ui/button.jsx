@@ -13,14 +13,14 @@ const buttonVariants = cva(
         gray: 'bg-gradient-to-r from-gray-500 to-gray-700 text-white hover:from-gray-400 hover:to-gray-600 transition',
         close: 'text-gray-400 hover:text-white transition',
         hamburger: 'text-white hover:text-gray-400 transition',
-        location: 'bg-gray-600 hover:bg-blue-600 text-white transition',
+        location: 'bg-gray-700 hover:bg-blue-600 border border-gray-500 rounded-lg text-white transition',
 
       },
       size: {
         md: 'w-full py-2 text-base text-lg',
         lg: 'px-12 py-3 text-xl',
         icon: 'h-10 w-10',
-        smallIcon: 'h-9 w-9',
+        smallIcon: 'h-9 w-12',
       },
     },
     defaultVariants: {
