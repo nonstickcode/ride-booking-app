@@ -5,6 +5,7 @@ import usePlacesAutocomplete, {
 } from 'use-places-autocomplete';
 import { Input } from '@/components/ui/input';
 import { FaCrosshairs, FaSpinner } from 'react-icons/fa';
+import { Button } from './ui/button';
 
 const PlacesAutocomplete = ({ setSelected, label }) => {
   const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
@@ -102,19 +103,19 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
         />
 
         {/* Current Location Button */}
-        <button
+        <Button
           onClick={handleCurrentLocation}
-          className="flex items-center justify-center rounded-md bg-gray-600 text-white hover:bg-blue-800"
-          style={{ height: '35px', width: '40px' }} // Make button square
-          disabled={currentLocationLoading} // Disable when loading
-          title="Use current location" // Tooltip text
+          variant="location"
+          size="smallIcon" // Use the smallIcon size variant
+          disabled={currentLocationLoading}
+          title="Use current location"
         >
           {currentLocationLoading ? (
             <FaSpinner className="animate-spin" /> // Spinner while loading
           ) : (
             <FaCrosshairs /> // Target icon when not loading
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Suggestions List */}

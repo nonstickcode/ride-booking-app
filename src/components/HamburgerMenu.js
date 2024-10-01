@@ -43,6 +43,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
         onClick={toggleMenu}
         variant="hamburger"
         size="icon"
+        title="Menu"
       >
         {showMenu ? <FaTimes size={36} /> : <FaBars size={36} />}
       </Button>

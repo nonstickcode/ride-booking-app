@@ -95,6 +95,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
           size="icon"
           className="absolute right-1 top-1"
           aria-label="Close"
+          title="Close window"
         >
           <X className="h-6 w-6" />
         </Button>
@@ -126,6 +127,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                   variant="green"
                   size="md"
                   className="mb-6"
+                  title="Send Sign-in Link"
                 >
                   <FaEnvelope className="mr-2" /> Send Sign-in Link
                 </Button>
@@ -135,6 +137,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 variant="gray"
                 size="md"
                 className="mb-6"
+                title="Return to sign-in options"
               >
                 <FaArrowLeft className="mr-2" />
                 Return to sign-in options
@@ -147,6 +150,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 variant="blue"
                 size="md"
                 className="mb-2"
+                title="Sign in with Google"
               >
                 <FaGoogle className="mr-2" /> Sign in with Google
               </Button>
@@ -160,6 +164,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 variant="gray"
                 size="md"
                 className="my-2"
+                title="Sign in with Email"
               >
                 <FaEnvelope className="mr-2" /> Sign in with Email
               </Button>

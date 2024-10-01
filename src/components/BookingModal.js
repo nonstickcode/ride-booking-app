@@ -157,6 +157,7 @@ const BookingModal = ({ onClose }) => {
           size="icon"
           className="absolute right-1 top-1"
           aria-label="Close"
+          title="Close window"
         >
           <X className="h-6 w-6" />
         </Button>
@@ -244,6 +245,7 @@ const BookingModal = ({ onClose }) => {
               variant="green"
               size="md"
               className="mt-4"
+              title="Submit Request"
             >
               {loadingSubmit ? (
                 <FaSpinner className="mr-2 animate-spin" />

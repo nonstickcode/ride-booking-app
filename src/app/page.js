@@ -107,6 +107,7 @@ function HomeContent() {
           variant="blue" // Use blue as the default primary color
           size="lg" // Large size for emphasis
           className="mb-6"
+          title="Book Ride Now"
         >
           <FaCheckCircle className="mr-2" />
           Book Ride Now
