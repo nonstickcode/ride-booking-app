@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-slate-300',
+  'inline-flex items-center justify-center rounded-md font-medium transition-all duration-200 transform cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-slate-300',
   {
     variants: {
       variant: {
@@ -20,7 +20,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: 'outline',
+      variant: 'default',
       size: 'md',
     },
   }
@@ -28,16 +28,33 @@ const buttonVariants = cva(
 
 const Button = React.forwardRef(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const [isClicked, setIsClicked] = React.useState(false);
+    
     const Comp = asChild ? Slot : 'button';
+
+    const handleMouseDown = () => {
+      setIsClicked(true);
+    };
+
+    const handleMouseUp = () => {
+      setIsClicked(false);
+    };
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          isClicked ? 'scale-95' : 'scale-100' // Animation on click
+        )}
         ref={ref}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
         {...props}
       />
     );
   }
 );
+
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
