@@ -148,9 +148,15 @@ const BookingModal = ({ onClose }) => {
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
-          <h2 className="mx-auto mb-6 text-center text-2xl font-bold text-white">
+          <h2 className="mx-auto mb-2 text-center text-2xl font-bold text-white">
             Book a Ride
           </h2>
+
+          {user?.email && (
+            <p className="text-center mb-4 text-lg text-gray-300">
+              {user.email}
+            </p>
+          )}
 
           <form onSubmit={handleSubmit} className="flex flex-col">
             <DatePicker date={date} setDate={setDate} />
