@@ -141,14 +141,14 @@ function HomeContent() {
         </Button>
 
         {/* Test SMS button */}
-        <Button
+        {/* <Button
           onClick={sendTestSMS}
           variant="green" // Green for success
           size="md"
           className="mt-4"
         >
           Send Test SMS
-        </Button>
+        </Button> */}
       </main>
 
       {showBookingModal && <BookingModal onClose={closeBooking} />}
