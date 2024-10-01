@@ -228,7 +228,7 @@ const BookingModal = ({ onClose }) => {
 
             {showAlert && (
               <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-xl text-white">
-                Submission successful! Please await an email response.
+                Submission successful! Please await an email or sms response.
               </div>
             )}
 

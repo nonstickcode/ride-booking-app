@@ -9,12 +9,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         blue: 'bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-500 hover:to-blue-700 transition',
-        green: 'bg-gradient-to-r from-green-500 to-green-700 text-white hover:from-green-400 hover:to-green-600 transition',
+        green:
+          'bg-gradient-to-r from-green-500 to-green-700 text-white hover:from-green-400 hover:to-green-600 transition',
         gray: 'bg-gradient-to-r from-gray-500 to-gray-700 text-white hover:from-gray-400 hover:to-gray-600 transition',
         close: 'text-gray-400 hover:text-white transition',
         hamburger: 'text-white hover:text-gray-400 transition',
-        location: 'bg-gray-700 hover:bg-blue-600 border border-gray-500 rounded-lg text-white transition',
-
+        location:
+          'bg-gray-700 hover:bg-blue-600 border border-gray-500 rounded-lg text-white transition',
       },
       size: {
         md: 'w-full py-2 text-base text-lg',
@@ -53,7 +54,7 @@ const Button = React.forwardRef(
         onMouseDown={handleInteractionStart}
         onMouseUp={handleInteractionEnd}
         onTouchStart={handleInteractionStart} // For touch devices
-        onTouchEnd={handleInteractionEnd}     // For touch devices
+        onTouchEnd={handleInteractionEnd} // For touch devices
         {...props}
       />
     );

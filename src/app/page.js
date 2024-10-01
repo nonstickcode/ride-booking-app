@@ -73,6 +73,33 @@ function HomeContent() {
     }
   };
 
+  // Function to send a test SMS
+  const sendTestSMS = async () => {
+    try {
+      const response = await fetch('/api/sendSMS', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipient: '14805220108', // Replace with the test recipient phone number
+          content: 'This is a test SMS from RYDEBLK.', // Test message content
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Test SMS sent successfully!');
+      } else {
+        alert(`Failed to send SMS: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error sending SMS:', error);
+      alert('Failed to send SMS.');
+    }
+  };
+
   if (loading) {
     return null; // Show nothing until loading is complete
   }
@@ -84,7 +111,7 @@ function HomeContent() {
     >
       {authAlert?.message && (
         <div
-          className={`fixed left-0 right-0 top-0 z-50 p-4 text-center text-xl text-white ${
+          className={`fixed left-0 right-0 top-0 z-50 p-4 text-center text-2xl text-white ${
             authAlert.type === 'success' ? 'bg-green-600' : 'bg-red-600'
           }`}
         >
@@ -111,6 +138,16 @@ function HomeContent() {
         >
           <FaCheckCircle className="mr-2" />
           Book Ride Now
+        </Button>
+
+        {/* Test SMS button */}
+        <Button
+          onClick={sendTestSMS}
+          variant="green" // Green for success
+          size="md"
+          className="mt-4"
+        >
+          Send Test SMS
         </Button>
       </main>
 
