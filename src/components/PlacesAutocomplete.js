@@ -111,9 +111,9 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           title="Use current location"
         >
           {currentLocationLoading ? (
-            <FaSpinner className="animate-spin" /> // Spinner while loading
+            <FaSpinner className="animate-spin" />
           ) : (
-            <FaCrosshairs /> // Target icon when not loading
+            <FaCrosshairs />
           )}
         </Button>
       </div>
