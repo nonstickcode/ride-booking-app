@@ -6,13 +6,13 @@ import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { Input } from './ui/input';
 import supabase from '@/utils/supabaseClient';
 import { useAuth } from '@/context/AuthContext';
-import validator from 'validator'; // Import validator for email validation
+import validator from 'validator';
 
 const AuthButtons = ({ onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false); // Track email validation
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const { showAlert, setUser } = useAuth();
 
   useEffect(() => {
@@ -21,16 +21,15 @@ const AuthButtons = ({ onSignInSuccess }) => {
       if (data?.session?.user) {
         setUser(data.session.user);
         showAlert('Signed in successfully!', 'success');
-        onSignInSuccess(); // Call the success callback
+        onSignInSuccess();
       }
     };
 
-    checkSession(); // Check session on component mount
+    checkSession();
   }, [onSignInSuccess, showAlert, setUser]);
 
-  // Update email validation state when email changes
   useEffect(() => {
-    setIsEmailValid(validator.isEmail(email)); // Use validator.js to validate email
+    setIsEmailValid(validator.isEmail(email));
   }, [email]);
 
   const handleGoogleSignIn = async () => {
@@ -71,13 +70,13 @@ const AuthButtons = ({ onSignInSuccess }) => {
             required
           />
           {emailSent ? (
-            <p className="mb-4 font-semibold text-blue-500">
+            <p className="text-md mb-6 text-center font-extrabold text-blue-500">
               Check your email for the sign-in link.
             </p>
           ) : (
             <Button
               onClick={handleEmailSignIn}
-              disabled={!isEmailValid} // Disable the button if the email is invalid
+              disabled={!isEmailValid}
               className={`mb-6 w-full rounded-lg ${
                 isEmailValid ? 'bg-green-600' : 'bg-gray-400'
               } p-3 text-lg font-semibold text-white shadow-md ${

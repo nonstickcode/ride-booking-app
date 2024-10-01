@@ -14,17 +14,17 @@ function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { user, authAlert, showAlert, setUser } = useAuth(); // Destructure user from useAuth
+  const { user, authAlert, showAlert, setUser } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
-        setUser(data.session.user); // Set user state globally
+        setUser(data.session.user);
       } else {
-        setUser(null); // Clear global user state if not logged in
+        setUser(null);
       }
-      setLoading(false); // Done loading
+      setLoading(false);
     };
 
     fetchUser();
@@ -34,7 +34,7 @@ function HomeContent() {
     if (user) {
       setShowBookingModal(true);
     } else {
-      setShowSignInModal(true); // Open sign-in modal if no user
+      setShowSignInModal(true);
     }
   };
 
@@ -49,18 +49,16 @@ function HomeContent() {
     if (e) {
       e.stopPropagation();
     }
-    setShowSignInModal(false); // Close sign-in modal
+    setShowSignInModal(false);
   };
 
   const handleSignInComplete = async () => {
     const { data } = await supabase.auth.getSession();
     if (data?.session?.user) {
-      setUser(data.session.user); // Set user after successful sign-in
-      setShowSignInModal(false); // Close the Sign-In Modal immediately
-      setTimeout(() => {
-        showAlert('Signed in Successfully!', 'success'); // Show success alert
-        setShowBookingModal(true); // Open the Booking Modal
-      }, 2000); // 2 seconds delay
+      setUser(data.session.user);
+      setShowSignInModal(false);
+      showAlert('Signed in Successfully!', 'success');
+      setShowBookingModal(true);
     }
   };
 
@@ -83,9 +81,9 @@ function HomeContent() {
       className="--font-oxygen mx-auto flex max-w-96 flex-col items-center justify-center px-4 text-white"
       style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
     >
-      {authAlert?.message && ( // Check if authAlert exists and has a message
+      {authAlert?.message && (
         <div
-          className={`fixed left-0 right-0 top-0 z-50 p-4 text-xl text-center text-white ${
+          className={`fixed left-0 right-0 top-0 z-50 p-4 text-center text-xl text-white ${
             authAlert.type === 'success' ? 'bg-green-600' : 'bg-red-600'
           }`}
         >
@@ -93,7 +91,6 @@ function HomeContent() {
         </div>
       )}
 
-      {/* Pass openSignInModal and handleSignOut as props */}
       <HamburgerMenu
         openSignInModal={() => setShowSignInModal(true)}
         onSignOut={handleSignOut}
@@ -117,7 +114,7 @@ function HomeContent() {
       {showSignInModal && (
         <SignInModal
           onClose={closeSignIn}
-          onSignInComplete={handleSignInComplete} // Handle post-sign-in action
+          onSignInComplete={handleSignInComplete}
         />
       )}
 

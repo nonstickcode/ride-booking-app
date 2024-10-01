@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useLoadScript } from '@react-google-maps/api';
+import { useLoadScript } from '@react-google-maps/api'; // Import useLoadScript
 import DatePicker from '@/components/DatePicker';
 import TimePicker from '@/components/TimePicker';
 import PlacesAutocomplete from '@/components/PlacesAutocomplete';
@@ -16,12 +16,13 @@ import {
 import { calculateCost } from '@/utils/costCalculations';
 import supabase from '@/utils/supabaseClient';
 
-// Load Google Maps Places API
+// Specify the libraries to load for the Google Maps API
 const libraries = ['places'];
 
 const BookingModal = ({ onClose }) => {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+  // Load the Google Maps API asynchronously
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, // Replace with your Google Maps API key
     libraries,
   });
 
@@ -110,12 +111,16 @@ const BookingModal = ({ onClose }) => {
     }
   };
 
-  // Ensure the API is loaded before rendering the PlacesAutocomplete component
+  const cost = distance ? calculateCost(parseFloat(distance)) : null;
+
+  // Handle loading or error states
+  if (loadError) {
+    return <div>Error loading Google Maps API</div>;
+  }
+
   if (!isLoaded) {
     return;
   }
-
-  const cost = distance ? calculateCost(parseFloat(distance)) : null;
 
   return (
     <motion.div
@@ -151,7 +156,6 @@ const BookingModal = ({ onClose }) => {
             <DatePicker date={date} setDate={setDate} />
             <TimePicker time={time} setTime={setTime} />
 
-            {/* Conditionally render PlacesAutocomplete only after the API is loaded */}
             <PlacesAutocomplete
               setSelected={setPickupLocation}
               label="Pickup Location"
