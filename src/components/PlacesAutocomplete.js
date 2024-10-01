@@ -69,9 +69,28 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
     );
   };
 
+  // Generate Google Maps link based on the current value in the input field
+  const generateGoogleMapsLink = () => {
+    if (value) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value)}`;
+    }
+    return 'https://www.google.com/maps'; // Open generic Google Maps if no input
+  };
+
   return (
     <div className="mb-6 flex w-full flex-col">
-      <label className="mb-2 text-white">{label}</label>
+      <div className="mb-2 flex items-center justify-between">
+        <label className="text-white">{label}</label>
+        <a
+          href={generateGoogleMapsLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-blue-400 hover:underline"
+        >
+          Use Google Maps
+        </a>
+      </div>
+
       <div className="flex items-center space-x-2">
         {/* Input Field */}
         <Input
@@ -97,6 +116,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           )}
         </button>
       </div>
+
       {/* Suggestions List */}
       {status === 'OK' && (
         <div className="mt-2 rounded-lg bg-gray-500 shadow-lg">

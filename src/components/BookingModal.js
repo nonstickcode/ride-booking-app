@@ -153,7 +153,7 @@ const BookingModal = ({ onClose }) => {
           </h2>
 
           {user?.email && (
-            <p className="text-center mb-4 text-lg text-gray-300">
+            <p className="mb-4 text-center text-lg text-gray-300">
               {user.email}
             </p>
           )}
