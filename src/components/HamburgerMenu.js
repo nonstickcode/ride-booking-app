@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { FaBars, FaSignOutAlt, FaTimes } from 'react-icons/fa';
-import { useAuth } from '@/context/AuthContext'; // Import useAuth from context
+import { FaBars, FaCar, FaCog, FaSignOutAlt, FaTimes } from 'react-icons/fa';
+import { useAuth } from '@/context/AuthContext';
 
 const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef(null); // Create a ref for the menu
-  const { user, showAlert } = useAuth(); // Access user and showAlert from AuthContext
+  const menuRef = useRef(null);
+  const { user, showAlert } = useAuth();
 
   const toggleMenu = () => {
     setShowMenu((prevState) => !prevState);
@@ -14,18 +14,16 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
 
   const handleSignIn = () => {
     setShowMenu(false);
-    openSignInModal(); // Open the sign-in modal when the "Sign In" button is clicked
+    openSignInModal();
   };
 
   const handleSignOut = () => {
     setShowMenu(false);
-    onSignOut(); // Trigger sign-out action
+    onSignOut();
 
-    // Trigger global sign-out alert using context
     showAlert('Signed out successfully!', 'error');
   };
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -33,11 +31,9 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
       }
     };
 
-    // Add event listener for clicks
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      // Cleanup the event listener when the component unmounts
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [menuRef]);
@@ -62,17 +58,17 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
                 <li>
                   <a
                     href="#rides"
-                    className="block px-4 py-2 text-lg text-white hover:bg-gray-600"
+                    className="flex flex-row items-center px-4 py-2 text-lg text-white hover:bg-gray-600"
                   >
-                    My Rides
+                    <FaCar className="mr-2" /> My Rides
                   </a>
                 </li>
                 <li>
                   <a
                     href="#settings"
-                    className="block px-4 py-2 text-lg text-white hover:bg-gray-600"
+                    className="flex flex-row items-center px-4 py-2 text-lg text-white hover:bg-gray-600"
                   >
-                    Settings
+                    <FaCog className="mr-2" /> Settings
                   </a>
                 </li>
                 <hr className="mx-auto my-1 w-[92%]" />

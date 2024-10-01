@@ -6,18 +6,19 @@ import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { Input } from './ui/input';
 import supabase from '@/utils/supabaseClient';
 import { useAuth } from '@/context/AuthContext';
+import validator from 'validator'; // Import validator for email validation
 
 const AuthButtons = ({ onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
-  const { showAlert, setUser } = useAuth(); // Get setUser from context
+  const [isEmailValid, setIsEmailValid] = useState(false); // Track email validation
+  const { showAlert, setUser } = useAuth();
 
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
-        // Update global user state and show alert
         setUser(data.session.user);
         showAlert('Signed in successfully!', 'success');
         onSignInSuccess(); // Call the success callback
@@ -26,6 +27,11 @@ const AuthButtons = ({ onSignInSuccess }) => {
 
     checkSession(); // Check session on component mount
   }, [onSignInSuccess, showAlert, setUser]);
+
+  // Update email validation state when email changes
+  useEffect(() => {
+    setIsEmailValid(validator.isEmail(email)); // Use validator.js to validate email
+  }, [email]);
 
   const handleGoogleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -40,13 +46,14 @@ const AuthButtons = ({ onSignInSuccess }) => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        redirectTo: window.location.origin, // Redirect to home after magic link is clicked
+        redirectTo: window.location.origin,
       },
     });
     if (error) {
       console.error('Error sending magic link:', error);
     } else {
       setEmailSent(true);
+      console.log('Magic Link email sent successfully!');
     }
   };
 
@@ -70,7 +77,12 @@ const AuthButtons = ({ onSignInSuccess }) => {
           ) : (
             <Button
               onClick={handleEmailSignIn}
-              className="mb-6 w-full rounded-lg bg-green-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-green-700"
+              disabled={!isEmailValid} // Disable the button if the email is invalid
+              className={`mb-6 w-full rounded-lg ${
+                isEmailValid ? 'bg-green-600' : 'bg-gray-400'
+              } p-3 text-lg font-semibold text-white shadow-md ${
+                isEmailValid ? 'hover:bg-green-700' : ''
+              }`}
             >
               <FaEnvelope className="mr-2" /> Send Sign-in Link
             </Button>
