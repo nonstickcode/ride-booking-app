@@ -20,11 +20,15 @@ const buttonVariants = cva(
         ghost:
           'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50',
         link: 'text-slate-900 underline-offset-4 hover:underline dark:text-slate-50',
+
+        // Adding a custom gradient variant
+        gradient:
+          'bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white shadow-md hover:from-green-500 hover:via-blue-600 hover:to-purple-700',
       },
       size: {
-        default: 'h-9 px-4 py-2',
+        default: 'h-9 text-xl rounded-md py-5',
         sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-10 rounded-md px-8',
+        lg: 'h-10 rounded-md text-xl px-8',
         icon: 'h-9 w-9',
       },
     },

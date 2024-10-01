@@ -239,7 +239,9 @@ const BookingModal = ({ onClose }) => {
                 exceedsRange ||
                 loadingSubmit
               }
-              className="mt-4 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+              variant="default" // Use the variant as per your custom styling
+              size="default" // Optionally set the size for a larger button
+              className="mt-4 bg-green-700 w-full" // Ensure it has full width
             >
               {loadingSubmit ? (
                 <FaSpinner className="mr-2 animate-spin" />

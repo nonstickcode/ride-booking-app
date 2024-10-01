@@ -5,13 +5,9 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
+import supabase from '@/utils/supabaseClient';
 import { useAuth } from '@/context/AuthContext';
-import {
-  checkSession,
-  handleGoogleSignIn,
-  handleEmailSignIn,
-  isValidEmail,
-} from '@/utils/authUtils';
+import validator from 'validator';
 
 const SignInModal = ({ onClose, onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
@@ -22,26 +18,63 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
 
   // Check if a session exists on load
   useEffect(() => {
-    checkSession(setUser, showAlert, onSignInSuccess);
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        setUser(data.session.user);
+        showAlert('Signed in successfully!', 'success');
+        onSignInSuccess();
+      }
+    };
+
+    checkSession();
   }, [setUser, showAlert, onSignInSuccess]);
 
   // Update email validity when email changes
   useEffect(() => {
-    setIsEmailValid(isValidEmail(email));
+    setIsEmailValid(validator.isEmail(email));
   }, [email]);
 
-  // Handle Google sign-in
-  const handleGoogleClick = async () => {
-    const success = await handleGoogleSignIn();
-    if (success) {
-      onSignInSuccess();
+  const handleGoogleSignIn = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+  
+      // Log actual critical errors only
+      if (error) {
+        console.error('Error signing in with Google:', error.message || error);
+        return false;
+      }
+  
+      // Supabase's OAuth often redirects, so treat data as a success if present
+      if (data) {
+        console.log('Google OAuth sign-in initiated.');
+        return true;
+      }
+  
+      // Return success if no critical errors occur
+      return true;
+    } catch (criticalError) {
+      // Catch any unexpected critical errors
+      console.error('Critical error during Google sign-in:', criticalError);
+      return false;
     }
   };
+  
+
 
   // Handle email sign-in
-  const handleEmailClick = async () => {
-    const success = await handleEmailSignIn(email);
-    if (success) {
+  const handleEmailSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+    if (error) {
+      console.error('Error sending magic link:', error);
+    } else {
       setEmailSent(true);
     }
   };
@@ -88,20 +121,20 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 </p>
               ) : (
                 <Button
-                  onClick={handleEmailClick}
+                  onClick={handleEmailSignIn}
                   disabled={!isEmailValid}
-                  className={`mb-6 w-full rounded-lg ${
-                    isEmailValid ? 'bg-green-600' : 'bg-gray-400'
-                  } p-3 text-lg font-semibold text-white shadow-md ${
-                    isEmailValid ? 'hover:bg-green-700' : ''
-                  }`}
+                  variant={isEmailValid ? 'default' : 'default'}
+                  size="lg"
+                  className="mb-6 bg-green-700 w-full"
                 >
                   <FaEnvelope className="mr-2" /> Send Sign-in Link
                 </Button>
               )}
               <Button
                 onClick={() => setSigningInWithEmail(false)}
-                className="mb-6 w-full rounded-lg bg-gray-600 p-3 text-lg font-semibold text-white shadow-md hover:bg-gray-700"
+                variant="default"
+                size="default"
+                className="mb-6 bg-gray-500 w-full"
               >
                 <FaArrowLeft className="mr-2" />
                 Return to sign-in options
@@ -110,8 +143,10 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
           ) : (
             <>
               <Button
-                onClick={handleGoogleClick}
-                className="mb-2 w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+                onClick={handleGoogleSignIn}
+                variant="default"
+                size="default"
+                className="mb-2 bg-blue-700 w-full"
               >
                 <FaGoogle className="mr-2" /> Sign in with Google
               </Button>
@@ -122,7 +157,9 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
               </div>
               <Button
                 onClick={() => setSigningInWithEmail(true)}
-                className="my-2 w-full rounded-lg bg-gradient-to-r from-green-600 to-green-800 p-3 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
+                variant="default"
+                size="default"
+                className="my-2 bg-gray-500 w-full"
               >
                 <FaEnvelope className="mr-2" /> Sign in with Email
               </Button>

@@ -52,7 +52,8 @@ function HomeContent() {
     setShowSignInModal(false);
   };
 
-  const handleSignInComplete = async () => {
+   // Handle sign-in complete event
+   const handleSignInComplete = async () => {
     const { data } = await supabase.auth.getSession();
     if (data?.session?.user) {
       setUser(data.session.user);
@@ -61,6 +62,7 @@ function HomeContent() {
       setShowBookingModal(true);
     }
   };
+  
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -102,8 +104,10 @@ function HomeContent() {
         <RideImage />
 
         <Button
-          className="mb-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-lg text-white shadow-md transition hover:bg-gradient-to-l"
           onClick={openBooking}
+          variant="default" // Use the custom gradient variant you defined
+          size="lg" // Optionally set the size for a larger button
+          className="mb-6 bg-blue-700 px-12 py-6" // Keep the original styling for width and margin
         >
           <FaCheckCircle className="mr-2" />
           Book Ride Now
