@@ -131,8 +131,8 @@ function HomeContent() {
 
         <Button
           onClick={openBooking}
-          variant="blue" // Use blue as the default primary color
-          size="lg" // Large size for emphasis
+          variant="blue"
+          size="lg"
           className="mb-6"
           title="Book Ride Now"
         >
