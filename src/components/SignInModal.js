@@ -102,7 +102,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
 
         <div className="p-8">
           <div className="mx-auto mb-6 w-[80%] text-center text-xl font-bold text-white">
-            Sign in to Book a Ride
+            Sign-In to Book a Ride
           </div>
 
           {signingInWithEmail ? (
@@ -118,7 +118,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
               />
               {emailSent ? (
                 <p className="text-md mb-6 text-center font-extrabold text-blue-500">
-                  Check your email for the sign-in link.
+                  Check your email for the Sign-In link.
                 </p>
               ) : (
                 <Button
@@ -129,7 +129,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                   className="mb-6"
                   title="Send Sign-in Link"
                 >
-                  <FaEnvelope className="mr-2" /> Send Sign-in Link
+                  <FaEnvelope className="mr-2" /> Send Sign-In Link
                 </Button>
               )}
               <Button
@@ -140,7 +140,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 title="Return to sign-in options"
               >
                 <FaArrowLeft className="mr-2" />
-                Return to sign-in options
+                Return to Sign-In options
               </Button>
             </>
           ) : (
@@ -152,7 +152,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 className="mb-2"
                 title="Sign in with Google"
               >
-                <FaGoogle className="mr-2" /> Sign in with Google
+                <FaGoogle className="mr-2" /> Sign-In with Google
               </Button>
               <div className="my-2 flex items-center">
                 <div className="flex-grow border-t border-gray-500"></div>
@@ -166,7 +166,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 className="my-2"
                 title="Sign in with Email"
               >
-                <FaEnvelope className="mr-2" /> Sign in with Email
+                <FaEnvelope className="mr-2" /> Sign-In with Email
               </Button>
             </>
           )}

@@ -55,7 +55,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
 
         {/* Dropdown menu content */}
         <DropdownMenuContent
-          className="mt-2 w-72 bg-gray-700 text-white border border-gray-500 shadow-lg"
+          className="mt-2 mr-4 w-72 bg-gray-700 text-white border border-gray-500 shadow-lg"
         >
           {user ? (
             <>
@@ -66,18 +66,21 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
               <DropdownMenuItem
                 onSelect={() => handleModalOpen('rides')}
                 className="flex items-center"
+                title="My Rides"
               >
                 <FaCar className="mr-2" /> My Rides
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => handleModalOpen('notifications')}
                 className="flex items-center"
+                title="Notifications"
               >
                 <FaBell className="mr-2" /> Notifications
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => handleModalOpen('settings')}
                 className="flex items-center"
+                title="Settings"
               >
                 <FaCog className="mr-2" /> Settings
               </DropdownMenuItem>
@@ -85,16 +88,18 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
               <DropdownMenuItem
                 onSelect={handleSignOut}
                 className="flex items-center text-red-400"
+                title="Sign-Out"
               >
-                <FaSignOutAlt className="mr-2 " /> Sign Out
+                <FaSignOutAlt className="mr-2 " /> Sign-Out
               </DropdownMenuItem>
             </>
           ) : (
             <DropdownMenuItem
               onSelect={handleSignIn}
               className="flex items-center text-green-400"
+              title="Sign-In"
             >
-              <FaSignInAlt className="mr-2" /> Sign In
+              <FaSignInAlt className="mr-2" /> Sign-In
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
