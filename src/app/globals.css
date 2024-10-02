@@ -4,36 +4,137 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Oxygen', Arial, Helvetica, sans-serif;
+/* ======================== Root Variables ======================== */
+@layer base {
+  :root {
+    /* Centralized input styles */
+    --input-bg-color: #1f2937; /* Equivalent to Tailwind's gray-800 */
+    --input-border-color: #6b7280; /* Equivalent to Tailwind's gray-500 */
+    --input-text-color: #ffffff; /* White text */
+    --input-placeholder-color: #9ca3af; /* Tailwind's gray-400 for placeholder */
+    --input-radius: 0.375rem; /* Tailwind's default rounded-md */
+    --input-padding: 0.5rem 1rem; /* Padding inside inputs */
+    --input-height: 2.25rem; /* Standard input height */
+    --input-font-family: 'Oxygen', sans-serif; /* Oxygen font for all inputs */
+    --input-font-size: 1rem; /* Font size for inputs */
+    --input-font-weight: 400; /* Normal font weight for inputs */
+    --input-focus-border-color: #9ca3af; /* Lighter gray (gray-400) on focus */
+    --icon-color: #ffffff; /* white for icons */
+  }
 }
 
-/* Main title style for #RYDEBLK using Bebas Neue */
-.main-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 4rem;
-  letter-spacing: 0.5rem;
-  text-transform: uppercase;
+/* ======================== Global Styles ======================== */
+
+/* Global body styles */
+body {
+  font-family: var(--input-font-family); /* Use Oxygen font */
+  color: var(--input-text-color); /* White text color */
 }
+
+/* Fallback for page reloads and transitions */
+html, body {
+  background-color: black; /* Set a black fallback background color */
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ======================== Input Fields ======================== */
+
+/* General input field styles */
+.input-field {
+  background-color: var(--input-bg-color); /* Centralized background color */
+  color: var(--input-text-color); /* Centralized white text color */
+  border: 1px solid var(--input-border-color); /* Centralized border color */
+  border-radius: var(--input-radius); /* Centralized border radius */
+  padding: var(--input-padding); /* Centralized padding */
+  height: var(--input-height); /* Centralized height */
+  width: 100%; /* Full width */
+  font-family: var(--input-font-family); /* Use Oxygen font */
+  font-size: var(--input-font-size); /* Centralized font size */
+  font-weight: var(--input-font-weight); /* Centralized font weight */
+}
+
+/* Focus state for inputs */
+.input-field:focus {
+  border-color: var(--input-focus-border-color); /* Centralized focus border color */
+  outline: none; /* Remove default outline */
+}
+
+/* Placeholder styling */
+.input-field::placeholder {
+  color: var(--input-placeholder-color); /* Centralized placeholder color */
+}
+
+/* ======================== DatePicker & TimePicker ======================== */
+
+/* Custom styling for Material UI DatePicker & TimePicker input */
+.MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-input {
+  background-color: var(--input-bg-color) !important; /* Dark background color */
+  color: var(--input-text-color) !important; /* White text */
+  border-radius: var(--input-radius) !important; /* Rounded corners */
+  padding: var(--input-padding) !important; /* Padding */
+  height: var(--input-height) !important; /* Set consistent height */
+  font-family: var(--input-font-family) !important; /* Oxygen font */
+  font-size: var(--input-font-size) !important; /* Font size */
+  font-weight: var(--input-font-weight) !important; /* Font weight */
+}
+
+/* Parent container for the input fields (DatePicker/TimePicker) */
+.MuiInputBase-root.MuiOutlinedInput-root {
+  background-color: var(--input-bg-color) !important; /* Ensure matching background */
+  border: 1px solid var(--input-border-color) !important; /* Centralized border color */
+  border-radius: var(--input-radius) !important; /* Consistent border radius */
+}
+
+/* Border and focus state for DatePicker/TimePicker */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--input-focus-border-color) !important; /* Focus border */
+}
+
+/* Placeholder text for DatePicker & TimePicker */
+.MuiInputBase-input::placeholder {
+  color: var(--input-placeholder-color) !important; /* Placeholder color */
+}
+
+/* Icon color for DatePicker & TimePicker */
+.MuiSvgIcon-root {
+  color: var(--icon-color) !important; /* Centralized icon color */
+}
+
+/* ======================== Modals ======================== */
+
+/* Modal background with blur and transparency */
+.modal-background {
+  background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent backdrop */
+  backdrop-filter: blur(5px); /* Apply blur to the background */
+}
+
+/* Modal container */
+.modal-container {
+  background-color: black; /* Solid black background for modal */
+  border: 2px solid var(--input-border-color); /* Centralized border color */
+  border-radius: var(--input-radius); /* Centralized border radius */
+  padding: 0.5rem; /* Padding for inner content */
+}
+
+/* Modal button styles */
+.modal-button {
+  background-color: #10b981; /* Tailwind's green-500 for buttons */
+  color: white; /* White text */
+  padding: 0.75rem 1.5rem; /* Padding for button */
+  border-radius: var(--input-radius); /* Same rounded value as inputs */
+  text-transform: uppercase; /* Consistent button text */
+  transition: background-color 0.2s ease-in-out; /* Smooth hover transition */
+}
+
+.modal-button:hover {
+  background-color: #059669; /* Darker green-600 on hover */
+}
+
+/* ======================== Utility Styles ======================== */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-@layer base {
-  :root {
-    --radius: 0.5rem;
-  }
-}
-
-/* Apply the background image to the html element */
-html {
-  background-image: url('/images/black-leather-background.jpeg'); /* Correct path to the image */
-  background-size: cover; /* Ensures the image covers the screen */
-  background-position: center center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevent tiling */
-  background-attachment: fixed; /* Keeps the background fixed during scroll */
-  min-height: 100vh; /* Ensures the background covers the full viewport height */
 }

@@ -54,12 +54,10 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
         </DropdownMenuTrigger>
 
         {/* Dropdown menu content */}
-        <DropdownMenuContent
-          className="mt-2 mr-4 w-72 bg-gray-700 text-white border border-gray-500 shadow-lg"
-        >
+        <DropdownMenuContent className="mr-4 mt-2 w-72 border border-gray-500 bg-gray-700 text-white shadow-lg">
           {user ? (
             <>
-              <DropdownMenuLabel className="text-white font-bold text-2xl">
+              <DropdownMenuLabel className="text-2xl font-bold text-white">
                 My Account
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -90,7 +88,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
                 className="flex items-center text-red-400"
                 title="Sign-Out"
               >
-                <FaSignOutAlt className="mr-2 " /> Sign-Out
+                <FaSignOutAlt className="mr-2" /> Sign-Out
               </DropdownMenuItem>
             </>
           ) : (

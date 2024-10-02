@@ -22,7 +22,6 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
         setUser(data.session.user);
-        // showAlert('Signed in successfully!', 'success');
         onSignInSuccess();
       }
     };
@@ -41,28 +40,23 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
         provider: 'google',
       });
 
-      // Log actual critical errors only
       if (error) {
         console.error('Error signing in with Google:', error.message || error);
         return false;
       }
 
-      // Supabase's OAuth often redirects, so treat data as a success if present
       if (data) {
         console.log('Google OAuth sign-in initiated.');
         return true;
       }
 
-      // Return success if no critical errors occur
       return true;
     } catch (criticalError) {
-      // Catch any unexpected critical errors
       console.error('Critical error during Google sign-in:', criticalError);
       return false;
     }
   };
 
-  // Handle email sign-in
   const handleEmailSignIn = async () => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -79,13 +73,13 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
+      className="modal-background fixed inset-0 z-50 flex items-center justify-center"
       aria-modal="true"
       role="dialog"
       onClick={onClose}
     >
       <div
-        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-2 shadow-xl"
+        className="modal-container relative w-[90vw] max-w-sm p-2 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -112,7 +106,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mb-6 w-full rounded-md border bg-white p-3 text-xl text-black"
+                className="mb-6 input-field w-full"
                 placeholder="Enter your email"
                 required
               />

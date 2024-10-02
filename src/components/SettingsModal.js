@@ -12,13 +12,13 @@ const SettingsModal = ({ onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
+      className="modal-background fixed inset-0 z-50 flex items-center justify-center"
       aria-modal="true"
       role="dialog"
       onClick={onClose}
     >
       <div
-        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-2 shadow-xl"
+        className="modal-container relative w-[90vw] max-w-sm p-2 shadow-xl"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
@@ -34,7 +34,7 @@ const SettingsModal = ({ onClose }) => {
         </Button>
 
         {/* Modal Content */}
-        <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
+        <div className="mx-auto w-full max-w-md p-8">
           <h2 className="mx-auto mb-4 text-center text-2xl font-bold text-white">
             Settings
           </h2>

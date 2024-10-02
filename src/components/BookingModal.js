@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useLoadScript } from '@react-google-maps/api';
-import DatePicker from '@/components/DatePicker';
-import TimePicker from '@/components/TimePicker';
+import { DatePicker, TimePicker } from '@/components/DateAndTimePicker';
 import PlacesAutocomplete from '@/components/PlacesAutocomplete';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
@@ -24,8 +23,9 @@ const BookingModal = ({ onClose }) => {
     libraries,
   });
 
+  // Separate states for date and time
   const [date, setDate] = useState(null);
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState(null);
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [distance, setDistance] = useState('');
@@ -141,13 +141,13 @@ const BookingModal = ({ onClose }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
+      className="modal-background fixed inset-0 z-50 flex items-center justify-center"
       aria-modal="true"
       role="dialog"
       onClick={onClose}
     >
       <div
-        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-2"
+        className="modal-container relative w-[90vw] max-w-sm p-2"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
@@ -163,7 +163,7 @@ const BookingModal = ({ onClose }) => {
         </Button>
 
         {/* Modal Content */}
-        <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
+        <div className="mx-auto w-full max-w-md p-8 shadow-xl">
           <h2 className="mx-auto mb-2 text-center text-2xl font-bold text-white">
             Book a Ride
           </h2>
@@ -176,14 +176,21 @@ const BookingModal = ({ onClose }) => {
 
           <form onSubmit={handleSubmit} className="flex flex-col">
             <DatePicker date={date} setDate={setDate} />
+
             <hr className="mb-4 border-gray-700" />
+
             <TimePicker time={time} setTime={setTime} />
+
             <hr className="mb-4 border-gray-700" />
+
+            {/* Pickup Location */}
             <PlacesAutocomplete
               setSelected={setPickupLocation}
               label="Pickup Location"
             />
             <hr className="mb-4 border-gray-700" />
+
+            {/* Dropoff Location */}
             <PlacesAutocomplete
               setSelected={setDropoffLocation}
               label="Drop-off Location"

@@ -54,18 +54,20 @@ const NotificationsModal = ({ onClose }) => {
     if (smsOptIn && !isPhoneValid) return; // Prevent save if SMS is selected and phone number is invalid
 
     // Handle the save logic here (e.g., send to server or update state)
-    console.log(`Phone: ${phoneNumber}, SMS Opt-In: ${smsOptIn}, Email Opt-In: ${emailOptIn}`);
+    console.log(
+      `Phone: ${phoneNumber}, SMS Opt-In: ${smsOptIn}, Email Opt-In: ${emailOptIn}`
+    );
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
+      className="modal-background fixed inset-0 z-50 flex items-center justify-center"
       aria-modal="true"
       role="dialog"
       onClick={onClose}
     >
       <div
-        className="relative w-[90vw] max-w-sm rounded-lg border border-gray-500 bg-black p-2 shadow-xl"
+        className="modal-container relative w-[90vw] max-w-sm p-2 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -81,7 +83,7 @@ const NotificationsModal = ({ onClose }) => {
         </Button>
 
         {/* Modal Content */}
-        <div className="mx-auto w-full max-w-md rounded-lg p-8 shadow-xl">
+        <div className="mx-auto w-full max-w-md p-8">
           <h2 className="mx-auto mb-4 text-center text-2xl font-bold text-white">
             Notifications
           </h2>
@@ -90,7 +92,7 @@ const NotificationsModal = ({ onClose }) => {
 
           {/* Email Opt-in Section */}
           <div className="mb-4">
-            <label className="text-white flex items-center">
+            <label className="flex items-center text-white">
               <input
                 type="checkbox"
                 className="mr-2 scale-125"
@@ -102,10 +104,9 @@ const NotificationsModal = ({ onClose }) => {
           </div>
           <hr className="mb-4 border-gray-700" />
 
-
           {/* SMS Opt-in Section */}
           <div className="mb-4">
-            <label className="text-white flex items-center">
+            <label className="flex items-center text-white">
               <input
                 type="checkbox"
                 className="mr-2 scale-125"
@@ -115,8 +116,6 @@ const NotificationsModal = ({ onClose }) => {
               Opt-in for SMS Notifications (optional)
             </label>
           </div>
-
-          {/* <hr className="mb-4 border-gray-700" /> */}
 
           {/* Phone Number Input */}
           <div className="mb-6">
@@ -132,7 +131,7 @@ const NotificationsModal = ({ onClose }) => {
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               placeholder="(123) 456-7890"
-              className={`w-full rounded-md border bg-gray-800 p-3 text-white ${emailOptIn ? 'bg-gray-600' : ''}`}
+              className={`input-field w-full ${emailOptIn ? 'bg-gray-600' : ''}`}
               disabled={emailOptIn} // Disable input if Email is selected
               style={emailOptIn ? { opacity: 0.5 } : {}} // Visually indicate disabled state
             />
@@ -142,10 +141,9 @@ const NotificationsModal = ({ onClose }) => {
               </p>
             )}
           </div>
-          {/* <hr className="mb-4 border-gray-700" /> */}
 
           {/* Legal Notice */}
-          <div className="mb-4 text-sm">
+          <div className="mb-4 text-sm text-gray-300">
             <p>
               By opting in for SMS, you agree to receive a one-time SMS
               confirmation for each booking request submitted through this app.
