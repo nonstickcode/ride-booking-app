@@ -90,7 +90,7 @@ const NotificationsModal = ({ onClose }) => {
 
           {/* Email Opt-in Section */}
           <div className="mb-4">
-            <label className="text-white">
+            <label className="text-white flex items-center">
               <input
                 type="checkbox"
                 className="mr-2 scale-125"
@@ -105,7 +105,7 @@ const NotificationsModal = ({ onClose }) => {
 
           {/* SMS Opt-in Section */}
           <div className="mb-4">
-            <label className="text-white">
+            <label className="text-white flex items-center">
               <input
                 type="checkbox"
                 className="mr-2 scale-125"
