@@ -22,7 +22,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
         setUser(data.session.user);
-        showAlert('Signed in successfully!', 'success');
+        // showAlert('Signed in successfully!', 'success');
         onSignInSuccess();
       }
     };
