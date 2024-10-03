@@ -29,7 +29,7 @@ const DatePicker = ({ date, setDate }) => {
           autoFocus={false}
           slots={{
             openPickerIcon: () => (
-              <CalendarMonthIcon className="h-5 w-5 text-white" />
+              <CalendarMonthIcon className="h-5 w-5" />
             ),
           }}
           slotProps={{
@@ -58,7 +58,7 @@ const TimePicker = ({ time, setTime }) => {
           placeholder="set time here"
           onChange={(newTime) => setTime(newTime)}
           slots={{
-            openPickerIcon: () => <ClockIcon className="h-5 w-5 text-white" />,
+            openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
           }}
           slotProps={{
             textField: {
