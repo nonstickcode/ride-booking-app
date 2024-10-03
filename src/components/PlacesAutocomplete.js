@@ -6,6 +6,7 @@ import usePlacesAutocomplete, {
 import { Input } from '@/components/ui/input';
 import { FaRegCompass, FaSpinner } from 'react-icons/fa';
 import { Button } from './ui/button';
+import { MyLocationSharp } from '@mui/icons-material';
 
 const PlacesAutocomplete = ({ setSelected, label }) => {
   const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
@@ -113,7 +114,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           {currentLocationLoading ? (
             <FaSpinner className="animate-spin" />
           ) : (
-            <FaRegCompass className="" />
+            <MyLocationSharp className="" />
           )}
         </Button>
       </div>
