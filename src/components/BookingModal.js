@@ -29,8 +29,8 @@ const BookingModal = ({ onClose }) => {
 
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
-  const [isTimeValid, setIsTimeValid] = useState(true); // State for time validity
-  const [isTimeTooSoon, setIsTimeTooSoon] = useState(false); // State for checking lead time
+  const [isTimeValid, setIsTimeValid] = useState(true);
+  const [isTimeTooSoon, setIsTimeTooSoon] = useState(false);
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [distance, setDistance] = useState('');
@@ -40,7 +40,7 @@ const BookingModal = ({ onClose }) => {
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false); // State for submission tracking
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -109,7 +109,7 @@ const BookingModal = ({ onClose }) => {
       const emailResult = await emailResponse.json();
       if (emailResult.success) {
         setShowAlert(true);
-        setHasSubmitted(true); // Mark form as submitted
+        setHasSubmitted(true);
         setTimeout(() => {
           setShowAlert(false);
           onClose();
@@ -150,7 +150,7 @@ const BookingModal = ({ onClose }) => {
       }
     } else {
       setIsTimeValid(true);
-      setIsTimeTooSoon(false); // Reset if no time is selected
+      setIsTimeTooSoon(false);
     }
   };
 
@@ -295,7 +295,7 @@ const BookingModal = ({ onClose }) => {
             <Button
               type="submit"
               disabled={
-                hasSubmitted || // Disable if form is already submitted
+                hasSubmitted ||
                 !date ||
                 !time ||
                 !pickupLocation ||
@@ -303,7 +303,7 @@ const BookingModal = ({ onClose }) => {
                 exceedsRange ||
                 loadingSubmit ||
                 !isTimeValid ||
-                isTimeTooSoon // Disable button if time is too soon
+                isTimeTooSoon
               }
               variant="green"
               size="md"
