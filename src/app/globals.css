@@ -8,19 +8,24 @@
 @layer base {
   :root {
     /* Centralized input styles */
+    
     --input-bg-color: #1f2937; /* Equivalent to Tailwind's gray-800 */
     --input-border-color: #6b7280; /* Equivalent to Tailwind's gray-500 */
-    --input-text-color: #ffffff; /* White text */
-    --input-placeholder-color: #9ca3af; /* Tailwind's gray-400 for placeholder */
-
+    --input-text-color: #ffffff; /* Equivalent to Tailwind's white */
+    --input-placeholder-color: #9ca3af; /* Equivalent to Tailwind's gray-400 */
+    
     --input-radius: 0.375rem; /* Tailwind's default rounded-md */
     --input-padding: 0rem 1rem; /* Padding inside inputs */
     --input-height: 2.25rem; /* Standard input height */
+    
+    /* Typography */
     --input-font-family: 'Oxygen', sans-serif; /* Oxygen font for all inputs */
-    --input-font-size: 1rem; /* Font size for inputs */
-    --input-font-weight: 400; /* Normal font weight for inputs */
-    --input-focus-border-color: #9ca3af; /* Lighter gray (gray-400) on focus */
-    --icon-color: #e5e7eb; /* gray-200 */
+    --input-font-size: 1rem; /* Standard font size */
+    --input-font-weight: 400; /* Normal font weight */
+    
+    --input-focus-border-color: #9ca3af; /* Equivalent to Tailwind's gray-400 on focus */
+    --icon-color: #e5e7eb; /* Equivalent to Tailwind's gray-200 */
+    --hover-blue-color: #3b82f6; /* Equivalent to Tailwind's blue-500 */
   }
 }
 
@@ -63,29 +68,27 @@ body {
 
 /* General input field styles */
 .input-field {
-  background-color: var(--input-bg-color); /* Centralized background color */
-  color: var(--input-text-color); /* Centralized white text color */
-  border: 1px solid var(--input-border-color); /* Centralized border color */
-  border-radius: var(--input-radius); /* Centralized border radius */
-  padding: var(--input-padding); /* Centralized padding */
-  height: var(--input-height); /* Centralized height */
-  width: 100%; /* Full width */
-  font-family: var(--input-font-family); /* Use Oxygen font */
-  font-size: var(--input-font-size); /* Centralized font size */
-  font-weight: var(--input-font-weight); /* Centralized font weight */
+  background-color: var(--input-bg-color); /* Tailwind gray-800 background */
+  color: var(--input-text-color); /* Tailwind white text */
+  border: 1px solid var(--input-border-color); /* Tailwind gray-500 border */
+  border-radius: var(--input-radius); /* Tailwind rounded-md */
+  padding: var(--input-padding); /* Tailwind padding for inputs */
+  height: var(--input-height); /* Standard input height */
+  width: 100%; /* Full width for inputs */
+  font-family: var(--input-font-family); /* Oxygen font */
+  font-size: var(--input-font-size); /* Font size */
+  font-weight: var(--input-font-weight); /* Normal font weight */
 }
 
 /* Focus state for inputs */
 .input-field:focus {
-  border-color: var(
-    --input-focus-border-color
-  ); /* Centralized focus border color */
+  border-color: var(--input-focus-border-color); /* Lighter gray border on focus (Tailwind gray-400) */
   outline: none !important; /* Remove default outline */
 }
 
 /* Placeholder styling */
 .input-field::placeholder {
-  color: var(--input-placeholder-color); /* Centralized placeholder color */
+  color: var(--input-placeholder-color); /* Tailwind gray-400 placeholder */
   font-size: 0.9rem;
 }
 
@@ -93,46 +96,41 @@ body {
 
 /* Custom styling for Material UI DatePicker & TimePicker input */
 .MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-input {
-  background-color: var(
-    --input-bg-color
-  ) !important; /* Dark background color */
-  color: var(--input-text-color) !important; /* White text */
-  border-radius: var(--input-radius) !important; /* Rounded corners */
+  background-color: var(--input-bg-color) !important; /* Tailwind gray-800 background */
+  color: var(--input-text-color) !important; /* Tailwind white text */
+  border-radius: var(--input-radius) !important; /* Tailwind rounded-md */
   padding: var(--input-padding) !important; /* Padding */
-  height: var(--input-height) !important; /* Set consistent height */
+  height: var(--input-height) !important; /* Set consistent input height */
   font-family: var(--input-font-family) !important; /* Oxygen font */
   font-size: var(--input-font-size) !important; /* Font size */
   font-weight: var(--input-font-weight) !important; /* Font weight */
 }
 
-/* Parent container for the input fields (DatePicker/TimePicker) */
+/* Parent container for DatePicker/TimePicker input fields */
 .MuiInputBase-root.MuiOutlinedInput-root {
-  background-color: var(
-    --input-bg-color
-  ) !important; /* Ensure matching background */
-  border: 1px solid var(--input-border-color) !important; /* Centralized border color */
-  border-radius: var(--input-radius) !important; /* Consistent border radius */
+  background-color: var(--input-bg-color) !important; /* Tailwind gray-800 background */
+  border: 1px solid var(--input-border-color) !important; /* Tailwind gray-500 border */
+  border-radius: var(--input-radius) !important; /* Tailwind rounded-md */
 }
 
 /* Border and focus state for DatePicker/TimePicker */
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: var(--input-focus-border-color) !important; /* Focus border */
+  border-color: var(--input-focus-border-color) !important; /* Tailwind gray-400 on focus */
 }
 
 /* Placeholder text for DatePicker & TimePicker */
 .MuiInputBase-input::placeholder {
-  color: var(--input-placeholder-color) !important; /* Placeholder color */
+  color: var(--input-placeholder-color) !important; /* Tailwind gray-400 placeholder */
 }
 
 /* Icon color for DatePicker & TimePicker */
 .MuiSvgIcon-root {
-  color: var(--icon-color) !important; /* Centralized icon color */
-  
+  color: var(--icon-color) !important; /* Tailwind gray-200 */
 }
 
 /* Add hover effect for the icon */
 .MuiSvgIcon-root:hover {
-  color: #3b82f6 !important; /* Tailwind's blue-500 hex color */
+  color: var(--hover-blue-color) !important; /* Tailwind blue-500 on hover */
 }
 
 /* Hide the switch view button */
@@ -151,9 +149,9 @@ body {
 /* Modal container */
 .modal-container {
   background-color: black; /* Solid black background for modal */
-  border: 2px solid var(--input-border-color); /* Centralized border color */
-  border-radius: var(--input-radius); /* Centralized border radius */
-  padding: 0.5rem; /* Padding for inner content */
+  border: 2px solid var(--input-border-color); /* Tailwind gray-500 border */
+  border-radius: var(--input-radius); /* Tailwind rounded-md */
+  padding: 0.5rem; /* Padding for modal container */
 }
 
 /* ======================== Utility Styles ======================== */
@@ -168,70 +166,67 @@ body {
 
 /* Calendar root container */
 .MuiDateCalendar-root {
-  background-color: white; /* Set calendar background */
-  color: var(--input-text-color); /* Set text color */
-  border-radius: var(--input-radius); /* Rounded corners */
+  background-color: white; /* Set white background for calendar */
+  color: var(--input-text-color); /* Tailwind white text */
+  border-radius: var(--input-radius); /* Tailwind rounded-md */
 }
 
 /* Calendar header (month and navigation buttons) */
 .MuiPickersCalendarHeader-root {
-  background: linear-gradient(
-    to right,
-    rgb(37, 99, 235),
-    rgb(29, 78, 216)
-  ) !important; /* From blue-600 to blue-800 */
+  background: linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216)) !important; /* From blue-600 to blue-800 */
   padding: 0.5rem; /* Padding around the header */
 }
 
 /* Month label (e.g., October 2024) */
 .MuiPickersCalendarHeader-label {
-  color: var(--input-text-color); /* Match text color */
-  font-family: var(--input-font-family); /* Use Oxygen font */
-  font-size: var(--input-font-size); /* Match font size */
-  font-weight: var(--input-font-weight); /* Match font weight */
+  color: var(--input-text-color); /* Tailwind white text */
+  font-family: var(--input-font-family); /* Oxygen font */
+  font-size: x-large; /* Font size */
+  font-weight: var(--input-font-weight); /* Font weight */
+  
 }
 
 /* Calendar navigation buttons (arrows for next/previous month) */
-.MuiPickersArrowSwitcher-button {
-  color: var(--icon-color); /* Match icon color */
-}
+/* .MuiPickersArrowSwitcher-button {
+  color: var(--icon-color);
+}  */
 
 .MuiPickersArrowSwitcher-previousIconButton,
 .MuiPickersArrowSwitcher-nextIconButton {
-  background-color: var(--input-bg-color); /* Button background */
-  border-radius: var(--input-radius); /* Rounded buttons */
-  border: 1px solid var(--input-border-color); /* Match border style */
+  background-color: var(--input-bg-color); /* Tailwind gray-800 background */
+  border-radius: var(--input-radius); /* Tailwind rounded-md */
+  border: 1px solid var(--input-border-color); /* Tailwind gray-500 border */
 }
 
 /* Weekday labels (S M T W T F S) */
 .MuiDayCalendar-weekDayLabel {
-  color: var(--input-placeholder-color); /* Set to placeholder color */
-  font-family: var(--input-font-family); /* Use Oxygen font */
+  color: var(--input-placeholder-color); /* Tailwind gray-400 for weekday labels */
+  font-family: var(--input-font-family); /* Oxygen font */
   font-size: 0.875rem; /* Slightly smaller text for weekday labels */
 }
 
 /* Day buttons in the calendar */
 .MuiPickersDay-root {
-  background-color: var(--input-bg-color); /* Match calendar background */
-  color: var(--input-text-color); /* Match text color */
-  border-radius: var(--input-radius); /* Rounded day buttons */
-  font-family: var(--input-font-family); /* Use Oxygen font */
-  font-size: var(--input-font-size); /* Match font size */
+  background-color: var(--input-bg-color); /* Tailwind gray-800 background */
+  color: var(--input-text-color); /* Tailwind white text */
+  border-radius: var(--input-radius); /* Tailwind rounded-md */
+  font-family: var(--input-font-family); /* Oxygen font */
+  font-size: var(--input-font-size); /* Font size */
 }
 
 /* Hover and selected states for day buttons */
 .MuiPickersDay-root:hover {
-  background-color: var(--input-border-color); /* Change background on hover */
+  background-color: var(--input-border-color); /* Change background on hover (Tailwind gray-500) */
 }
 
 .MuiPickersDay-root.Mui-selected {
-  background-color: rgb(37, 99, 235) !important; /* From blue-600 to blue-800 */
-  color: white !important; /* Ensure text is white on selected day */
+  background-color: rgb(37, 99, 235) !important; /* From blue-600 */
+  color: white !important; /* White text on selected day */
 }
 
 /* Current day (today) styling */
 .MuiPickersDay-today {
-  border: 1px solid #10b981; /* Green border for the current day */
+  border: 1px solid #10b981; /* Green border for the current day (Tailwind green-500) */
   color: white; /* White text for today */
 }
 
