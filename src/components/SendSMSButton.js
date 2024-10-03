@@ -47,9 +47,9 @@ const SendSMSButton = () => {
 
   return (
     <div className="sms-form">
-      <h2 className="text-xl font-bold mb-4">Send an SMS</h2>
+      <h2 className="mb-4 text-xl font-bold">Send an SMS</h2>
       <div className="mb-4">
-        <label className="block text-white mb-2">Recipient Phone Number:</label>
+        <label className="mb-2 block text-white">Recipient Phone Number:</label>
         <input
           type="text"
           value={recipient}
@@ -59,7 +59,7 @@ const SendSMSButton = () => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-white mb-2">Message Content:</label>
+        <label className="mb-2 block text-white">Message Content:</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -70,18 +70,18 @@ const SendSMSButton = () => {
       <button
         onClick={handleSendSMS}
         disabled={loading}
-        className="bg-green-500 text-white px-4 py-2 rounded"
+        className="rounded bg-green-500 px-4 py-2 text-white"
       >
         {loading ? (
-          <FaSpinner className="animate-spin mr-2" />
+          <FaSpinner className="mr-2 animate-spin" />
         ) : (
           <FaCheck className="mr-2" />
         )}
         {loading ? 'Sending...' : 'Send SMS'}
       </button>
 
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-      {message && <p className="text-green-500 mt-4">{message}</p>}
+      {error && <p className="mt-4 text-red-500">{error}</p>}
+      {message && <p className="mt-4 text-green-500">{message}</p>}
     </div>
   );
 };

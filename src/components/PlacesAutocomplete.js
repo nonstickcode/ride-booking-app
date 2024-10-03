@@ -99,7 +99,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           onChange={handleInput}
           disabled={!ready || currentLocationLoading} // Disable if API isn't ready or loading location
           placeholder="Search by Name or Address"
-          className="flex-grow input-field" // Use the centralized input-field class
+          className="input-field flex-grow" // Use the centralized input-field class
         />
 
         {/* Current Location Button */}

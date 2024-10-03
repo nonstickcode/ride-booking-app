@@ -106,7 +106,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mb-6 input-field w-full"
+                className="input-field mb-6 w-full"
                 placeholder="Enter your email"
                 required
               />

@@ -223,21 +223,21 @@ const BookingModal = ({ onClose }) => {
             <div>
               <TimePicker time={time} setTime={setTime} />
               {!isTimeValid && time && (
-                <p className="mb-3 text-md text-red-500">
+                <p className="text-md mb-3 text-red-500">
                   There are no rides available between the hours of 10pm and
                   10am. Sorry for the inconvenience.
                 </p>
               )}
-              
+
               {isTimeTooSoon && (
-                <p className="mb-3 text-md text-red-500">
-                  Drive requires at least {LEAD_TIME / (60 * 60 * 1000)} hour lead time before any pick-up
-                  can be requested.
+                <p className="text-md mb-3 text-red-500">
+                  Drive requires at least {LEAD_TIME / (60 * 60 * 1000)} hour
+                  lead time before any pick-up can be requested.
                 </p>
               )}
             </div>
 
-            <hr className="mb-4 border-gray-700" />
+            <hr className="mb-4 mt-2 border-gray-700" />
 
             <PlacesAutocomplete
               setSelected={setPickupLocation}
