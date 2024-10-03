@@ -10,6 +10,7 @@ import { ClockIcon } from '@mui/x-date-pickers';
 // Custom DatePicker component
 const DatePicker = ({ date, setDate }) => {
   // Calculate the max date (3 months from the current date)
+  // TODO: Add 3 month limit to admin settings for driver preferences
   const maxDate = addMonths(new Date(), 3);
 
   // Set the minimum date to today to prevent selecting past dates
