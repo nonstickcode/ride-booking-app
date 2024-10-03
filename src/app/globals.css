@@ -20,7 +20,7 @@
     --input-font-size: 1rem; /* Font size for inputs */
     --input-font-weight: 400; /* Normal font weight for inputs */
     --input-focus-border-color: #9ca3af; /* Lighter gray (gray-400) on focus */
-    --icon-color: #ffffff; /* white for icons */
+    --icon-color: #e5e7eb; /* gray-200 */
   }
 }
 
