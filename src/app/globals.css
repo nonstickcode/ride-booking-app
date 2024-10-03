@@ -122,6 +122,13 @@ html, body {
   color: var(--icon-color) !important; /* Centralized icon color */
 }
 
+/* Hide the switch view button */
+.MuiPickersCalendarHeader-switchViewButton {
+  display: none !important;
+}
+
+
+
 /* ======================== Modals ======================== */
 
 /* Modal background with blur and transparency */
@@ -160,7 +167,6 @@ html, body {
 .MuiPickersCalendarHeader-root {
   background: linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216)) !important; /* From blue-600 to blue-800 */
   padding: 0.5rem; /* Padding around the header */
-  
 }
 
 /* Month label (e.g., October 2024) */
