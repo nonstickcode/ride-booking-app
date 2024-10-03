@@ -4,7 +4,7 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from 'use-places-autocomplete';
 import { Input } from '@/components/ui/input';
-import { FaCrosshairs, FaSpinner } from 'react-icons/fa';
+import { FaRegCompass, FaSpinner } from 'react-icons/fa';
 import { Button } from './ui/button';
 
 const PlacesAutocomplete = ({ setSelected, label }) => {
@@ -113,7 +113,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
           {currentLocationLoading ? (
             <FaSpinner className="animate-spin" />
           ) : (
-            <FaCrosshairs />
+            <FaRegCompass className="" />
           )}
         </Button>
       </div>

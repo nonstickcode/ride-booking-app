@@ -6,6 +6,7 @@ import { TimePicker as MUITimePicker } from '@mui/x-date-pickers/TimePicker';
 import TextField from '@mui/material/TextField';
 import addMonths from 'date-fns/addMonths';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { FaRegCalendar, FaRegClock } from 'react-icons/fa';
 
 // Custom DatePicker component
 const DatePicker = ({ date, setDate }) => {
@@ -29,6 +30,11 @@ const DatePicker = ({ date, setDate }) => {
           textField={(params) => (
             <TextField {...params} className="input-field" fullWidth />
           )}
+          slots={{
+            openPickerIcon: () => (
+              <FaRegCalendar className="h-5 w-5 text-white" />
+            ),
+          }}
         />
       </LocalizationProvider>
     </div>
@@ -47,6 +53,9 @@ const TimePicker = ({ time, setTime }) => {
           textField={(params) => (
             <TextField {...params} className="input-field" fullWidth />
           )}
+          slots={{
+            openPickerIcon: () => <FaRegClock className="h-5 w-5 text-white" />,
+          }}
         />
       </LocalizationProvider>
     </div>
