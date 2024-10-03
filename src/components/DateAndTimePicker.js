@@ -6,7 +6,7 @@ import { TimePicker as MUITimePicker } from '@mui/x-date-pickers/TimePicker';
 import addMonths from 'date-fns/addMonths';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { ClockIcon } from '@mui/x-date-pickers';
-import { ArrowBack, ArrowCircleLeftSharp, ArrowCircleRightSharp, ArrowForward, ArrowLeft, ArrowRight, ArrowRightAltOutlined, ArrowRightOutlined } from '@mui/icons-material';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
 
 // Custom DatePicker component
 const DatePicker = ({ date, setDate }) => {
