@@ -152,12 +152,14 @@ html, body {
   background-color: white; /* Set calendar background */
   color: var(--input-text-color); /* Set text color */
   border-radius: var(--input-radius); /* Rounded corners */
+  
 }
 
 /* Calendar header (month and navigation buttons) */
 .MuiPickersCalendarHeader-root {
   background: linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216)) !important; /* From blue-600 to blue-800 */
   padding: 0.5rem; /* Padding around the header */
+  
 }
 
 /* Month label (e.g., October 2024) */

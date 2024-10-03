@@ -122,6 +122,7 @@ const BookingModal = ({ onClose }) => {
   const cost = distance ? calculateCost(parseFloat(distance)) : null;
 
   // Function to validate the selected time
+  // TODO: Need to set this as adjustable by driver in Admin later, blocked times
   const validateTime = (selectedTime) => {
     if (selectedTime) {
       const hours = selectedTime.getHours();

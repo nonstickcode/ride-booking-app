@@ -10,6 +10,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import supabase from '@/utils/supabaseClient';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import Head from 'next/head';
+import SendSMSButton from '@/components/SendSMSButton';
 
 function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -119,6 +120,7 @@ function HomeContent() {
             onSignInComplete={handleSignInComplete}
           />
         )}
+        {/* <SendSMSButton /> */}
 
         <footer className="mt-8 text-center">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>
