@@ -55,7 +55,6 @@ const TimePicker = ({ time, setTime }) => {
           value={time}
           formatDensity="spacious"
           format="hh:mm a" // 12-hour format with AM/PM
-          placeholder="set time here"
           onChange={(newTime) => setTime(newTime)}
           slots={{
             openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
