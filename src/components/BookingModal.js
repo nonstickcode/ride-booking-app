@@ -186,14 +186,14 @@ const BookingModal = ({ onClose }) => {
             {/* Pickup Location */}
             <PlacesAutocomplete
               setSelected={setPickupLocation}
-              label="Pickup Location"
+              label="Pickup:"
             />
             <hr className="mb-4 border-gray-700" />
 
             {/* Dropoff Location */}
             <PlacesAutocomplete
               setSelected={setDropoffLocation}
-              label="Drop-off Location"
+              label="Drop-off:"
             />
 
             {/* Show only when both pickup and drop-off are present */}

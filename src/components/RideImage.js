@@ -5,7 +5,7 @@ import Image from 'next/image';
 export default function RideImage() {
   return (
     <Image
-      className="mb-4 transform rounded-lg"
+      className="mb-4 transform rounded-xl"
       src="/images/jamies-escalade.jpeg"
       width={300}
       height={200}
