@@ -23,9 +23,9 @@ const BookingModal = ({ onClose }) => {
     libraries,
   });
 
-  // Separate states for date and time
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
+  const [isTimeValid, setIsTimeValid] = useState(true); // State for time validity
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [distance, setDistance] = useState('');
@@ -35,6 +35,7 @@ const BookingModal = ({ onClose }) => {
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false); // State for submission tracking
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,6 +46,11 @@ const BookingModal = ({ onClose }) => {
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    setHasSubmitted(false);
+    setLoadingSubmit(false);
+  }, [onClose]);
 
   useEffect(() => {
     if (pickupLocation || dropoffLocation) {
@@ -67,7 +73,6 @@ const BookingModal = ({ onClose }) => {
         setExceedsRange
       );
     } else {
-      // Reset the distance, time, and cost when either location is not provided
       setDistance('');
       setDuration('');
     }
@@ -99,6 +104,7 @@ const BookingModal = ({ onClose }) => {
       const emailResult = await emailResponse.json();
       if (emailResult.success) {
         setShowAlert(true);
+        setHasSubmitted(true); // Mark form as submitted
         setTimeout(() => {
           setShowAlert(false);
           onClose();
@@ -110,13 +116,30 @@ const BookingModal = ({ onClose }) => {
       console.error('Error submitting booking:', error);
     } finally {
       setLoadingSubmit(false);
-      console.log('Booking Request Email Sent to Jamie Successfully!');
     }
   };
 
   const cost = distance ? calculateCost(parseFloat(distance)) : null;
 
-  // Generate Google Maps link for the trip
+  // Function to validate the selected time
+  const validateTime = (selectedTime) => {
+    if (selectedTime) {
+      const hours = selectedTime.getHours();
+      if (hours >= 22 || hours < 10) {
+        setIsTimeValid(false);
+      } else {
+        setIsTimeValid(true);
+      }
+    } else {
+      setIsTimeValid(true); // Default to true if no time is selected
+    }
+  };
+
+  // Whenever time changes, validate it
+  useEffect(() => {
+    validateTime(time);
+  }, [time]);
+
   const generateGoogleMapsLinkForTrip = () => {
     if (pickupLocation && dropoffLocation) {
       const pickup = `${pickupLocation.lat},${pickupLocation.lng}`;
@@ -126,7 +149,6 @@ const BookingModal = ({ onClose }) => {
     return '#';
   };
 
-  // Handle loading or error states
   if (loadError) {
     return <div>Error loading Google Maps API</div>;
   }
@@ -148,7 +170,7 @@ const BookingModal = ({ onClose }) => {
     >
       <div
         className="modal-container relative w-[90vw] max-w-sm p-2"
-        onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <Button
@@ -179,24 +201,30 @@ const BookingModal = ({ onClose }) => {
 
             <hr className="mb-4 border-gray-700" />
 
-            <TimePicker time={time} setTime={setTime} />
+            <div>
+              <TimePicker time={time} setTime={setTime} />
+              {!isTimeValid && time && (
+                <p className="mb-3 text-md text-red-500">
+                  There are no rides available between the hours of 10pm and
+                  10am. Sorry for the inconvenience.
+                </p>
+              )}
+            </div>
 
             <hr className="mb-4 border-gray-700" />
 
-            {/* Pickup Location */}
             <PlacesAutocomplete
               setSelected={setPickupLocation}
               label="Pickup:"
             />
+
             <hr className="mb-4 border-gray-700" />
 
-            {/* Dropoff Location */}
             <PlacesAutocomplete
               setSelected={setDropoffLocation}
               label="Drop-off:"
             />
 
-            {/* Show only when both pickup and drop-off are present */}
             {pickupLocation &&
               dropoffLocation &&
               !loadingRoute &&
@@ -205,7 +233,6 @@ const BookingModal = ({ onClose }) => {
               cost !== null && (
                 <>
                   <hr className="mb-2 border-gray-700" />
-                  {/* Google Maps Trip Link */}
                   <a
                     href={generateGoogleMapsLinkForTrip()}
                     target="_blank"
@@ -242,12 +269,14 @@ const BookingModal = ({ onClose }) => {
             <Button
               type="submit"
               disabled={
+                hasSubmitted || // Disable if form is already submitted
                 !date ||
                 !time ||
                 !pickupLocation ||
                 !dropoffLocation ||
                 exceedsRange ||
-                loadingSubmit
+                loadingSubmit ||
+                !isTimeValid
               }
               variant="green"
               size="md"
