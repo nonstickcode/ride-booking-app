@@ -3,10 +3,10 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from 'use-places-autocomplete';
-import { Input } from '@/components/ui/input';
-import { FaRegCompass, FaSpinner } from 'react-icons/fa';
+import TextField from '@mui/material/TextField';
 import { Button } from './ui/button';
 import { MyLocationSharp } from '@mui/icons-material';
+import { FaSpinner } from 'react-icons/fa';
 
 const PlacesAutocomplete = ({ setSelected, label }) => {
   const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
@@ -28,8 +28,8 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
 
   // Handle selection of an address from the suggestions
   const handleSelect = async (address) => {
-    setValue(address, false); // Set the input field to the selected address
-    clearSuggestions(); // Clear the suggestions list
+    setValue(address, false);
+    clearSuggestions();
 
     try {
       const results = await getGeocode({ address });
@@ -57,7 +57,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
             location: { lat: latitude, lng: longitude },
           });
           const address = results[0].formatted_address;
-          setValue(address, false); // Set the input field to the current location's address
+          setValue(address, false);
           setSelected({ lat: latitude, lng: longitude, address });
         } catch (error) {
           console.error('Error fetching location:', error);
@@ -95,19 +95,19 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
 
       <div className="flex items-center space-x-2">
         {/* Input Field */}
-        <Input
+        <TextField
           value={value}
           onChange={handleInput}
           disabled={!ready || currentLocationLoading} // Disable if API isn't ready or loading location
           placeholder="Search by Name or Address"
-          className="input-field flex-grow" // Use the centralized input-field class
+          className="input-field flex-grow"
         />
 
         {/* Current Location Button */}
         <Button
           onClick={handleCurrentLocation}
           variant="location"
-          size="smallIcon" // Use the smallIcon size variant
+          size="smallIcon"
           disabled={currentLocationLoading}
           title="Use current location"
         >

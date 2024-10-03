@@ -3,11 +3,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker as MUITimePicker } from '@mui/x-date-pickers/TimePicker';
-import TextField from '@mui/material/TextField';
 import addMonths from 'date-fns/addMonths';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { FaRegCalendar, FaRegClock } from 'react-icons/fa';
-import { CalculateOutlined } from '@mui/icons-material';
 import { ClockIcon } from '@mui/x-date-pickers';
 
 // Custom DatePicker component
@@ -29,13 +26,18 @@ const DatePicker = ({ date, setDate }) => {
           showDaysOutsideCurrentMonth
           minDate={minDate}
           maxDate={maxDate}
-          textField={(params) => (
-            <TextField {...params} className="input-field" fullWidth />
-          )}
+          autoFocus={false}
           slots={{
             openPickerIcon: () => (
               <CalendarMonthIcon className="h-5 w-5 text-white" />
             ),
+          }}
+          slotProps={{
+            textField: {
+              placeholder: 'Select a Date',
+              className: 'input-field',
+              fullWidth: true,
+            },
           }}
         />
       </LocalizationProvider>
@@ -51,12 +53,19 @@ const TimePicker = ({ time, setTime }) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <MUITimePicker
           value={time}
+          formatDensity="spacious"
+          format="hh:mm a" // 12-hour format with AM/PM
+          placeholder="set time here"
           onChange={(newTime) => setTime(newTime)}
-          textField={(params) => (
-            <TextField {...params} className="input-field" fullWidth />
-          )}
           slots={{
             openPickerIcon: () => <ClockIcon className="h-5 w-5 text-white" />,
+          }}
+          slotProps={{
+            textField: {
+              placeholder: 'Select a Time',
+              className: 'input-field',
+              fullWidth: true,
+            },
           }}
         />
       </LocalizationProvider>

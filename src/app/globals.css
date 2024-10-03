@@ -80,7 +80,7 @@ body {
   border-color: var(
     --input-focus-border-color
   ); /* Centralized focus border color */
-  outline: none; /* Remove default outline */
+  outline: none !important; /* Remove default outline */
 }
 
 /* Placeholder styling */
