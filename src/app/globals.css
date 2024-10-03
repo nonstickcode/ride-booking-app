@@ -127,6 +127,12 @@ body {
 /* Icon color for DatePicker & TimePicker */
 .MuiSvgIcon-root {
   color: var(--icon-color) !important; /* Centralized icon color */
+  
+}
+
+/* Add hover effect for the icon */
+.MuiSvgIcon-root:hover {
+  color: #3b82f6 !important; /* Tailwind's blue-500 hex color */
 }
 
 /* Hide the switch view button */

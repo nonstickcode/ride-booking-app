@@ -15,7 +15,7 @@ const buttonVariants = cva(
         close: 'text-gray-400 hover:text-white transition',
         hamburger: 'text-white hover:text-gray-400 transition',
         location:
-          'bg-gray-700 hover:bg-blue-600 border border-gray-500 rounded-[0.5rem] text-white transition',
+          'bg-gray-700 border border-gray-500 rounded-[0.5rem] transition',
       },
       size: {
         md: 'w-full py-2 text-base text-lg',
