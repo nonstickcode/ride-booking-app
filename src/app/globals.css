@@ -39,6 +39,25 @@ html, body {
   margin: 0;
 }
 
+/* ======================== Main Content ======================== */
+
+/* Responsive background for main content area */
+.main-content {
+  background-image: url('/images/black-leather-background.jpeg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Main title style using Bebas Neue */
+.main-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4rem;
+  letter-spacing: 0.5rem;
+  text-transform: uppercase;
+}
+
 /* ======================== Input Fields ======================== */
 
 /* General input field styles */
@@ -124,4 +143,76 @@ html, body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* ======================== Date Calendar Styles ======================== */
+
+/* Calendar root container */
+.MuiDateCalendar-root {
+  background-color: white; /* Set calendar background */
+  color: var(--input-text-color); /* Set text color */
+  border-radius: var(--input-radius); /* Rounded corners */
+}
+
+/* Calendar header (month and navigation buttons) */
+.MuiPickersCalendarHeader-root {
+  background: linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216)) !important; /* From blue-600 to blue-800 */
+  padding: 0.5rem; /* Padding around the header */
+}
+
+/* Month label (e.g., October 2024) */
+.MuiPickersCalendarHeader-label {
+  color: var(--input-text-color); /* Match text color */
+  font-family: var(--input-font-family); /* Use Oxygen font */
+  font-size: var(--input-font-size); /* Match font size */
+  font-weight: var(--input-font-weight); /* Match font weight */
+}
+
+/* Calendar navigation buttons (arrows for next/previous month) */
+.MuiPickersArrowSwitcher-button {
+  color: var(--icon-color); /* Match icon color */
+}
+
+.MuiPickersArrowSwitcher-previousIconButton,
+.MuiPickersArrowSwitcher-nextIconButton {
+  background-color: var(--input-bg-color); /* Button background */
+  border-radius: var(--input-radius); /* Rounded buttons */
+  border: 1px solid var(--input-border-color); /* Match border style */
+}
+
+/* Weekday labels (S M T W T F S) */
+.MuiDayCalendar-weekDayLabel {
+  color: var(--input-placeholder-color); /* Set to placeholder color */
+  font-family: var(--input-font-family); /* Use Oxygen font */
+  font-size: 0.875rem; /* Slightly smaller text for weekday labels */
+}
+
+/* Day buttons in the calendar */
+.MuiPickersDay-root {
+  background-color: var(--input-bg-color); /* Match calendar background */
+  color: var(--input-text-color); /* Match text color */
+  border-radius: var(--input-radius); /* Rounded day buttons */
+  font-family: var(--input-font-family); /* Use Oxygen font */
+  font-size: var(--input-font-size); /* Match font size */
+}
+
+/* Hover and selected states for day buttons */
+.MuiPickersDay-root:hover {
+  background-color: var(--input-border-color); /* Change background on hover */
+}
+
+.MuiPickersDay-root.Mui-selected {
+  background-color: rgb(37, 99, 235) !important; /* From blue-600 to blue-800 */
+  color: white !important; /* Ensure text is white on selected day */
+}
+
+/* Current day (today) styling */
+.MuiPickersDay-today {
+  border: 1px solid #10b981; /* Green border for the current day */
+  color: white; /* White text for today */
+}
+
+/* Transition animations for month switching */
+.MuiPickersSlideTransition-root {
+  transition: opacity 0.3s ease-in-out; /* Smooth fade effect for transitions */
 }

@@ -14,11 +14,13 @@ const DatePicker = ({ date, setDate }) => {
         <MUIDatePicker
           value={date}
           onChange={(newDate) => setDate(newDate)}
+          disabled={false}
+          showDaysOutsideCurrentMonth
+          
           renderInput={(params) => (
             // Use the centralized input-field class for consistent styling
             <TextField {...params} className="input-field" fullWidth />
           )}
-          desktopModeMediaQuery="(min-width: 768px)" // Show desktop picker on screens larger than 768px
         />
       </LocalizationProvider>
     </div>
@@ -38,7 +40,6 @@ const TimePicker = ({ time, setTime }) => {
             // Use the centralized input-field class for consistent styling
             <TextField {...params} className="input-field" fullWidth />
           )}
-          desktopModeMediaQuery="(min-width: 768px)" // Show desktop picker on screens larger than 768px
         />
       </LocalizationProvider>
     </div>
