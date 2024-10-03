@@ -83,6 +83,7 @@ html, body {
 /* Placeholder styling */
 .input-field::placeholder {
   color: var(--input-placeholder-color); /* Centralized placeholder color */
+  font-size: 0.9rem;
 }
 
 /* ======================== DatePicker & TimePicker ======================== */

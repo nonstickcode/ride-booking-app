@@ -17,6 +17,10 @@ import supabase from '@/utils/supabaseClient';
 
 const libraries = ['places'];
 
+// Define the lead time constant
+// TODO: Add this to Driver admin and adjust how its displayed below according in user seen red text error
+const LEAD_TIME = 1 * 60 * 60 * 1000; // 1 hour in milliseconds (TODO: Make this configurable in admin)
+
 const BookingModal = ({ onClose }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -26,6 +30,7 @@ const BookingModal = ({ onClose }) => {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [isTimeValid, setIsTimeValid] = useState(true); // State for time validity
+  const [isTimeTooSoon, setIsTimeTooSoon] = useState(false); // State for checking lead time
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [distance, setDistance] = useState('');
@@ -122,7 +127,6 @@ const BookingModal = ({ onClose }) => {
   const cost = distance ? calculateCost(parseFloat(distance)) : null;
 
   // Function to validate the selected time
-  // TODO: Need to set this as adjustable by driver in Admin later, blocked times
   const validateTime = (selectedTime) => {
     if (selectedTime) {
       const hours = selectedTime.getHours();
@@ -131,15 +135,29 @@ const BookingModal = ({ onClose }) => {
       } else {
         setIsTimeValid(true);
       }
+
+      // Check if selected date is today and time is less than LEAD_TIME ahead
+      if (date && new Date().toDateString() === date.toDateString()) {
+        const currentTime = new Date();
+        const leadTimeLimit = new Date(currentTime.getTime() + LEAD_TIME); // Lead time from now
+        if (selectedTime < leadTimeLimit) {
+          setIsTimeTooSoon(true);
+        } else {
+          setIsTimeTooSoon(false);
+        }
+      } else {
+        setIsTimeTooSoon(false);
+      }
     } else {
-      setIsTimeValid(true); // Default to true if no time is selected
+      setIsTimeValid(true);
+      setIsTimeTooSoon(false); // Reset if no time is selected
     }
   };
 
   // Whenever time changes, validate it
   useEffect(() => {
     validateTime(time);
-  }, [time]);
+  }, [time, date]);
 
   const generateGoogleMapsLinkForTrip = () => {
     if (pickupLocation && dropoffLocation) {
@@ -210,6 +228,13 @@ const BookingModal = ({ onClose }) => {
                   10am. Sorry for the inconvenience.
                 </p>
               )}
+              
+              {isTimeTooSoon && (
+                <p className="mb-3 text-md text-red-500">
+                  Drive requires at least {LEAD_TIME / (60 * 60 * 1000)} hour lead time before any pick-up
+                  can be requested.
+                </p>
+              )}
             </div>
 
             <hr className="mb-4 border-gray-700" />
@@ -277,7 +302,8 @@ const BookingModal = ({ onClose }) => {
                 !dropoffLocation ||
                 exceedsRange ||
                 loadingSubmit ||
-                !isTimeValid
+                !isTimeValid ||
+                isTimeTooSoon // Disable button if time is too soon
               }
               variant="green"
               size="md"
