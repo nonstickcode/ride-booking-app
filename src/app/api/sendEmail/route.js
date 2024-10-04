@@ -2,10 +2,8 @@ import nodemailer from 'nodemailer';
 
 export async function POST(request) {
   try {
-    // Parse the request body to extract booking details
     const {
-      date,
-      time,
+      date, // Combined date-time
       pickupLocation,
       dropoffLocation,
       distance,
@@ -13,10 +11,8 @@ export async function POST(request) {
       cost,
     } = await request.json();
 
-    // Ensure all required fields are provided before sending the email
     if (
       !date ||
-      !time ||
       !pickupLocation ||
       !dropoffLocation ||
       !distance ||
@@ -28,6 +24,22 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    // Format the date and time
+    const bookingDate = new Date(date);
+
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      weekday: 'long', // Thursday
+      year: 'numeric', // 2024
+      month: 'long', // July
+      day: 'numeric', // 4
+    }).format(bookingDate);
+
+    const formattedTime = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true, // AM/PM format
+    }).format(bookingDate);
 
     // Create Google Maps links for pickup and dropoff locations
     const pickupCoords = `${pickupLocation.lat},${pickupLocation.lng}`;
@@ -46,17 +58,17 @@ export async function POST(request) {
       },
     });
 
-    // Email content with links to Google Maps for the pickup and dropoff locations
+    // Email content with formatted date and time
     const mailOptions = {
-      from: 'rydeblk@gmail.com', // Verified sender email / verified on Brevo dashboard
+      from: 'rydeblk@gmail.com', // Verified sender email
       to: 'rydeblk@gmail.com', // Destination email
       subject: 'New Booking Request',
       html: `Hello,<br><br>
 
 You have received a new booking request with the following details:<br><br>
 
-- Date: ${date}<br>
-- Time: ${time}<br>
+- Date: ${formattedDate}<br>
+- Time: ${formattedTime}<br>
 - Pickup Location: <a href="${pickupGoogleMapsLink}" target="_blank">${pickupLocation.address || 'View Location in Google Maps'}</a><br>
 - Dropoff Location: <a href="${dropoffGoogleMapsLink}" target="_blank">${dropoffLocation.address || 'View Location in Google Maps'}</a><br>
 - Estimated Distance: ${distance}<br>
@@ -75,7 +87,6 @@ Your RYDEBLK Booking System`,
     // Send the email
     await transporter.sendMail(mailOptions);
 
-    // Respond with a success message
     return new Response(
       JSON.stringify({ success: true, message: 'Email sent successfully' }),
       { status: 200 }

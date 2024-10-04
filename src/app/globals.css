@@ -8,21 +8,21 @@
 @layer base {
   :root {
     /* Centralized input styles */
-    
+
     --input-bg-color: #1f2937; /* Equivalent to Tailwind's gray-800 */
     --input-border-color: #6b7280; /* Equivalent to Tailwind's gray-500 */
     --input-text-color: #ffffff; /* Equivalent to Tailwind's white */
     --input-placeholder-color: #9ca3af; /* Equivalent to Tailwind's gray-400 */
-    
+
     --input-radius: 0.375rem; /* Tailwind's default rounded-md */
     --input-padding: 0rem 1rem; /* Padding inside inputs */
     --input-height: 2.25rem; /* Standard input height */
-    
+
     /* Typography */
     --input-font-family: 'Oxygen', sans-serif; /* Oxygen font for all inputs */
     --input-font-size: 1rem; /* Standard font size */
     --input-font-weight: 400; /* Normal font weight */
-    
+
     --input-focus-border-color: #9ca3af; /* Equivalent to Tailwind's gray-400 on focus */
     --icon-color: #e5e7eb; /* Equivalent to Tailwind's gray-200 */
     --hover-blue-color: #3b82f6; /* Equivalent to Tailwind's blue-500 */
@@ -82,7 +82,9 @@ body {
 
 /* Focus state for inputs */
 .input-field:focus {
-  border-color: var(--input-focus-border-color); /* Lighter gray border on focus (Tailwind gray-400) */
+  border-color: var(
+    --input-focus-border-color
+  ); /* Lighter gray border on focus (Tailwind gray-400) */
   outline: none !important; /* Remove default outline */
 }
 
@@ -96,7 +98,9 @@ body {
 
 /* Custom styling for Material UI DatePicker & TimePicker input */
 .MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-input {
-  background-color: var(--input-bg-color) !important; /* Tailwind gray-800 background */
+  background-color: var(
+    --input-bg-color
+  ) !important; /* Tailwind gray-800 background */
   color: var(--input-text-color) !important; /* Tailwind white text */
   border-radius: var(--input-radius) !important; /* Tailwind rounded-md */
   padding: var(--input-padding) !important; /* Padding */
@@ -108,19 +112,25 @@ body {
 
 /* Parent container for DatePicker/TimePicker input fields */
 .MuiInputBase-root.MuiOutlinedInput-root {
-  background-color: var(--input-bg-color) !important; /* Tailwind gray-800 background */
+  background-color: var(
+    --input-bg-color
+  ) !important; /* Tailwind gray-800 background */
   border: 1px solid var(--input-border-color) !important; /* Tailwind gray-500 border */
   border-radius: var(--input-radius) !important; /* Tailwind rounded-md */
 }
 
 /* Border and focus state for DatePicker/TimePicker */
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: var(--input-focus-border-color) !important; /* Tailwind gray-400 on focus */
+  border-color: var(
+    --input-focus-border-color
+  ) !important; /* Tailwind gray-400 on focus */
 }
 
 /* Placeholder text for DatePicker & TimePicker */
 .MuiInputBase-input::placeholder {
-  color: var(--input-placeholder-color) !important; /* Tailwind gray-400 placeholder */
+  color: var(
+    --input-placeholder-color
+  ) !important; /* Tailwind gray-400 placeholder */
 }
 
 /* Icon color for DatePicker & TimePicker */
@@ -173,7 +183,11 @@ body {
 
 /* Calendar header (month and navigation buttons) */
 .MuiPickersCalendarHeader-root {
-  background: linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216)) !important; /* From blue-600 to blue-800 */
+  background: linear-gradient(
+    to right,
+    rgb(37, 99, 235),
+    rgb(29, 78, 216)
+  ) !important; /* From blue-600 to blue-800 */
   padding: 0.5rem; /* Padding around the header */
 }
 
@@ -183,7 +197,6 @@ body {
   font-family: var(--input-font-family); /* Oxygen font */
   font-size: 1.25rem;
   font-weight: var(--input-font-weight);
-  
 }
 
 /* Calendar navigation buttons (arrows for next/previous month) */
@@ -200,7 +213,9 @@ body {
 
 /* Weekday labels (S M T W T F S) */
 .MuiDayCalendar-weekDayLabel {
-  color: var(--input-placeholder-color); /* Tailwind gray-400 for weekday labels */
+  color: var(
+    --input-placeholder-color
+  ); /* Tailwind gray-400 for weekday labels */
   font-family: var(--input-font-family); /* Oxygen font */
   font-size: 0.875rem; /* Slightly smaller text for weekday labels */
 }
@@ -216,7 +231,9 @@ body {
 
 /* Hover and selected states for day buttons */
 .MuiPickersDay-root:hover {
-  background-color: var(--input-border-color); /* Change background on hover (Tailwind gray-500) */
+  background-color: var(
+    --input-border-color
+  ); /* Change background on hover (Tailwind gray-500) */
 }
 
 .MuiPickersDay-root.Mui-selected {

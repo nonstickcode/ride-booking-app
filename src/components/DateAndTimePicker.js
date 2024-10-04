@@ -23,16 +23,17 @@ const DatePicker = ({ date, setDate }) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <MUIDatePicker
           value={date}
-          onChange={(newDate) => setDate(newDate)}
+          onChange={(newDate) => {
+            console.log('Selected Date:', newDate); // Log the selected date
+            setDate(newDate); // Update the state with the new date
+          }}
           disabled={false}
           showDaysOutsideCurrentMonth
           minDate={minDate}
           maxDate={maxDate}
           autoFocus={false}
           slots={{
-            openPickerIcon: () => (
-              <CalendarMonthIcon className="h-5 w-5" />
-            )
+            openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
           }}
           slotProps={{
             textField: {
@@ -57,7 +58,10 @@ const TimePicker = ({ time, setTime }) => {
           value={time}
           formatDensity="spacious"
           format="hh:mm a" // 12-hour format with AM/PM
-          onChange={(newTime) => setTime(newTime)}
+          onChange={(newTime) => {
+            console.log('Selected Time:', newTime); // Log the selected time
+            setTime(newTime); // Update the state with the new time
+          }}
           slots={{
             openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
           }}
