@@ -181,8 +181,8 @@ body {
 .MuiPickersCalendarHeader-label {
   color: var(--input-text-color); /* Tailwind white text */
   font-family: var(--input-font-family); /* Oxygen font */
-  font-size: x-large; /* Font size */
-  font-weight: var(--input-font-weight); /* Font weight */
+  font-size: 1.25rem;
+  font-weight: var(--input-font-weight);
   
 }
 

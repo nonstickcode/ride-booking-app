@@ -32,10 +32,7 @@ const DatePicker = ({ date, setDate }) => {
           slots={{
             openPickerIcon: () => (
               <CalendarMonthIcon className="h-5 w-5" />
-            ),
-            // Use MUI icons for navigation arrows
-            previousIconButton: () => <ArrowBack />,
-            nextIconButton: () => <ArrowForward />,
+            )
           }}
           slotProps={{
             textField: {
