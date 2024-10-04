@@ -11,6 +11,7 @@ import supabase from '@/utils/supabaseClient';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import Head from 'next/head';
 import SendSMSButton from '@/components/SendSMSButton';
+import { BookingValidationProvider } from '@/context/BookingValidationContext';
 
 function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -137,8 +138,11 @@ export default function Home() {
         {/* Meta tag to set background color during page load */}
         <meta name="theme-color" content="#000000" /> {/* Black background */}
       </Head>
+
       <AuthProvider>
-        <HomeContent />
+        <BookingValidationProvider>
+          <HomeContent />
+        </BookingValidationProvider>
       </AuthProvider>
     </>
   );
