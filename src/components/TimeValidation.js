@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { FaSpinner } from 'react-icons/fa';
 import { combineDateAndTime } from '@/utils/dateUtils';
-import { useBookingValidation } from '@/context/BookingValidationContext';
 
-const TimeValidation = ({ date, time, leadTime, offTimeStart, offTimeEnd }) => {
-  const [loadingAvailability, setLoadingAvailability] = useState(false); // This needs to be shared to block out the submit button
+const TimeValidation = ({
+  date,
+  time,
+  leadTime,
+  offTimeStart,
+  offTimeEnd,
+  isTimeTooSoon,
+  setIsTimeTooSoon,
+  isTimeInOffRange,
+  setIsTimeInOffRange,
+  isTimeUnavailable,
+  setIsTimeUnavailable,
+  loadingAvailability,
+  setLoadingAvailability,
+}) => {
   const [hasCheckedAvailability, setHasCheckedAvailability] = useState(false);
-  const [isOffHours, setIsOffHours] = useState(false); // Flag for off-hours check
-  const [formattedOffHours, setFormattedOffHours] = useState(''); // Store formatted off-hours message
-  const {
-    setIsTimeTooSoon,
-    setIsTimeInOffRange,
-    setIsTimeUnavailable,
-    isTimeUnavailable,
-    isTimeTooSoon,
-    isTimeInOffRange,
-  } = useBookingValidation(); // Use context shared states
+  const [isOffHours, setIsOffHours] = useState(false);
+  const [formattedOffHours, setFormattedOffHours] = useState('');
 
   // Helper function to format off-hours range as a string
   const formatOffHours = (start, end) => {

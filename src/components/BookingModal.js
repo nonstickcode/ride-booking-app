@@ -8,20 +8,33 @@ import PlacesAutocomplete from '@/components/PlacesAutocomplete';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { calculateRoute, calculateDistanceToCity } from '@/utils/routeCalculations';
+import {
+  calculateRoute,
+  calculateDistanceToCity,
+} from '@/utils/routeCalculations';
 import { calculateCost } from '@/utils/costCalculations';
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
 import { combineDateAndTime } from '@/utils/dateUtils';
-import { useBookingValidation } from '@/context/BookingValidationContext';
 
 const libraries = ['places'];
 
+// TODO: Add to admin later (do not remove this comment)
 const LEAD_TIME = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
 const OFF_TIME_START = 22; // 10pm
 const OFF_TIME_END = 10; // 10am
 
-const BookingModal = ({ onClose }) => {
+const BookingModal = ({
+  onClose,
+  isTimeTooSoon,
+  setIsTimeTooSoon,
+  isTimeInOffRange,
+  setIsTimeInOffRange,
+  isTimeUnavailable,
+  setIsTimeUnavailable,
+  loadingAvailability,
+  setLoadingAvailability,
+}) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -39,9 +52,6 @@ const BookingModal = ({ onClose }) => {
   const [user, setUser] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-
-  // Access shared validation state from context
-  const { isTimeTooSoon, isTimeInOffRange, isTimeUnavailable } = useBookingValidation();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -192,12 +202,21 @@ const BookingModal = ({ onClose }) => {
             <div>
               <TimePicker time={time} setTime={setTime} />
 
+              {/* Pass all necessary props to TimeValidation */}
               <TimeValidation
                 date={date}
                 time={time}
-                leadTime={LEAD_TIME}
-                offTimeStart={OFF_TIME_START}
-                offTimeEnd={OFF_TIME_END}
+                leadTime={3600000} // 1 hour in milliseconds TODO: address this later and use variable somehow for Admin panel
+                offTimeStart={22} // 10pm
+                offTimeEnd={10} // 10am
+                isTimeTooSoon={isTimeTooSoon}
+                setIsTimeTooSoon={setIsTimeTooSoon}
+                isTimeInOffRange={isTimeInOffRange}
+                setIsTimeInOffRange={setIsTimeInOffRange}
+                isTimeUnavailable={isTimeUnavailable}
+                setIsTimeUnavailable={setIsTimeUnavailable}
+                loadingAvailability={loadingAvailability}
+                setLoadingAvailability={setLoadingAvailability}
               />
             </div>
 
@@ -239,7 +258,7 @@ const BookingModal = ({ onClose }) => {
 
             {loadingRoute && (
               <div className="flex items-center space-x-2">
-                <FaSpinner className="animate-spin mr-2 font-bold" />
+                <FaSpinner className="mr-2 animate-spin font-bold" />
                 <p>Calculating distance and time...</p>
               </div>
             )}
@@ -268,8 +287,8 @@ const BookingModal = ({ onClose }) => {
                 loadingSubmit ||
                 isTimeTooSoon ||
                 isTimeUnavailable ||
-                isTimeInOffRange
-                // Need isCheckingAvailability
+                isTimeInOffRange ||
+                loadingAvailability
               }
               variant="green"
               size="md"

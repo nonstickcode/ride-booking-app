@@ -11,13 +11,18 @@ import supabase from '@/utils/supabaseClient';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import Head from 'next/head';
 import SendSMSButton from '@/components/SendSMSButton';
-import { BookingValidationProvider } from '@/context/BookingValidationContext';
 
 function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { user, authAlert, showAlert, setUser } = useAuth();
+  const { user, authAlert, showAlert, setUser } = useAuth(); // TODO: pass this down instead of using context elsewhere
+
+  // Moved shared states here
+  const [isTimeTooSoon, setIsTimeTooSoon] = useState(false);
+  const [isTimeInOffRange, setIsTimeInOffRange] = useState(false);
+  const [isTimeUnavailable, setIsTimeUnavailable] = useState(false);
+  const [loadingAvailability, setLoadingAvailability] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -114,7 +119,19 @@ function HomeContent() {
           </Button>
         </main>
 
-        {showBookingModal && <BookingModal onClose={closeBooking} />}
+        {showBookingModal && (
+          <BookingModal
+            onClose={closeBooking}
+            isTimeTooSoon={isTimeTooSoon}
+            setIsTimeTooSoon={setIsTimeTooSoon}
+            isTimeInOffRange={isTimeInOffRange}
+            setIsTimeInOffRange={setIsTimeInOffRange}
+            isTimeUnavailable={isTimeUnavailable}
+            setIsTimeUnavailable={setIsTimeUnavailable}
+            loadingAvailability={loadingAvailability}
+            setLoadingAvailability={setLoadingAvailability}
+          />
+        )}
         {showSignInModal && (
           <SignInModal
             onClose={closeSignIn}
@@ -140,9 +157,7 @@ export default function Home() {
       </Head>
 
       <AuthProvider>
-        <BookingValidationProvider>
-          <HomeContent />
-        </BookingValidationProvider>
+        <HomeContent />
       </AuthProvider>
     </>
   );
