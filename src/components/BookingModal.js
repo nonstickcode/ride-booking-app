@@ -217,7 +217,7 @@ const BookingModal = ({ onClose }) => {
       timeMax: endTime,
       items: [
         {
-          id: 'cdc3b858fc4efe2b9b44f7ce7298824cb2c0b58dc68d3b450978aebe0c2f234e@group.calendar.google.com',
+          id: process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID,
         },
       ],
     };

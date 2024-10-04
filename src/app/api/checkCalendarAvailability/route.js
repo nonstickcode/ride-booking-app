@@ -10,9 +10,8 @@ const SERVICE_ACCOUNT_KEY_PATH = path.resolve(
   'rydeblk-745fa49e3a56.json'
 );
 
-// Manually enter the Calendar ID
-const CALENDAR_ID =
-  'cdc3b858fc4efe2b9b44f7ce7298824cb2c0b58dc68d3b450978aebe0c2f234e@group.calendar.google.com';
+// Access the Calendar ID from environment variables
+const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
 
 // Load service account credentials from the JSON file
 const credentials = JSON.parse(
