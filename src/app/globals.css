@@ -130,7 +130,7 @@ body {
 
 /* Add hover effect for the icon */
 .MuiSvgIcon-root:hover {
-  color: var(--hover-blue-color) !important; /* Tailwind blue-500 on hover */
+  color: #9ca3af !important; /* Tailwind blue-500 on hover */
 }
 
 /* Hide the switch view button */
