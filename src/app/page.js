@@ -153,7 +153,7 @@ function HomeContent() {
         )}
 
         {/* uncomment if needed */}
-        <SendSMSButton />
+        {/* <SendSMSButton /> */}
 
         <footer className="mt-8 text-center">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>
