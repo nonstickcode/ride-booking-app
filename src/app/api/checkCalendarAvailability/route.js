@@ -56,12 +56,9 @@ export async function POST(request) {
       requestBody: {
         timeMin,
         timeMax,
-        items: [{ id: CALENDAR_ID }], // Hardcoded calendar ID
+        items: [{ id: CALENDAR_ID }], // Use the hardcoded calendar ID
       },
     });
-
-    // Log the full response for debugging
-    console.log('Full API Response:', response.data);
 
     // Access the calendar's busy slots using the correct calendar ID
     const busySlots = response.data.calendars[CALENDAR_ID]?.busy || [];
