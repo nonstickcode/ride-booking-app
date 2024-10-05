@@ -48,7 +48,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
     if (error) {
       console.error('Error signing out:', error);
     } else {
-      onSignOut(); // Call parent handler to manage state
+      onSignOut();
     }
   };
 

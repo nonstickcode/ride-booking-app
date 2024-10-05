@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useLoadScript } from '@react-google-maps/api';
 import { DatePicker, TimePicker } from '@/components/DateAndTimePicker';
-import PlacesAutocomplete from '@/components/PlacesAutocomplete';
+import LocationPickers from '@/components/LocationPickers';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -222,14 +222,14 @@ const BookingModal = ({
 
             <hr className="mb-4 mt-2 border-gray-700" />
 
-            <PlacesAutocomplete
+            <LocationPickers
               setSelected={setPickupLocation}
               label="Pickup:"
             />
 
             <hr className="mb-4 border-gray-700" />
 
-            <PlacesAutocomplete
+            <LocationPickers
               setSelected={setDropoffLocation}
               label="Drop-off:"
             />

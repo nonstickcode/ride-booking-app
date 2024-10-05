@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import usePlacesAutocomplete, {
+import useLocationPickers, {
   getGeocode,
   getLatLng,
 } from 'use-places-autocomplete';
@@ -8,7 +8,7 @@ import { Button } from './ui/button';
 import { MyLocationSharp } from '@mui/icons-material';
 import { FaSpinner } from 'react-icons/fa';
 
-const PlacesAutocomplete = ({ setSelected, label }) => {
+const LocationPickers = ({ setSelected, label }) => {
   const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
 
   const {
@@ -17,7 +17,7 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
     suggestions: { status, data },
     setValue,
     clearSuggestions,
-  } = usePlacesAutocomplete({
+  } = useLocationPickers({
     debounce: 300, // Debounce the input for smoother experience
   });
 
@@ -137,4 +137,4 @@ const PlacesAutocomplete = ({ setSelected, label }) => {
   );
 };
 
-export default PlacesAutocomplete;
+export default LocationPickers;
