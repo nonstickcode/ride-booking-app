@@ -30,7 +30,6 @@ const DatePicker = ({ date, setDate }) => {
           showDaysOutsideCurrentMonth
           minDate={minDate}
           maxDate={maxDate}
-          autoFocus={false}
           slots={{
             openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
           }}
