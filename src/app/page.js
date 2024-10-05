@@ -25,7 +25,7 @@ function HomeContent() {
   // State to manage alerts for sign-in/sign-out events
   const [authAlert, setAuthAlert] = useState(null);
 
-  // Moved shared states here for booking availability
+  // shared states for BookingModal and TimeValidation, passed into both
   const [isTimeTooSoon, setIsTimeTooSoon] = useState(false);
   const [isTimeInOffRange, setIsTimeInOffRange] = useState(false);
   const [isTimeUnavailable, setIsTimeUnavailable] = useState(false);
