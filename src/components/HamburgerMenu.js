@@ -5,10 +5,9 @@ import {
   FaCar,
   FaCog,
   FaSignOutAlt,
-  FaTimes,
-  FaSignInAlt, // Import for Sign In icon
+  FaSignInAlt,
 } from 'react-icons/fa';
-import { useAuth } from '@/context/AuthContext';
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; // Use Supabase session hooks
 import NotificationsModal from '@/components/NotificationsModal';
 import MyRidesModal from '@/components/MyRidesModal';
 import SettingsModal from '@/components/SettingsModal';
@@ -24,7 +23,13 @@ import { Button } from '@/components/ui/button';
 
 const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   const [activeModal, setActiveModal] = useState(null);
-  const { user, showAlert } = useAuth();
+  
+  // Supabase hooks to access session and perform auth operations
+  const session = useSession(); 
+  const supabase = useSupabaseClient();
+  
+  // Extract user from session
+  const user = session?.user;
 
   const handleModalOpen = (modalType) => {
     setActiveModal(modalType); // Open specific modal
@@ -38,9 +43,13 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
     openSignInModal();
   };
 
-  const handleSignOut = () => {
-    onSignOut();
-    showAlert('Signed out successfully!', 'error');
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      onSignOut(); // Call parent handler to manage state
+    }
   };
 
   return (

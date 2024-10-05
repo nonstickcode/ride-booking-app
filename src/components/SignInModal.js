@@ -5,29 +5,26 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
-import supabase from '@/utils/supabaseClient';
-import { useAuth } from '@/context/AuthContext';
+import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react'; // Use Supabase hooks
 import validator from 'validator';
 
 const SignInModal = ({ onClose, onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
-  const { showAlert, setUser } = useAuth();
   const [isEmailValid, setIsEmailValid] = useState(false);
+
+  const supabase = useSupabaseClient(); // Supabase client for authentication
+  const session = useSession(); // Access session
+  const user = session?.user; // Extract user from the session if available
 
   // Check if a session exists on load
   useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session?.user) {
-        setUser(data.session.user);
-        onSignInSuccess();
-      }
-    };
-
-    checkSession();
-  }, [setUser, showAlert, onSignInSuccess]);
+    if (user) {
+      // User is already signed in, trigger the success handler
+      onSignInSuccess();
+    }
+  }, [user, onSignInSuccess]);
 
   // Update email validity when email changes
   useEffect(() => {
@@ -36,7 +33,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
 
   const handleGoogleSignIn = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
       });
 
@@ -45,11 +42,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
         return false;
       }
 
-      if (data) {
-        console.log('Google OAuth sign-in initiated.');
-        return true;
-      }
-
+      console.log('Google OAuth sign-in initiated.');
       return true;
     } catch (criticalError) {
       console.error('Critical error during Google sign-in:', criticalError);
@@ -61,7 +54,7 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: window.location.origin, // Redirect user to the app after sign-in
       },
     });
     if (error) {
