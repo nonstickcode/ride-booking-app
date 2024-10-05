@@ -24,8 +24,7 @@ const DatePicker = ({ date, setDate }) => {
         <MUIDatePicker
           value={date}
           onChange={(newDate) => {
-            console.log('Selected Date:', newDate); // Log the selected date
-            setDate(newDate); // Update the state with the new date
+            setDate(newDate);
           }}
           disabled={false}
           showDaysOutsideCurrentMonth
@@ -59,8 +58,7 @@ const TimePicker = ({ time, setTime }) => {
           formatDensity="spacious"
           format="hh:mm a" // 12-hour format with AM/PM
           onChange={(newTime) => {
-            console.log('Selected Time:', newTime); // Log the selected time
-            setTime(newTime); // Update the state with the new time
+            setTime(newTime);
           }}
           slots={{
             openPickerIcon: () => <ClockIcon className="h-5 w-5" />,

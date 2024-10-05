@@ -45,10 +45,6 @@ export async function POST(request) {
       );
     }
 
-    // Log to ensure the hardcoded values are correct
-    console.log('Using Calendar ID:', CALENDAR_ID);
-    console.log('Using Service Account Path:', SERVICE_ACCOUNT_KEY_PATH);
-
     // Set up Google OAuth2 client with the service account
     const auth = getGoogleClient();
 
