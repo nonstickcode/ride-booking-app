@@ -1,6 +1,10 @@
 'use client';
 
-import { SessionContextProvider, useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import {
+  SessionContextProvider,
+  useSession,
+  useSupabaseClient,
+} from '@supabase/auth-helpers-react';
 import supabaseClient from '@/utils/supabaseClient'; // Import the singleton client
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -18,9 +22,9 @@ function HomeContent() {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const session = useSession();  // Supabase session hook to get the current user session
+  const session = useSession(); // Supabase session hook to get the current user session
   const supabase = useSupabaseClient(); // Supabase client for authentication and data fetching
-  const user = session?.user;  // Extract the user from the session
+  const user = session?.user; // Extract the user from the session
 
   // State to manage alerts for sign-in/sign-out events
   const [authAlert, setAuthAlert] = useState(null);
@@ -95,7 +99,6 @@ function HomeContent() {
   return (
     <div className="main-content --font-oxygen min-h-screen text-white">
       <div className="mx-auto flex min-h-screen max-w-96 flex-col items-center justify-center px-4">
-
         {/* Alert banner for sign-in/sign-out messages */}
         {authAlert?.message && (
           <div
@@ -149,7 +152,8 @@ function HomeContent() {
           />
         )}
 
-        {/* <SendSMSButton /> */}
+        {/* uncomment if needed */}
+        <SendSMSButton />
 
         <footer className="mt-8 text-center">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>

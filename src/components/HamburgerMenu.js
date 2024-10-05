@@ -23,11 +23,11 @@ import { Button } from '@/components/ui/button';
 
 const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
   const [activeModal, setActiveModal] = useState(null);
-  
+
   // Supabase hooks to access session and perform auth operations
-  const session = useSession(); 
+  const session = useSession();
   const supabase = useSupabaseClient();
-  
+
   // Extract user from session
   const user = session?.user;
 

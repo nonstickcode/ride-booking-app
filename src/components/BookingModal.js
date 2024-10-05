@@ -222,10 +222,7 @@ const BookingModal = ({
 
             <hr className="mb-4 mt-2 border-gray-700" />
 
-            <LocationPickers
-              setSelected={setPickupLocation}
-              label="Pickup:"
-            />
+            <LocationPickers setSelected={setPickupLocation} label="Pickup:" />
 
             <hr className="mb-4 border-gray-700" />
 

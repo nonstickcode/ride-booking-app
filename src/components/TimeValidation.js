@@ -50,22 +50,22 @@ const TimeValidation = ({
       console.error('Time or date is missing');
       return;
     }
-  
+
     // Reset validation flags
     setIsTimeTooSoon(false);
     setIsTimeInOffRange(false);
     setIsTimeUnavailable(false);
     setIsOffHours(false); // Reset the off-hours flag
-  
+
     const combinedDateTime = combineDateAndTime(date, selectedTime);
-  
+
     // Check if time is in off-hours
     const inOffHours = checkIfTimeInOffHours(combinedDateTime);
     if (inOffHours) {
       setIsTimeInOffRange(true); // Disable submit button due to off-hours
       return; // No further checks if in off-hours
     }
-  
+
     // Check if the selected time is too soon (less than the lead time)
     if (new Date().toDateString() === date.toDateString()) {
       const currentTime = new Date();
@@ -75,20 +75,20 @@ const TimeValidation = ({
         return; // No further checks if time is too soon
       }
     }
-  
+
     // Proceed with API check for availability if no prior warnings
     setLoadingAvailability(true);
-  
+
     const startTime = combinedDateTime.toISOString();
     const endTime = new Date(
       combinedDateTime.getTime() + 2 * 60 * 60 * 1000
     ).toISOString();
-  
+
     const requestBody = {
       timeMin: startTime,
       timeMax: endTime,
     };
-  
+
     try {
       const response = await fetch('/api/checkCalendarAvailability', {
         method: 'POST',
@@ -97,14 +97,14 @@ const TimeValidation = ({
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response from API:', response.status, errorText);
         setIsTimeUnavailable(true);
         return;
       }
-  
+
       const jsonResponse = await response.json();
       const busySlots = jsonResponse.busySlots || [];
       setIsTimeUnavailable(busySlots.length > 0);
@@ -116,7 +116,6 @@ const TimeValidation = ({
       setHasCheckedAvailability(true);
     }
   };
-  
 
   // Ensure that validation only runs once when time or date changes
   useEffect(() => {
