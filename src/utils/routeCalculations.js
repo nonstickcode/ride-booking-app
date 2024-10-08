@@ -25,7 +25,7 @@ export const calculateRoute = async (
         const roundedDistance = Math.ceil(distanceInMiles);
 
         setDistance(`${roundedDistance} miles`);
-        setDuration(durationText); // Set duration text directly
+        setDuration(durationText);
         setLoadingRoute(false);
 
         if (roundedDistance > 200) {
@@ -47,7 +47,7 @@ export const calculateDistanceToCity = (location, setExceedsRange) => {
 
   distanceService.getDistanceMatrix(
     {
-      origins: [{ lat: 33.4484, lng: -112.074 }], // Phoenix, AZ
+      origins: [{ lat: 33.4484, lng: -112.074 }], // TODO: set to Phx currently, Add to Admin settings
       destinations: [location],
       travelMode: google.maps.TravelMode.DRIVING,
     },
