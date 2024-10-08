@@ -9,6 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         blue: 'bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-500 hover:to-blue-700 transition',
+        red: 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-500 hover:to-red-700 transition',
         green:
           'bg-gradient-to-r from-green-500 to-green-700 text-white hover:from-green-400 hover:to-green-600 transition',
         gray: 'bg-gradient-to-r from-gray-500 to-gray-700 text-white hover:from-gray-400 hover:to-gray-600 transition',
