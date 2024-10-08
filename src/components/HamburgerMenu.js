@@ -11,6 +11,7 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; //
 import NotificationsModal from '@/components/NotificationsModal';
 import MyRidesModal from '@/components/MyRidesModal';
 import SettingsModal from '@/components/SettingsModal';
+import AdminSettingsModal from '@/components/AdminSettingsModal'; // New Admin Settings Modal import
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,7 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
-const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
+const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
   const [activeModal, setActiveModal] = useState(null);
 
   // Supabase hooks to access session and perform auth operations
@@ -67,30 +68,44 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
           {user ? (
             <>
               <DropdownMenuLabel className="text-2xl font-bold text-white">
-                My Account
+                {isAdmin ? 'Hi Jamie!' : 'My Account'}
               </DropdownMenuLabel>
+
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={() => handleModalOpen('rides')}
-                className="flex items-center"
-                title="My Rides"
-              >
-                <FaCar className="mr-2" /> My Rides
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => handleModalOpen('notifications')}
-                className="flex items-center"
-                title="Notifications"
-              >
-                <FaBell className="mr-2" /> Notifications
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => handleModalOpen('settings')}
-                className="flex items-center"
-                title="Settings"
-              >
-                <FaCog className="mr-2" /> Settings
-              </DropdownMenuItem>
+              {isAdmin ? (
+                <DropdownMenuItem
+                  onSelect={() => handleModalOpen('adminSettings')}
+                  className="flex items-center"
+                  title="Admin Settings"
+                >
+                  <FaCog className="mr-2" /> Admin Settings
+                </DropdownMenuItem>
+              ) : (
+                <>
+                  {/* Regular user menu */}
+                  <DropdownMenuItem
+                    onSelect={() => handleModalOpen('rides')}
+                    className="flex items-center"
+                    title="My Rides"
+                  >
+                    <FaCar className="mr-2" /> My Rides
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => handleModalOpen('notifications')}
+                    className="flex items-center"
+                    title="Notifications"
+                  >
+                    <FaBell className="mr-2" /> Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => handleModalOpen('settings')}
+                    className="flex items-center"
+                    title="Settings"
+                  >
+                    <FaCog className="mr-2" /> Settings
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={handleSignOut}
@@ -119,6 +134,9 @@ const HamburgerMenu = ({ openSignInModal, onSignOut }) => {
       {activeModal === 'rides' && <MyRidesModal onClose={handleModalClose} />}
       {activeModal === 'settings' && (
         <SettingsModal onClose={handleModalClose} />
+      )}
+      {activeModal === 'adminSettings' && (
+        <AdminSettingsModal onClose={handleModalClose} />
       )}
     </div>
   );

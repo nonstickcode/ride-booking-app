@@ -35,10 +35,19 @@ function HomeContent() {
   const [isTimeUnavailable, setIsTimeUnavailable] = useState(false);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
 
+  // shared state for Hamburger to show Admin option for admin settings
+  const [isAdmin, setIsAdmin] = useState(false);
+
   // Monitor session changes and trigger alerts for sign-in and sign-out events
   useEffect(() => {
     if (session && user) {
-      // User has signed in
+      // User has signed in, check if they are admin
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+      if (user.email === adminEmail) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
       setAuthAlert({ message: 'Signed in successfully!', type: 'success' });
     } else if (session && !user) {
       // User has signed out
@@ -113,6 +122,7 @@ function HomeContent() {
         <HamburgerMenu
           openSignInModal={() => setShowSignInModal(true)}
           onSignOut={handleSignOut}
+          isAdmin={isAdmin}
         />
 
         <Header />
