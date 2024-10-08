@@ -6,7 +6,7 @@ import supabase from '@/utils/supabaseClient';
 const TimeValidation = ({
   date,
   time,
-  isValidTime,  // needed here to show the red or green alerts for available or not
+  isValidTime,  // needed here to show the red or green alerts here in TimeValidation.js for available or not
   setIsValidTime, // this is set here then read in booking modal to disable submit button until valid time and date set
 }) => {
   const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });
