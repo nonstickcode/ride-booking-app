@@ -6,7 +6,7 @@ import supabase from '@/utils/supabaseClient';
 const TimeValidation = ({
   date,
   time,
-  isValidTime,  // needed here to show the red or green alerts here in TimeValidation.js for available or not
+  isValidTime, // needed here to show the red or green alerts here in TimeValidation.js for available or not
   setIsValidTime, // this is set here then read in booking modal to disable submit button until valid time and date set
 }) => {
   const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });
@@ -22,7 +22,9 @@ const TimeValidation = ({
     const fetchSettings = async () => {
       const { data, error } = await supabase
         .from('AdminSettings')
-        .select('lead_time_hours, lead_time_minutes, timeoff_start_time, timeoff_end_time')
+        .select(
+          'lead_time_hours, lead_time_minutes, timeoff_start_time, timeoff_end_time'
+        )
         .limit(1)
         .single();
 
@@ -63,25 +65,28 @@ const TimeValidation = ({
   }, []);
 
   // Check if the selected time is within off-hours
-  const checkIfTimeInOffHours = useCallback((time) => {
-    const selectedHour = time.getHours();
-    const start = parseTime(offHours.start);
-    const end = parseTime(offHours.end);
+  const checkIfTimeInOffHours = useCallback(
+    (time) => {
+      const selectedHour = time.getHours();
+      const start = parseTime(offHours.start);
+      const end = parseTime(offHours.end);
 
-    if (start > end) {
-      if (selectedHour >= start || selectedHour < end) {
-        setMessage(formatOffHours(start, end));
-        return true;
+      if (start > end) {
+        if (selectedHour >= start || selectedHour < end) {
+          setMessage(formatOffHours(start, end));
+          return true;
+        }
+      } else {
+        if (selectedHour >= start && selectedHour < end) {
+          setMessage(formatOffHours(start, end));
+          return true;
+        }
       }
-    } else {
-      if (selectedHour >= start && selectedHour < end) {
-        setMessage(formatOffHours(start, end));
-        return true;
-      }
-    }
 
-    return false;
-  }, [offHours, formatOffHours, parseTime]);
+      return false;
+    },
+    [offHours, formatOffHours, parseTime]
+  );
 
   // Convert lead time from hours and minutes to milliseconds
   const convertLeadTimeToMilliseconds = useCallback(() => {
@@ -90,80 +95,89 @@ const TimeValidation = ({
   }, [leadTime]);
 
   // Validate the selected time
-  const validateTime = useCallback(async (selectedTime) => {
-    if (!selectedTime || !date) {
-      setMessage('Please select a valid date and time.');
-      setIsValidTime(false);
-      return;
-    }
-
-    const combinedDateTime = combineDateAndTime(date, selectedTime);
-
-    if (combinedDateTime < new Date()) {
-      setMessage('You cannot select a time in the past.');
-      setIsValidTime(false);
-      return;
-    }
-
-    if (checkIfTimeInOffHours(combinedDateTime)) {
-      setIsValidTime(false);
-      return;
-    }
-
-    if (new Date().toDateString() === date.toDateString()) {
-      const currentTime = new Date();
-      const leadTimeInMilliseconds = convertLeadTimeToMilliseconds();
-      const leadTimeLimit = new Date(currentTime.getTime() + leadTimeInMilliseconds);
-
-      if (combinedDateTime < leadTimeLimit) {
-        setMessage(`Please select a time at least ${leadTime.hours} hours and ${leadTime.minutes} minutes in advance.`);
-        setIsValidTime(false);
-        return;
-      }
-    }
-
-    // Proceed with API check for availability if all prior checks pass
-    setLoadingAvailability(true);
-    const startTime = combinedDateTime.toISOString();
-    const endTime = new Date(combinedDateTime.getTime() + 2 * 60 * 60 * 1000).toISOString();
-
-    const requestBody = {
-      timeMin: startTime,
-      timeMax: endTime,
-    };
-
-    try {
-      const response = await fetch('/api/checkCalendarAvailability', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        setMessage('This time is unavailable. Please choose another time.');
+  const validateTime = useCallback(
+    async (selectedTime) => {
+      if (!selectedTime || !date) {
+        setMessage('Please select a valid date and time.');
         setIsValidTime(false);
         return;
       }
 
-      const jsonResponse = await response.json();
-      const busySlots = jsonResponse.busySlots || [];
-      if (busySlots.length > 0) {
-        setMessage('This time is unavailable. Please choose another time.');
+      const combinedDateTime = combineDateAndTime(date, selectedTime);
+
+      if (combinedDateTime < new Date()) {
+        setMessage('You cannot select a time in the past.');
         setIsValidTime(false);
-      } else {
-        setMessage('This date and time is available.');
-        setIsValidTime(true);
+        return;
       }
-    } catch (error) {
-      console.error('Error checking calendar availability:', error);
-      setMessage('An error occurred. Please try again.');
-      setIsValidTime(false);
-    } finally {
-      setLoadingAvailability(false);
-    }
-  }, [checkIfTimeInOffHours, convertLeadTimeToMilliseconds, date, setIsValidTime]);
+
+      if (checkIfTimeInOffHours(combinedDateTime)) {
+        setIsValidTime(false);
+        return;
+      }
+
+      if (new Date().toDateString() === date.toDateString()) {
+        const currentTime = new Date();
+        const leadTimeInMilliseconds = convertLeadTimeToMilliseconds();
+        const leadTimeLimit = new Date(
+          currentTime.getTime() + leadTimeInMilliseconds
+        );
+
+        if (combinedDateTime < leadTimeLimit) {
+          setMessage(
+            `Please select a time at least ${leadTime.hours} hours and ${leadTime.minutes} minutes in advance.`
+          );
+          setIsValidTime(false);
+          return;
+        }
+      }
+
+      // Proceed with API check for availability if all prior checks pass (in the past, off time, lead time checks)
+      setLoadingAvailability(true);
+      const startTime = combinedDateTime.toISOString();
+      const endTime = new Date(
+        combinedDateTime.getTime() + 2 * 60 * 60 * 1000
+      ).toISOString();
+
+      const requestBody = {
+        timeMin: startTime,
+        timeMax: endTime,
+      };
+
+      try {
+        const response = await fetch('/api/checkCalendarAvailability', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+          setMessage('This time is unavailable. Please choose another time.');
+          setIsValidTime(false);
+          return;
+        }
+
+        const jsonResponse = await response.json();
+        const busySlots = jsonResponse.busySlots || [];
+        if (busySlots.length > 0) {
+          setMessage('This time is unavailable. Please choose another time.');
+          setIsValidTime(false);
+        } else {
+          setMessage('This date and time is available.');
+          setIsValidTime(true);
+        }
+      } catch (error) {
+        console.error('Error checking calendar availability:', error);
+        setMessage('An error occurred. Please try again.');
+        setIsValidTime(false);
+      } finally {
+        setLoadingAvailability(false);
+      }
+    },
+    [checkIfTimeInOffHours, convertLeadTimeToMilliseconds, date, leadTime.hours, leadTime.minutes, setIsValidTime]
+  );
 
   useEffect(() => {
     if (time && date) {
@@ -179,7 +193,9 @@ const TimeValidation = ({
           <p>Checking availability...</p>
         </div>
       ) : (
-        <p className={`text-md mb-1 ${isValidTime ? 'text-green-500' : 'text-red-500'}`}>
+        <p
+          className={`text-md mb-1 ${isValidTime ? 'text-green-500' : 'text-red-500'}`}
+        >
           {message}
         </p>
       )}

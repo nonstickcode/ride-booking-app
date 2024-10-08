@@ -136,11 +136,7 @@ function HomeContent() {
           </Button>
         </main>
 
-        {showBookingModal && (
-          <BookingModal
-            onClose={closeBooking}
-          />
-        )}
+        {showBookingModal && <BookingModal onClose={closeBooking} />}
         {showSignInModal && (
           <SignInModal
             onClose={closeSignIn}

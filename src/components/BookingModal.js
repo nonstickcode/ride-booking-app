@@ -37,7 +37,7 @@ const BookingModal = ({ onClose }) => {
   const [user, setUser] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [isValidTime, setIsValidTime] = useState(false); // Single state for time validation
+  const [isValidTime, setIsValidTime] = useState(false);
 
   // Fetch user session
   useEffect(() => {
