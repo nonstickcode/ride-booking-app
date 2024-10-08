@@ -1,88 +1,131 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FaSpinner } from 'react-icons/fa';
 import { combineDateAndTime } from '@/utils/dateUtils';
+import supabase from '@/utils/supabaseClient';
 
 const TimeValidation = ({
   date,
   time,
-  leadTime,
-  offTimeStart,
-  offTimeEnd,
-  isTimeTooSoon,
-  setIsTimeTooSoon,
-  isTimeInOffRange,
-  setIsTimeInOffRange,
-  isTimeUnavailable,
-  setIsTimeUnavailable,
-  loadingAvailability,
-  setLoadingAvailability,
+  isValidTime,  // needed here to show the red or green alerts for available or not
+  setIsValidTime, // this is set here then read in booking modal to disable submit button until valid time and date set
 }) => {
-  const [hasCheckedAvailability, setHasCheckedAvailability] = useState(false);
-  const [isOffHours, setIsOffHours] = useState(false);
-  const [formattedOffHours, setFormattedOffHours] = useState('');
+  const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });
+  const [offHours, setOffHours] = useState({
+    start: '00:00:00',
+    end: '00:00:00',
+  });
+  const [loadingAvailability, setLoadingAvailability] = useState(false);
+  const [message, setMessage] = useState('');
+
+  // Fetch lead time and off-hours from the database
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data, error } = await supabase
+        .from('AdminSettings')
+        .select('lead_time_hours, lead_time_minutes, timeoff_start_time, timeoff_end_time')
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error fetching settings from AdminSettings:', error);
+        return;
+      }
+
+      if (data) {
+        setLeadTime({
+          hours: data.lead_time_hours,
+          minutes: data.lead_time_minutes,
+        });
+        setOffHours({
+          start: data.timeoff_start_time,
+          end: data.timeoff_end_time,
+        });
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   // Helper function to format off-hours range as a string
-  const formatOffHours = (start, end) => {
+  const formatOffHours = useCallback((start, end) => {
     const formatHour = (hour) => {
       const period = hour >= 12 ? 'pm' : 'am';
       const hourFormatted = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
       return `${hourFormatted}${period}`;
     };
     return `No bookings are available between ${formatHour(start)} and ${formatHour(end)}.`;
-  };
+  }, []);
 
-  // Check if the selected time is within off-hours and set the flag and message
-  const checkIfTimeInOffHours = (time) => {
-    const hours = time.getHours();
-    const isOffHours =
-      offTimeStart > offTimeEnd
-        ? hours >= offTimeStart || hours < offTimeEnd
-        : hours >= offTimeStart && hours < offTimeEnd;
+  // Parse time from HH:MM:SS format to just hours
+  const parseTime = useCallback((timeString) => {
+    const [hours] = timeString.split(':').map(Number);
+    return hours;
+  }, []);
 
-    setIsOffHours(isOffHours); // Set the off-hours flag
-    setFormattedOffHours(formatOffHours(offTimeStart, offTimeEnd)); // Set the formatted off-hours message
-    return isOffHours;
-  };
+  // Check if the selected time is within off-hours
+  const checkIfTimeInOffHours = useCallback((time) => {
+    const selectedHour = time.getHours();
+    const start = parseTime(offHours.start);
+    const end = parseTime(offHours.end);
 
-  // Validate the selected time based on lead time and Google Calendar availability
-  const validateTime = async (selectedTime) => {
-    if (!selectedTime || !date) {
-      console.error('Time or date is missing');
-      return;
-    }
-
-    // Reset validation flags
-    setIsTimeTooSoon(false);
-    setIsTimeInOffRange(false);
-    setIsTimeUnavailable(false);
-    setIsOffHours(false); // Reset the off-hours flag
-
-    const combinedDateTime = combineDateAndTime(date, selectedTime);
-
-    // Check if time is in off-hours
-    const inOffHours = checkIfTimeInOffHours(combinedDateTime);
-    if (inOffHours) {
-      setIsTimeInOffRange(true); // Disable submit button due to off-hours
-      return; // No further checks if in off-hours
-    }
-
-    // Check if the selected time is too soon (less than the lead time)
-    if (new Date().toDateString() === date.toDateString()) {
-      const currentTime = new Date();
-      const leadTimeLimit = new Date(currentTime.getTime() + leadTime);
-      if (combinedDateTime < leadTimeLimit) {
-        setIsTimeTooSoon(true);
-        return; // No further checks if time is too soon
+    if (start > end) {
+      if (selectedHour >= start || selectedHour < end) {
+        setMessage(formatOffHours(start, end));
+        return true;
+      }
+    } else {
+      if (selectedHour >= start && selectedHour < end) {
+        setMessage(formatOffHours(start, end));
+        return true;
       }
     }
 
-    // Proceed with API check for availability if no prior warnings
-    setLoadingAvailability(true);
+    return false;
+  }, [offHours, formatOffHours, parseTime]);
 
+  // Convert lead time from hours and minutes to milliseconds
+  const convertLeadTimeToMilliseconds = useCallback(() => {
+    const { hours, minutes } = leadTime;
+    return hours * 60 * 60 * 1000 + minutes * 60 * 1000;
+  }, [leadTime]);
+
+  // Validate the selected time
+  const validateTime = useCallback(async (selectedTime) => {
+    if (!selectedTime || !date) {
+      setMessage('Please select a valid date and time.');
+      setIsValidTime(false);
+      return;
+    }
+
+    const combinedDateTime = combineDateAndTime(date, selectedTime);
+
+    if (combinedDateTime < new Date()) {
+      setMessage('You cannot select a time in the past.');
+      setIsValidTime(false);
+      return;
+    }
+
+    if (checkIfTimeInOffHours(combinedDateTime)) {
+      setIsValidTime(false);
+      return;
+    }
+
+    if (new Date().toDateString() === date.toDateString()) {
+      const currentTime = new Date();
+      const leadTimeInMilliseconds = convertLeadTimeToMilliseconds();
+      const leadTimeLimit = new Date(currentTime.getTime() + leadTimeInMilliseconds);
+
+      if (combinedDateTime < leadTimeLimit) {
+        setMessage(`Please select a time at least ${leadTime.hours} hours and ${leadTime.minutes} minutes in advance.`);
+        setIsValidTime(false);
+        return;
+      }
+    }
+
+    // Proceed with API check for availability if all prior checks pass
+    setLoadingAvailability(true);
     const startTime = combinedDateTime.toISOString();
-    const endTime = new Date(
-      combinedDateTime.getTime() + 2 * 60 * 60 * 1000
-    ).toISOString();
+    const endTime = new Date(combinedDateTime.getTime() + 2 * 60 * 60 * 1000).toISOString();
 
     const requestBody = {
       timeMin: startTime,
@@ -99,76 +142,47 @@ const TimeValidation = ({
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response from API:', response.status, errorText);
-        setIsTimeUnavailable(true);
+        setMessage('This time is unavailable. Please choose another time.');
+        setIsValidTime(false);
         return;
       }
 
       const jsonResponse = await response.json();
       const busySlots = jsonResponse.busySlots || [];
-      setIsTimeUnavailable(busySlots.length > 0);
+      if (busySlots.length > 0) {
+        setMessage('This time is unavailable. Please choose another time.');
+        setIsValidTime(false);
+      } else {
+        setMessage('This date and time is available.');
+        setIsValidTime(true);
+      }
     } catch (error) {
       console.error('Error checking calendar availability:', error);
-      setIsTimeUnavailable(true);
+      setMessage('An error occurred. Please try again.');
+      setIsValidTime(false);
     } finally {
       setLoadingAvailability(false);
-      setHasCheckedAvailability(true);
     }
-  };
+  }, [checkIfTimeInOffHours, convertLeadTimeToMilliseconds, date, setIsValidTime]);
 
-  // Ensure that validation only runs once when time or date changes
   useEffect(() => {
     if (time && date) {
       validateTime(time);
     }
-  }, [time, date]);
+  }, [time, date, validateTime]);
 
   return (
     <div>
-      {/* Warning for off-hours */}
-      {isOffHours && (
-        <p className="text-red-500">
-          {formattedOffHours} {/* Display the formatted off-hours message */}
-        </p>
-      )}
-
-      {/* Too soon warning */}
-      {isTimeTooSoon && (
-        <p className="text-red-500">
-          The selected time is too soon. Please select a time at least{' '}
-          {leadTime / (60 * 60 * 1000)} hours in advance.
-        </p>
-      )}
-
-      {/* Loading spinner for availability check */}
-      {loadingAvailability && !isOffHours && !isTimeTooSoon && (
+      {loadingAvailability ? (
         <div className="flex items-center">
           <FaSpinner className="mr-2 animate-spin" />
           <p>Checking availability...</p>
         </div>
+      ) : (
+        <p className={`text-md mb-1 ${isValidTime ? 'text-green-500' : 'text-red-500'}`}>
+          {message}
+        </p>
       )}
-
-      {/* Availability check result messages */}
-      {!loadingAvailability &&
-        hasCheckedAvailability &&
-        !isTimeUnavailable &&
-        !isOffHours &&
-        !isTimeTooSoon && (
-          <p className="text-md mb-1 text-green-500">
-            This Date and Time is currently available.
-          </p>
-        )}
-      {!loadingAvailability &&
-        hasCheckedAvailability &&
-        isTimeUnavailable &&
-        !isOffHours &&
-        !isTimeTooSoon && (
-          <p className="text-md mb-1 text-red-500">
-            This Date and Time is currently not available. Please choose another
-            Date or Time or both.
-          </p>
-        )}
     </div>
   );
 };

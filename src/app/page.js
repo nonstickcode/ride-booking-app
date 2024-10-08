@@ -29,12 +29,6 @@ function HomeContent() {
   // State to manage alerts for sign-in/sign-out events
   const [authAlert, setAuthAlert] = useState(null);
 
-  // shared states for BookingModal and TimeValidation, passed into both
-  const [isTimeTooSoon, setIsTimeTooSoon] = useState(false);
-  const [isTimeInOffRange, setIsTimeInOffRange] = useState(false);
-  const [isTimeUnavailable, setIsTimeUnavailable] = useState(false);
-  const [loadingAvailability, setLoadingAvailability] = useState(false);
-
   // shared state for Hamburger to show Admin option for admin settings
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -145,14 +139,6 @@ function HomeContent() {
         {showBookingModal && (
           <BookingModal
             onClose={closeBooking}
-            isTimeTooSoon={isTimeTooSoon}
-            setIsTimeTooSoon={setIsTimeTooSoon}
-            isTimeInOffRange={isTimeInOffRange}
-            setIsTimeInOffRange={setIsTimeInOffRange}
-            isTimeUnavailable={isTimeUnavailable}
-            setIsTimeUnavailable={setIsTimeUnavailable}
-            loadingAvailability={loadingAvailability}
-            setLoadingAvailability={setLoadingAvailability}
           />
         )}
         {showSignInModal && (

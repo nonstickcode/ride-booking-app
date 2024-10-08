@@ -12,11 +12,14 @@ const AdminSettingsModal = ({ onClose }) => {
     home_location_longitude: '',
     timeoff_start_time: '',
     timeoff_end_time: '',
+    lead_time_hours: 0,
+    lead_time_minutes: 0,
   });
   const [newSettings, setNewSettings] = useState(settings); // To track input changes
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false); // Manage save button
-  const [error, setError] = useState(null); // To display any errors
+  const [alertMessage, setAlertMessage] = useState(''); // Alert message state
+  const [alertType, setAlertType] = useState(''); // To track 'success' or 'error'
   const supabase = useSupabaseClient();
 
   // Handle input changes and update the newSettings state
@@ -30,9 +33,7 @@ const AdminSettingsModal = ({ onClose }) => {
 
   const handleSaveSettings = async () => {
     setIsSaving(true); // Disable button during saving process
-    setError(null); // Clear any previous errors
 
-    // Save new settings to the database (use upsert to overwrite the single row)
     const { error } = await supabase.from('AdminSettings').upsert([
       {
         id: settings.id, // Target the row using its unique ID
@@ -41,24 +42,38 @@ const AdminSettingsModal = ({ onClose }) => {
         home_location_longitude: newSettings.home_location_longitude,
         timeoff_start_time: newSettings.timeoff_start_time,
         timeoff_end_time: newSettings.timeoff_end_time,
-        updated_at: new Date().toISOString(), // Ensure the 'updated_at' field is updated
+        lead_time_hours: parseInt(newSettings.lead_time_hours, 10),
+        lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
+        updated_at: new Date().toISOString(),
       },
     ]);
 
     setIsSaving(false);
 
     if (error) {
-      console.error('Error saving settings:', error);
-      setError('Failed to save settings. Please try again.'); // Set error message for UI
+      setAlertMessage('Failed to save settings. Please try again.');
+      setAlertType('error'); // Set alert type to error
+
+      // Hide the alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+        setAlertType('');
+      }, 3000);
     } else {
       setSettings(newSettings); // Reflect the new data in the component state
-      console.log('Settings saved successfully');
+      setAlertMessage('Settings saved successfully!');
+      setAlertType('success'); // Set alert type to success
+
+      // Hide the alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+        setAlertType('');
+      }, 3000);
     }
   };
 
   useEffect(() => {
     const fetchSettings = async () => {
-      setError(null); // Clear any errors before fetching
       const { data, error } = await supabase
         .from('AdminSettings')
         .select('*')
@@ -67,7 +82,8 @@ const AdminSettingsModal = ({ onClose }) => {
 
       if (error) {
         console.error('Error fetching settings:', error);
-        setError('Failed to load settings. Please try again.'); // Display error in UI
+        setAlertMessage('Failed to load settings. Please try again.');
+        setAlertType('error'); // Display error in alert
       } else {
         setSettings(data); // Save the fetched settings
         setNewSettings(data); // Initialize newSettings with fetched data
@@ -79,7 +95,8 @@ const AdminSettingsModal = ({ onClose }) => {
     fetchSettings();
   }, [supabase]);
 
-  if (loading) return <p>Loading...</p>;
+  // When loading, return nothing
+  if (loading) return null;
 
   return (
     <div
@@ -92,6 +109,17 @@ const AdminSettingsModal = ({ onClose }) => {
         className="modal-container relative w-[90vw] max-w-sm p-2 shadow-xl"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
+        {/* Alert */}
+        {alertMessage && (
+          <div
+            className={`fixed left-0 right-0 top-0 z-50 p-4 text-center text-2xl text-white ${
+              alertType === 'success' ? 'bg-green-500' : 'bg-red-500'
+            }`}
+          >
+            {alertMessage}
+          </div>
+        )}
+
         {/* Close Button */}
         <Button
           onClick={onClose}
@@ -114,10 +142,7 @@ const AdminSettingsModal = ({ onClose }) => {
 
           {/* Form for settings */}
           <div className="mb-4 text-white">
-            {error && <p className="text-red-500">{error}</p>}{' '}
-            {/* Display error */}
-            {/* Current and input for Home Location */}
-              <label className="mb-2 block">Current Location: </label>
+            <label className="mb-2 block">Current Location: </label>
             <input
               type="text"
               name="home_location_text"
@@ -125,26 +150,9 @@ const AdminSettingsModal = ({ onClose }) => {
               onChange={handleInputChange}
               className="mb-4 w-full rounded p-2 text-black"
             />
+
             <hr className="mb-2 border-gray-700" />
 
-            {/* <label className="mb-2 block">Home Latitude: </label>
-            <input
-              type="number"
-              name="home_location_latitude"
-              value={newSettings.home_location_latitude}
-              onChange={handleInputChange}
-              className="mb-4 w-full rounded p-2 text-black"
-            />
-            <label className="mb-2 block">Home Longitude: </label>
-            <input
-              type="number"
-              name="home_location_longitude"
-              value={newSettings.home_location_longitude}
-              onChange={handleInputChange}
-              className="mb-4 w-full rounded p-2 text-black"
-            /> */}
-
-            {/* Current and input for Time Off Start */}
             <label className="mb-2 block">Off Hours Start: </label>
             <input
               type="time"
@@ -153,8 +161,10 @@ const AdminSettingsModal = ({ onClose }) => {
               onChange={handleInputChange}
               className="mb-4 w-full rounded p-2 text-black"
             />
-            <p className='text-xs mb-2 text-green-500 text-center'> * All bookings blocked in between start and end</p>
-            {/* Current and input for Time Off End */}
+            <p className="mb-2 text-center text-xs text-white">
+              * All bookings blocked in between start and end
+            </p>
+
             <label className="mb-2 block">Off Hours End: </label>
             <input
               type="time"
@@ -166,6 +176,34 @@ const AdminSettingsModal = ({ onClose }) => {
           </div>
 
           <hr className="mb-4 border-gray-700" />
+
+          <label className="mb-2 block">Required Lead Time: </label>
+          <div className="flex gap-6">
+            <div>
+              <label className="mb-1 block">Hours</label>
+              <input
+                type="number"
+                name="lead_time_hours"
+                value={newSettings.lead_time_hours || 0}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="mb-1 block">Minutes</label>
+              <input
+                type="number"
+                name="lead_time_minutes"
+                value={newSettings.lead_time_minutes || 0}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+          </div>
+
+          <hr className="mb-4 border-gray-700" />
+
+          <p>more here</p>
 
           <hr className="mb-4 border-gray-700" />
 
@@ -180,13 +218,6 @@ const AdminSettingsModal = ({ onClose }) => {
           >
             {isSaving ? 'Saving...' : 'Save Settings'}
           </Button>
-
-          {/* Show updated settings */}
-          {/* <div className="mt-4 text-white">
-            <p>Updated Home Location: {settings?.home_location_text}</p>
-            <p>Updated Time Off Start: {settings?.timeoff_start_time}</p>
-            <p>Updated Time Off End: {settings?.timeoff_end_time}</p>
-          </div> */}
         </div>
       </div>
     </div>
