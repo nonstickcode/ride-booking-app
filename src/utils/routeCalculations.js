@@ -41,7 +41,7 @@ export const calculateRoute = async (
         setDuration(durationText);
         setLoadingRoute(false);
 
-        setExceedsRange(roundedDistance > 200);
+        setExceedsRange(roundedDistance > 200); // TODO Admin settings needs this option as setting to adjust (range from home location in miles)
       } else {
         console.error('Error fetching directions:', status);
         setLoadingRoute(false);
