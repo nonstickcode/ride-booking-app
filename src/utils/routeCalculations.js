@@ -10,7 +10,6 @@ const getAdminSettings = async () => {
   return { data, error };
 };
 
-
 // Function to calculate the route between two locations
 export const calculateRoute = async (
   origin,
@@ -60,7 +59,9 @@ export const calculateDistanceToCity = async (location, setExceedsRange) => {
   const distanceService = new google.maps.DistanceMatrixService();
   distanceService.getDistanceMatrix(
     {
-      origins: [{ lat: data.home_location_latitude, lng: data.home_location_longitude }],
+      origins: [
+        { lat: data.home_location_latitude, lng: data.home_location_longitude },
+      ],
       destinations: [location],
       travelMode: google.maps.TravelMode.DRIVING,
     },

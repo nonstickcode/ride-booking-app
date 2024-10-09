@@ -9,7 +9,7 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from 'use-places-autocomplete';
 
-// TODO: need to fix google maps api init to happen earlier (async loading) in home component so LocationsPickers and AdminSettings can both use 
+// TODO: need to fix google maps api init to happen earlier (async loading) in home component so LocationsPickers and AdminSettings can both use
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
@@ -170,33 +170,30 @@ const AdminSettingsModal = ({ onClose }) => {
 
           {/* Form for settings */}
           <div className="mb-4 text-white">
-            
-              <label className="mb-2 block">Current Location: </label>
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                disabled={!ready}
-                placeholder={newSettings.home_location_text}
-                className="mb-4 w-full rounded p-2 text-black"
-              />
-              {/* Suggestions dropdown */}
-              {status === 'OK' &&
-                data.map(({ id, description }) => (
-                  <div
-                    key={id}
-                    onClick={() => {
-                      setValue(description, false);
-                      clearSuggestions();
-                      // Optional: Get latitude and longitude
-                      handleSelect(description);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    {description}
-                  </div>
-                ))}
-            
+            <label className="mb-2 block">Current Location: </label>
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              disabled={!ready}
+              placeholder={newSettings.home_location_text}
+              className="mb-4 w-full rounded p-2 text-black"
+            />
+            {/* Suggestions dropdown */}
+            {status === 'OK' &&
+              data.map(({ place_id, description }) => (
+                <div
+                  key={place_id} // Ensure the key is unique for each child
+                  onClick={() => {
+                    setValue(description, false);
+                    clearSuggestions();
+                    handleSelect(description);
+                  }}
+                  className="cursor-pointer"
+                >
+                  {description}
+                </div>
+              ))}
 
             <hr className="mb-2 border-gray-700" />
 
