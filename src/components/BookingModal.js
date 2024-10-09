@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useLoadScript } from '@react-google-maps/api';
 import { DatePicker, TimePicker } from '@/components/DateAndTimePicker';
 import LocationPickers from '@/components/LocationPickers';
 import { Button } from '@/components/ui/button';
@@ -17,14 +16,9 @@ import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
 import { combineDateAndTime } from '@/utils/dateUtils';
 
-const libraries = ['places'];
 
 const BookingModal = ({ onClose }) => {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
+  
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [pickupLocation, setPickupLocation] = useState(null);
@@ -138,13 +132,7 @@ const BookingModal = ({ onClose }) => {
     return '#';
   };
 
-  if (loadError) {
-    return <div>Error loading Google Maps API</div>;
-  }
-
-  if (!isLoaded) {
-    return null;
-  }
+  
 
   return (
     <motion.div
