@@ -11,7 +11,7 @@ import { ArrowBack, ArrowForward } from '@mui/icons-material';
 // Custom DatePicker component
 const DatePicker = ({ date, setDate }) => {
   // Calculate the max date (3 months from the current date)
-  // TODO: Add 3 month limit to admin settings for driver preferences
+  // TODO: Add 3 month limit to admin settings for driver preferences (this is how far out the calendar will allow booking selections / disables past 3 months with this setting of 3)
   const maxDate = addMonths(new Date(), 3);
 
   // Set the minimum date to today to prevent selecting past dates
