@@ -18,6 +18,8 @@ const AdminSettingsModal = ({ onClose }) => {
     timeoff_end_time: '',
     lead_time_hours: 0,
     lead_time_minutes: 0,
+    cost_per_mile_rate: 0,
+    cost_trip_surcharge: 0,
   });
   const [newSettings, setNewSettings] = useState(settings);
   const [loading, setLoading] = useState(true);
@@ -70,6 +72,8 @@ const AdminSettingsModal = ({ onClose }) => {
         timeoff_end_time: newSettings.timeoff_end_time,
         lead_time_hours: parseInt(newSettings.lead_time_hours, 10),
         lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
+        cost_per_mile_rate: parseFloat(newSettings.cost_per_mile_rate),
+        cost_trip_surcharge: parseFloat(newSettings.cost_trip_surcharge),
         updated_at: new Date().toISOString(),
       },
     ]);
@@ -132,7 +136,7 @@ const AdminSettingsModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="modal-container relative w-[90vw] max-w-sm p-2 shadow-xl"
+        className="modal-container relative w-[90vw] max-w-sm p-4 shadow-xl"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Alert */}
@@ -160,23 +164,27 @@ const AdminSettingsModal = ({ onClose }) => {
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md p-8">
-          <h2 className="mx-auto mb-4 text-center text-2xl font-bold text-white">
-            ADMIN Settings
+          <h2 className="mx-auto mb-4 text-center font-mono text-2xl font-bold text-red-500">
+            ADMIN SETTINGS
           </h2>
 
-          <hr className="mb-4 border-gray-700" />
+          <hr className="my-4 border-gray-700" />
 
-          {/* Form for settings */}
-          <div className="mb-4 text-white">
-            <label className="mb-2 block">Current Location: </label>
-            <input
-              type="text"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              disabled={!ready}
-              placeholder={newSettings.home_location_text}
-              className="mb-4 w-full rounded p-2 text-black"
-            />
+          {/* Location Input */}
+          <div className="text-white">
+            <label className="mb-2 block text-lg font-bold">
+              Home Location:{' '}
+            </label>
+            <div>
+              <input
+                type="text"
+                value={value || ''} // Ensure value is either an empty string or the input value
+                onChange={(e) => setValue(e.target.value)}
+                disabled={!ready}
+                placeholder={newSettings.home_location_text} // This placeholder should show when value is empty
+                className="w-full rounded p-2 text-black placeholder:text-black" // Placeholder color class
+              />
+            </div>
             {/* Suggestions dropdown */}
             {status === 'OK' &&
               data.map(({ place_id, description }) => (
@@ -192,35 +200,47 @@ const AdminSettingsModal = ({ onClose }) => {
                   {description}
                 </div>
               ))}
-
-            <hr className="mb-2 border-gray-700" />
-
-            <label className="mb-2 block">Off Hours Start: </label>
-            <input
-              type="time"
-              name="timeoff_start_time"
-              value={newSettings.timeoff_start_time}
-              onChange={handleInputChange}
-              className="mb-4 w-full rounded p-2 text-black"
-            />
-            <p className="mb-2 text-center text-xs text-white">
-              * All bookings blocked in between start and end
-            </p>
-
-            <label className="mb-2 block">Off Hours End: </label>
-            <input
-              type="time"
-              name="timeoff_end_time"
-              value={newSettings.timeoff_end_time}
-              onChange={handleInputChange}
-              className="mb-2 w-full rounded p-2 text-black"
-            />
           </div>
 
-          <hr className="mb-4 border-gray-700" />
+          <hr className="my-4 border-gray-700" />
 
-          <label className="mb-2 block">Required Lead Time: </label>
-          <div className="flex gap-6">
+          {/* Non-Working Hours Inputs */}
+          <label className="mb-2 block text-lg font-bold">
+            Non-Working Hours:
+          </label>
+          <p className="mb-2 text-sm text-gray-400">
+            * All bookings blocked in this window
+          </p>
+          <div className="flex gap-4">
+            <div className="w-full">
+              <label className="mb-1 block">Start Time</label>
+              <input
+                type="time"
+                name="timeoff_start_time"
+                value={newSettings.timeoff_start_time}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+            <div className="w-full">
+              <label className="mb-1 block">End Time</label>
+              <input
+                type="time"
+                name="timeoff_end_time"
+                value={newSettings.timeoff_end_time}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+          </div>
+
+          <hr className="my-4 border-gray-700" />
+
+          {/* Lead Time Inputs */}
+          <label className="mb-2 block text-lg font-bold">
+            Required Lead Time:{' '}
+          </label>
+          <div className="flex gap-4">
             <div>
               <label className="mb-1 block">Hours</label>
               <input
@@ -231,7 +251,8 @@ const AdminSettingsModal = ({ onClose }) => {
                 className="w-full rounded p-2 text-black"
               />
             </div>
-            <div className="mb-4">
+
+            <div>
               <label className="mb-1 block">Minutes</label>
               <input
                 type="number"
@@ -243,11 +264,34 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="mb-4 border-gray-700" />
+          <hr className="my-4 border-gray-700" />
 
-          <p>more here</p>
+          {/* Cost Settings Inputs */}
+          <label className="mb-2 block text-lg font-bold">Ride Pricing: </label>
+          <div className="flex gap-4">
+            <div>
+              <label className="mb-1 block">Per Mile Rate ($)</label>
+              <input
+                type="number"
+                name="cost_per_mile_rate"
+                value={newSettings.cost_per_mile_rate || 0}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block">Trip Surcharge ($)</label>
+              <input
+                type="number"
+                name="cost_trip_surcharge"
+                value={newSettings.cost_trip_surcharge || 0}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+          </div>
 
-          <hr className="mb-4 border-gray-700" />
+          <hr className="my-4 border-gray-700" />
 
           {/* Save Button */}
           <Button

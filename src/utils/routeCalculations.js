@@ -4,7 +4,9 @@ import supabase from '@/utils/supabaseClient';
 const getAdminSettings = async () => {
   let { data, error } = await supabase
     .from('AdminSettings')
-    .select('home_location_latitude, home_location_longitude')
+    .select(
+      'home_location_latitude, home_location_longitude, cost_per_mile_rate, cost_trip_surcharge'
+    )
     .single(); // Assuming there's only one settings row
 
   return { data, error };
@@ -76,4 +78,14 @@ export const calculateDistanceToCity = async (location, setExceedsRange) => {
       }
     }
   );
+};
+
+export const calculateCost = async (distance) => {
+  const { data, error } = await getAdminSettings();
+  if (error) {
+    console.error('Failed to fetch location data:', error);
+    return;
+  }
+  const cost = distance * data.cost_per_mile_rate + data.cost_trip_surcharge;
+  return Math.ceil(cost); // This ensures it's a whole number
 };

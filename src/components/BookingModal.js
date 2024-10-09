@@ -10,15 +10,14 @@ import { motion } from 'framer-motion';
 import {
   calculateRoute,
   calculateDistanceToCity,
+  calculateCost,
 } from '@/utils/routeCalculations';
-import { calculateCost } from '@/utils/costCalculations';
+
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
 import { combineDateAndTime } from '@/utils/dateUtils';
 
-
 const BookingModal = ({ onClose }) => {
-  
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [pickupLocation, setPickupLocation] = useState(null);
@@ -32,6 +31,7 @@ const BookingModal = ({ onClose }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isValidTime, setIsValidTime] = useState(false);
+  const [cost, setCost] = useState(null);
 
   // Fetch user session
   useEffect(() => {
@@ -60,23 +60,35 @@ const BookingModal = ({ onClose }) => {
     }
   }, [pickupLocation, dropoffLocation]);
 
-  // Calculate route and distance when both pickup and dropoff are set
+  // Calculate route, distance, and cost when both pickup and dropoff are set
   useEffect(() => {
-    if (pickupLocation && dropoffLocation) {
-      setLoadingRoute(true);
-      calculateRoute(
-        pickupLocation,
-        dropoffLocation,
-        setDistance,
-        setDuration,
-        setLoadingRoute,
-        setExceedsRange
-      );
-    } else {
-      setDistance('');
-      setDuration('');
-    }
-  }, [pickupLocation, dropoffLocation]);
+    const calculateAndSetCost = async () => {
+      if (pickupLocation && dropoffLocation) {
+        setLoadingRoute(true);
+        calculateRoute(
+          pickupLocation,
+          dropoffLocation,
+          setDistance,
+          setDuration,
+          setLoadingRoute,
+          setExceedsRange
+        );
+
+        // After calculating the route, calculate the cost
+        const distanceInMiles = parseFloat(distance.replace(/[^\d.]/g, ''));
+        if (!isNaN(distanceInMiles)) {
+          const calculatedCost = await calculateCost(distanceInMiles);
+          setCost(calculatedCost);
+        }
+      } else {
+        setDistance('');
+        setDuration('');
+        setCost(null);
+      }
+    };
+
+    calculateAndSetCost();
+  }, [pickupLocation, dropoffLocation, distance]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -121,8 +133,6 @@ const BookingModal = ({ onClose }) => {
     }
   };
 
-  const cost = distance ? calculateCost(parseFloat(distance)) : null;
-
   const generateGoogleMapsLinkForTrip = () => {
     if (pickupLocation && dropoffLocation) {
       const pickup = `${pickupLocation.lat},${pickupLocation.lng}`;
@@ -131,8 +141,6 @@ const BookingModal = ({ onClose }) => {
     }
     return '#';
   };
-
-  
 
   return (
     <motion.div

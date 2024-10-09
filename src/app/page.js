@@ -100,8 +100,6 @@ function HomeContent() {
     return null; // Wait for loading to complete
   }
 
-  
-
   return (
     <div className="main-content --font-oxygen min-h-screen text-white">
       <div className="mx-auto flex min-h-screen max-w-96 flex-col items-center justify-center px-4">
@@ -159,9 +157,8 @@ function HomeContent() {
 }
 
 export default function Home() {
-
   const handleLoad = () => {
-    console.log("Google Maps API is fully loaded and ready to use.");
+    console.log('Google Maps API is fully loaded and ready to use.');
     // You can initiate map setups or state updates here
   };
 
@@ -170,7 +167,6 @@ export default function Home() {
       <Head>
         {/* Meta tag to set background color during page load */}
         <meta name="theme-color" content="#000000" />
-        
       </Head>
       <Script
         src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
