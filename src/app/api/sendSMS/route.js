@@ -1,5 +1,7 @@
 // pages/api/sendSMS.js
 
+// TODO: connect TFN when issued from request through Brevo
+
 export async function POST(request) {
   try {
     // Parse the request body to extract SMS details
