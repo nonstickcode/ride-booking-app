@@ -176,7 +176,14 @@ const TimeValidation = ({
         setLoadingAvailability(false);
       }
     },
-    [checkIfTimeInOffHours, convertLeadTimeToMilliseconds, date, leadTime.hours, leadTime.minutes, setIsValidTime]
+    [
+      checkIfTimeInOffHours,
+      convertLeadTimeToMilliseconds,
+      date,
+      leadTime.hours,
+      leadTime.minutes,
+      setIsValidTime,
+    ]
   );
 
   useEffect(() => {

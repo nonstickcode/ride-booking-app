@@ -1,3 +1,16 @@
+import supabase from '@/utils/supabaseClient';
+
+// Function to fetch the admin location settings from the database
+const getAdminSettings = async () => {
+  let { data, error } = await supabase
+    .from('AdminSettings')
+    .select('home_location_latitude, home_location_longitude')
+    .single(); // Assuming there's only one settings row
+
+  return { data, error };
+};
+
+
 // Function to calculate the route between two locations
 export const calculateRoute = async (
   origin,
@@ -18,21 +31,16 @@ export const calculateRoute = async (
     (result, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
         const distanceText = result.routes[0].legs[0].distance.text;
-        const durationText = result.routes[0].legs[0].duration.text; // No conversion, use as is
+        const durationText = result.routes[0].legs[0].duration.text;
 
-        // Extract numeric value for distance and round it up
-        const distanceInMiles = parseFloat(distanceText.replace(/[^\d.]/g, '')); // Remove non-numeric characters
+        const distanceInMiles = parseFloat(distanceText.replace(/[^\d.]/g, ''));
         const roundedDistance = Math.ceil(distanceInMiles);
 
         setDistance(`${roundedDistance} miles`);
         setDuration(durationText);
         setLoadingRoute(false);
 
-        if (roundedDistance > 200) {
-          setExceedsRange(true);
-        } else {
-          setExceedsRange(false);
-        }
+        setExceedsRange(roundedDistance > 200);
       } else {
         console.error('Error fetching directions:', status);
         setLoadingRoute(false);
@@ -41,13 +49,18 @@ export const calculateRoute = async (
   );
 };
 
-// Function to calculate distance to the driver's location (Phoenix)
-export const calculateDistanceToCity = (location, setExceedsRange) => {
-  const distanceService = new google.maps.DistanceMatrixService();
+// Function to calculate distance to the driver's location using dynamic data
+export const calculateDistanceToCity = async (location, setExceedsRange) => {
+  const { data, error } = await getAdminSettings();
+  if (error) {
+    console.error('Failed to fetch location data:', error);
+    return;
+  }
 
+  const distanceService = new google.maps.DistanceMatrixService();
   distanceService.getDistanceMatrix(
     {
-      origins: [{ lat: 33.4484, lng: -112.074 }], // TODO: set to Phx currently, Add to Admin settings
+      origins: [{ lat: data.home_location_latitude, lng: data.home_location_longitude }],
       destinations: [location],
       travelMode: google.maps.TravelMode.DRIVING,
     },

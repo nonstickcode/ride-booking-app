@@ -4,6 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from 'use-places-autocomplete';
+
+// TODO: need to fix google maps api init to happen earlier (async loading) in home component so LocationsPickers and AdminSettings can both use 
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
@@ -15,12 +21,23 @@ const AdminSettingsModal = ({ onClose }) => {
     lead_time_hours: 0,
     lead_time_minutes: 0,
   });
-  const [newSettings, setNewSettings] = useState(settings); // To track input changes
+  const [newSettings, setNewSettings] = useState(settings);
   const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false); // Manage save button
-  const [alertMessage, setAlertMessage] = useState(''); // Alert message state
-  const [alertType, setAlertType] = useState(''); // To track 'success' or 'error'
+  const [isSaving, setIsSaving] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
   const supabase = useSupabaseClient();
+
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: {},
+    debounce: 300,
+  });
 
   // Handle input changes and update the newSettings state
   const handleInputChange = (e) => {
@@ -28,6 +45,17 @@ const AdminSettingsModal = ({ onClose }) => {
     setNewSettings((prevSettings) => ({
       ...prevSettings,
       [name]: value,
+    }));
+  };
+
+  const handleSelect = async (address) => {
+    const results = await getGeocode({ address });
+    const { lat, lng } = await getLatLng(results[0]);
+    setNewSettings((prev) => ({
+      ...prev,
+      home_location_text: address,
+      home_location_latitude: lat,
+      home_location_longitude: lng,
     }));
   };
 
@@ -52,7 +80,7 @@ const AdminSettingsModal = ({ onClose }) => {
 
     if (error) {
       setAlertMessage('Failed to save settings. Please try again.');
-      setAlertType('error'); // Set alert type to error
+      setAlertType('error');
 
       // Hide the alert after 3 seconds
       setTimeout(() => {
@@ -78,7 +106,7 @@ const AdminSettingsModal = ({ onClose }) => {
         .from('AdminSettings')
         .select('*')
         .limit(1)
-        .single(); // Fetch the first row, assuming there's only one row
+        .single(); // Fetch the first row, assuming there's only one row (only one row always)
 
       if (error) {
         console.error('Error fetching settings:', error);
@@ -142,14 +170,33 @@ const AdminSettingsModal = ({ onClose }) => {
 
           {/* Form for settings */}
           <div className="mb-4 text-white">
-            <label className="mb-2 block">Current Location: </label>
-            <input
-              type="text"
-              name="home_location_text"
-              value={newSettings.home_location_text}
-              onChange={handleInputChange}
-              className="mb-4 w-full rounded p-2 text-black"
-            />
+            
+              <label className="mb-2 block">Current Location: </label>
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                disabled={!ready}
+                placeholder={newSettings.home_location_text}
+                className="mb-4 w-full rounded p-2 text-black"
+              />
+              {/* Suggestions dropdown */}
+              {status === 'OK' &&
+                data.map(({ id, description }) => (
+                  <div
+                    key={id}
+                    onClick={() => {
+                      setValue(description, false);
+                      clearSuggestions();
+                      // Optional: Get latitude and longitude
+                      handleSelect(description);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    {description}
+                  </div>
+                ))}
+            
 
             <hr className="mb-2 border-gray-700" />
 
