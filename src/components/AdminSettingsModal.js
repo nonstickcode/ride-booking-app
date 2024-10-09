@@ -9,8 +9,6 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from 'use-places-autocomplete';
 
-// TODO: need to fix google maps api init to happen earlier (async loading) in home component so LocationsPickers and AdminSettings can both use
-
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
     home_location_text: '',
