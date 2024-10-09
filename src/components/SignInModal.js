@@ -8,6 +8,8 @@ import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react'; // Use Supabase hooks
 import validator from 'validator';
 
+// TODO: move auth to server side route to not expose tokens in URL as they are now
+
 const SignInModal = ({ onClose, onSignInSuccess }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');

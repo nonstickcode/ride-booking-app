@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 
+// TODO: need to add a way for jamie to accept or reject booking requests then either send user email or sms with answer then if accepted add to calender as event
+
 export async function POST(request) {
   try {
     const {
