@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const SettingsModal = ({ onClose }) => {
   const handleSaveSettings = () => {
-    // TODO: Logic to save settings
+    // TODO: Logic to save settings (when settings added in future, current empty modal)
     console.log('Settings saved');
   };
 
