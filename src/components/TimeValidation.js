@@ -3,6 +3,8 @@ import { FaSpinner } from 'react-icons/fa';
 import { combineDateAndTime } from '@/utils/dateUtils';
 import supabase from '@/utils/supabaseClient';
 
+// TODO: connect value misc_advance_booking_limit_months from adminSettings DB to validate the date is not allowed past the limit of state
+
 const TimeValidation = ({
   date,
   time,
