@@ -20,6 +20,8 @@ const AdminSettingsModal = ({ onClose }) => {
     lead_time_minutes: 0,
     cost_per_mile_rate: 0,
     cost_trip_surcharge: 0,
+    misc_range_limit_miles: 0,
+    misc_advance_booking_limit_months: 0,
   });
   const [newSettings, setNewSettings] = useState(settings);
   const [loading, setLoading] = useState(true);
@@ -74,6 +76,11 @@ const AdminSettingsModal = ({ onClose }) => {
         lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
         cost_per_mile_rate: parseFloat(newSettings.cost_per_mile_rate),
         cost_trip_surcharge: parseFloat(newSettings.cost_trip_surcharge),
+        misc_range_limit_miles: parseFloat(newSettings.misc_range_limit_miles), // New field
+        misc_advance_booking_limit_months: parseInt(
+          newSettings.misc_advance_booking_limit_months,
+          10
+        ), // New field
         updated_at: new Date().toISOString(),
       },
     ]);
@@ -285,6 +292,39 @@ const AdminSettingsModal = ({ onClose }) => {
                 type="number"
                 name="cost_trip_surcharge"
                 value={newSettings.cost_trip_surcharge || 0}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+          </div>
+
+          <hr className="my-4 border-gray-700" />
+
+          {/* This is new section not yet hooked up */}
+          {/* Miscellaneous */}
+          <label className="mb-2 block text-lg font-bold">Miscellaneous:</label>
+          <div className="flex gap-4">
+            <div>
+              <label className="mb-1 block">
+                Range Limit from Home (miles)
+              </label>
+              <input
+                type="number"
+                name="misc_range_limit_miles"
+                value={newSettings.misc_range_limit_miles || 0}
+                onChange={handleInputChange}
+                className="w-full rounded p-2 text-black"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block">
+                Advanced Booking Limit (months)
+              </label>
+              <input
+                type="number"
+                name="misc_advance_booking_limit_months"
+                value={newSettings.misc_advance_booking_limit_months || 0}
                 onChange={handleInputChange}
                 className="w-full rounded p-2 text-black"
               />
