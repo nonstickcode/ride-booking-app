@@ -5,9 +5,9 @@ const getAdminSettings = async () => {
   let { data, error } = await supabase
     .from('AdminSettings')
     .select(
-      'home_location_latitude, home_location_longitude, cost_per_mile_rate, cost_trip_surcharge'
+      'home_location_latitude, home_location_longitude, cost_per_mile_rate, cost_trip_surcharge, misc_range_limit_miles'
     )
-    .single(); // Assuming there's only one settings row
+    .single(); // There is only one row in this table
 
   return { data, error };
 };
@@ -22,6 +22,11 @@ export const calculateRoute = async (
   setExceedsRange
 ) => {
   const directionsService = new google.maps.DirectionsService();
+  const { data, error } = await getAdminSettings();
+  if (error) {
+    console.error('Failed to fetch location data:', error);
+    return;
+  }
 
   directionsService.route(
     {
@@ -41,7 +46,7 @@ export const calculateRoute = async (
         setDuration(durationText);
         setLoadingRoute(false);
 
-        setExceedsRange(roundedDistance > 200); // TODO Admin settings needs this option as setting to adjust (range from home location in miles)
+        setExceedsRange(roundedDistance > data.misc_range_limit_miles);
       } else {
         console.error('Error fetching directions:', status);
         setLoadingRoute(false);
@@ -72,7 +77,7 @@ export const calculateDistanceToCity = async (location, setExceedsRange) => {
         const distanceInMeters = result.rows[0].elements[0].distance.value;
         const distanceInMiles = distanceInMeters * 0.000621371;
 
-        setExceedsRange(distanceInMiles > 200);
+        setExceedsRange(distanceInMiles > data.misc_range_limit_miles);
       } else {
         console.error('Error calculating distance to city:', status);
       }

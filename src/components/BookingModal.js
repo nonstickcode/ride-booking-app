@@ -17,6 +17,42 @@ import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
 import { combineDateAndTime } from '@/utils/dateUtils';
 
+// Function to fetch the admin location settings from the database
+const getAdminSettings = async () => {
+  let { data, error } = await supabase
+    .from('AdminSettings')
+    .select('misc_range_limit_miles, home_location_text')
+    .single(); // There is only one row in this table
+
+  return { data, error };
+};
+
+// Function to reverse geocode and get the city and state from latitude/longitude
+const reverseGeocode = async (address) => {
+  const geocoder = new window.google.maps.Geocoder();
+  return new Promise((resolve, reject) => {
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === 'OK') {
+        const result = results[0];
+        const city = result.address_components.find((component) =>
+          component.types.includes('locality')
+        )?.long_name;
+        const state = result.address_components.find((component) =>
+          component.types.includes('administrative_area_level_1')
+        )?.long_name;
+
+        if (city && state) {
+          resolve(`${city}, ${state}`);
+        } else {
+          resolve('LA or PHX'); // Return fallback value if city or state not found
+        }
+      } else {
+        reject('Geocode failed: ' + status);
+      }
+    });
+  });
+};
+
 const BookingModal = ({ onClose }) => {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
@@ -33,6 +69,11 @@ const BookingModal = ({ onClose }) => {
   const [isValidTime, setIsValidTime] = useState(false);
   const [cost, setCost] = useState(null);
 
+  // States for AdminSettings DB values when fetched from Supabase
+  const [rangeLimitMiles, setRangeLimitMiles] = useState(0);
+  const [homeLocationVisibleToUser, setHomeLocationVisibleToUser] =
+    useState(null); // Renamed state variable
+
   // Fetch user session
   useEffect(() => {
     const fetchUser = async () => {
@@ -42,6 +83,28 @@ const BookingModal = ({ onClose }) => {
       }
     };
     fetchUser();
+  }, []);
+
+  // Fetch admin settings (range limit) when component mounts
+  useEffect(() => {
+    const fetchAdminSettings = async () => {
+      const { data, error } = await getAdminSettings();
+      if (!error && data) {
+        setRangeLimitMiles(data.misc_range_limit_miles); // Store range limit from admin settings
+
+        // Reverse geocode the home location to get city and state
+        try {
+          const cityAndState = await reverseGeocode(data.home_location_text);
+          setHomeLocationVisibleToUser(cityAndState); // Store filtered city and state
+        } catch (geocodeError) {
+          console.error('Geocoding error:', geocodeError);
+        }
+      } else {
+        console.error('Failed to fetch admin settings:', error);
+      }
+    };
+
+    fetchAdminSettings();
   }, []);
 
   // Reset form states on close
@@ -238,8 +301,9 @@ const BookingModal = ({ onClose }) => {
             )}
 
             {exceedsRange && (
-              <p className="mb-4 text-xl font-bold text-red-500">
-                Driver&apos;s range exceeded.
+              <p className="mb-4 text-lg font-bold text-red-500">
+                Driver&apos;s current Range Limit is {rangeLimitMiles} miles
+                from {homeLocationVisibleToUser}
               </p>
             )}
 

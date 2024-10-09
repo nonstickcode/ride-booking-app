@@ -76,11 +76,11 @@ const AdminSettingsModal = ({ onClose }) => {
         lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
         cost_per_mile_rate: parseFloat(newSettings.cost_per_mile_rate),
         cost_trip_surcharge: parseFloat(newSettings.cost_trip_surcharge),
-        misc_range_limit_miles: parseFloat(newSettings.misc_range_limit_miles), // New field
+        misc_range_limit_miles: parseFloat(newSettings.misc_range_limit_miles),
         misc_advance_booking_limit_months: parseInt(
           newSettings.misc_advance_booking_limit_months,
           10
-        ), // New field
+        ),
         updated_at: new Date().toISOString(),
       },
     ]);
