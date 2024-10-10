@@ -5,12 +5,7 @@ import addMonths from 'date-fns/addMonths'; // Add this for date comparison
 import supabase from '@/utils/supabaseClient';
 
 // Custom TimeValidation component
-const TimeValidation = ({
-  date,
-  time,
-  isValidTime, 
-  setIsValidTime, 
-}) => {
+const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
   const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });
   const [offHours, setOffHours] = useState({
     start: '00:00:00',
@@ -53,18 +48,23 @@ const TimeValidation = ({
   }, []);
 
   // Check if the selected date is beyond the allowed booking limit
-  const checkIfDateExceedsLimit = useCallback((selectedDate) => {
-    if (bookingLimitMonths !== null) {
-      const maxAllowedDate = addMonths(new Date(), bookingLimitMonths); // Calculate max date
-      if (selectedDate > maxAllowedDate) {
-        const monthText = bookingLimitMonths === 1 ? 'month' : 'months';
-        setMessage(`Bookings are not accepted more than ${bookingLimitMonths} ${monthText} in advance.`);
-        setIsValidTime(false); // Mark time as invalid and stop further checks
-        return true;
+  const checkIfDateExceedsLimit = useCallback(
+    (selectedDate) => {
+      if (bookingLimitMonths !== null) {
+        const maxAllowedDate = addMonths(new Date(), bookingLimitMonths); // Calculate max date
+        if (selectedDate > maxAllowedDate) {
+          const monthText = bookingLimitMonths === 1 ? 'month' : 'months';
+          setMessage(
+            `Bookings are not accepted more than ${bookingLimitMonths} ${monthText} in advance.`
+          );
+          setIsValidTime(false); // Mark time as invalid and stop further checks
+          return true;
+        }
       }
-    }
-    return false;
-  }, [bookingLimitMonths, setIsValidTime]);
+      return false;
+    },
+    [bookingLimitMonths, setIsValidTime]
+  );
 
   // Parse time from HH:MM:SS format to just hours
   const parseTime = useCallback((timeString) => {
@@ -78,7 +78,6 @@ const TimeValidation = ({
       const selectedHour = time.getHours();
       const start = parseTime(offHours.start);
       const end = parseTime(offHours.end);
-
 
       // TODO: these times are not being formatted to AM PM to show to user, both start and end need to be formatted properly before user sees them
       if (start > end) {
@@ -142,8 +141,7 @@ const TimeValidation = ({
           setMessage(
             `The driver needs at least ${leadTime.hours} ${leadTime.hours === 1 ? 'hour' : 'hours'}${leadTime.minutes > 0 ? ` and ${leadTime.minutes} minutes` : ''} notice for a ride request. Please select a later time.`
           );
-          
-          
+
           setIsValidTime(false);
           return;
         }
@@ -182,7 +180,7 @@ const TimeValidation = ({
           setMessage('This time is unavailable. Please choose another time.');
           setIsValidTime(false);
         } else {
-          setMessage('This date and time is available.');
+          setMessage('This date and time is available.'); // TODO: i need to see how the calendar api is being checked time frame wise and see how im setting time to check for
           setIsValidTime(true);
         }
       } catch (error) {

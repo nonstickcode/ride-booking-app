@@ -7,27 +7,27 @@ import LocationPickers from '@/components/LocationPickers';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { v4 as uuidv4 } from 'uuid'; // UUID generation
 import {
   calculateRoute,
   calculateDistanceToCity,
   calculateCost,
 } from '@/utils/routeCalculations';
-
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
 import { combineDateAndTime } from '@/utils/dateUtils';
 
-// Function to fetch the admin location settings from the database
+// Function to fetch admin settings
 const getAdminSettings = async () => {
   let { data, error } = await supabase
     .from('AdminSettings')
     .select('misc_range_limit_miles, home_location_text')
-    .single(); // There is only one row in this table
+    .single();
 
   return { data, error };
 };
 
-// Function to reverse geocode and get the city and state from latitude/longitude
+// Function to reverse geocode to get city and state
 const reverseGeocode = async (address) => {
   const geocoder = new window.google.maps.Geocoder();
   return new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ const reverseGeocode = async (address) => {
         if (city && state) {
           resolve(`${city}, ${state}`);
         } else {
-          resolve('LA or PHX'); // Return fallback value if city or state not found
+          resolve('LA or PHX'); // Fallback
         }
       } else {
         reject('Geocode failed: ' + status);
@@ -85,17 +85,17 @@ const BookingModal = ({ onClose }) => {
     fetchUser();
   }, []);
 
-  // Fetch admin settings (range limit) when component mounts
+  // Fetch admin settings when component mounts
   useEffect(() => {
     const fetchAdminSettings = async () => {
       const { data, error } = await getAdminSettings();
       if (!error && data) {
-        setRangeLimitMiles(data.misc_range_limit_miles); // Store range limit from admin settings
+        setRangeLimitMiles(data.misc_range_limit_miles);
 
         // Reverse geocode the home location to get city and state
         try {
           const cityAndState = await reverseGeocode(data.home_location_text);
-          setHomeLocationVisibleToUser(cityAndState); // Store filtered city and state
+          setHomeLocationVisibleToUser(cityAndState);
         } catch (geocodeError) {
           console.error('Geocoding error:', geocodeError);
         }
@@ -153,23 +153,39 @@ const BookingModal = ({ onClose }) => {
     calculateAndSetCost();
   }, [pickupLocation, dropoffLocation, distance]);
 
-  // Handle form submission
+  // Save booking data to Supabase and send email to Driver / Admin / Jamie
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingSubmit(true);
 
     const combinedDateTime = combineDateAndTime(date, time);
 
+    const bookingId = uuidv4(); // Generate a new UUID for the booking
     const bookingData = {
+      id: bookingId, // UUID
+      user_uuid: user.id, // User UUID
+      user_email: user.email, // User email
       date: combinedDateTime.toISOString(),
-      pickupLocation,
-      dropoffLocation,
+      pickup_location: pickupLocation,
+      dropoff_location: dropoffLocation,
       distance,
       duration,
       cost,
+      status: 'pending', // Default status
     };
 
     try {
+      // Insert booking data into the NewBookingData table
+      const { data, error } = await supabase
+        .from('NewBookingData')
+        .insert([bookingData]);
+
+      if (error) {
+        console.error('Error saving booking data:', error);
+        return;
+      }
+
+      // Send the booking data to the email route
       const emailResponse = await fetch('/api/sendEmail', {
         method: 'POST',
         headers: {

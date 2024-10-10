@@ -101,7 +101,6 @@ const TimePicker = ({ time, setTime }) => {
           }}
         />
       </LocalizationProvider>
-      
     </div>
   );
 };
