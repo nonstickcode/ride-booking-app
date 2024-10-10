@@ -93,8 +93,8 @@ export async function POST(request) {
     
         <p>Please review the details and choose an option:</p>
         <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <a href="${acceptLink}" style="background-color: green; color: white; padding: 10px 20px; margin-right: 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">Accept Booking</a>
-          <a href="${declineLink}" style="background-color: red; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">Decline Booking</a>
+          <a href="${acceptLink}" style="background-color: green; color: white; padding: 10px 20px; margin-right: 20px; text-decoration: none; border-radius: 8px; font-size: 16px;">Accept Booking</a>
+          <a href="${declineLink}" style="background-color: red; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-size: 16px;">Decline Booking</a>
         </div>
     
         <p>Thank you,<br>Your RYDEBLK Booking System</p>
