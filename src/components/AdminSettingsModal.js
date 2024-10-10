@@ -8,8 +8,7 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from 'use-places-autocomplete';
-import { ClockIcon } from '@mui/x-date-pickers';
-import { Clock } from '@mui/x-date-pickers/TimeClock/Clock';
+import ClockIcon from '@mui/icons-material/AccessTime';
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
@@ -222,44 +221,88 @@ const AdminSettingsModal = ({ onClose }) => {
 
           <hr className="my-2 border-gray-700" />
 
-          {/* Non-Working Hours Inputs */}
-          <label className="mb-2 block text-lg font-bold text-blue-200">
-            Non-Working Hours:
-          </label>
+{/* Non-Working Hours Inputs */}
+<label className="mb-2 block text-lg font-bold text-blue-200">
+  Non-Working Hours:
+</label>
 
-          <div className="flex flex-col gap-2">
-            {' '}
-            {/* Changed to flex-col for vertical stacking */}
-            <div className="w-full">
-              <label className="mb-1 block text-sm">Start Time</label>
-              <input
-                type="time"
-                name="timeoff_start_time"
-                value={newSettings.timeoff_start_time}
-                onChange={handleInputChange}
-                className={getInputClass(
-                  newSettings.timeoff_start_time,
-                  initialSettings.timeoff_start_time
-                )}
-              />
-            </div>
-            <p className="mb-0 text-sm text-gray-400">
-              * All bookings blocked in this window
-            </p>
-            <div className="w-full">
-              <label className="mb-1 block text-sm">End Time</label>
-              <input
-                type="time"
-                name="timeoff_end_time"
-                value={newSettings.timeoff_end_time}
-                onChange={handleInputChange}
-                className={getInputClass(
-                  newSettings.timeoff_end_time,
-                  initialSettings.timeoff_end_time
-                )}
-              />
-            </div>
-          </div>
+<div className="flex flex-col gap-2">
+  {/* Start Time Input */}
+  <div className="w-full relative">
+    <label className="mb-1 block text-sm">Start Time</label> {/* Ensure label is on top */}
+    <div className="relative w-full">
+      <input
+        type="time"
+        name="timeoff_start_time"
+        value={newSettings.timeoff_start_time}
+        onChange={handleInputChange}
+        className={`w-full pr-10 ${getInputClass(
+          newSettings.timeoff_start_time,
+          initialSettings.timeoff_start_time
+        )}`} // Add padding for the icon
+        style={{
+          appearance: 'none', // Hide default time picker icon for all browsers
+          WebkitAppearance: 'none', // Hide default icon on WebKit browsers
+          MozAppearance: 'textfield', // Hide default icon on Firefox
+          position: 'relative',
+          zIndex: 1,
+        }}
+      />
+      {/* Custom Clock Icon (adjusted to overlay on the default one) */}
+      <ClockIcon
+        style={{
+          position: 'absolute',
+          right: '16px', // Move the icon slightly to the left to cover the default one
+          top: '50%', // Center icon vertically
+          transform: 'translateY(-50%)', // Ensure proper centering
+          color: 'white', // Icon color
+          pointerEvents: 'none', // Avoid interference with input
+          zIndex: 2,
+        }}
+      />
+    </div>
+  </div>
+
+  <p className="mb-0 text-sm text-gray-400">
+    * All bookings blocked in this window
+  </p>
+
+  {/* End Time Input */}
+  <div className="w-full relative">
+    <label className="mb-1 block text-sm">End Time</label> {/* Ensure label is on top */}
+    <div className="relative w-full">
+      <input
+        type="time"
+        name="timeoff_end_time"
+        value={newSettings.timeoff_end_time}
+        onChange={handleInputChange}
+        className={`w-full pr-10 ${getInputClass(
+          newSettings.timeoff_end_time,
+          initialSettings.timeoff_end_time
+        )}`} // Add padding for the icon
+        style={{
+          appearance: 'none', // Hide default time picker icon for all browsers
+          WebkitAppearance: 'none', // Hide default icon on WebKit browsers
+          MozAppearance: 'textfield', // Hide default icon on Firefox
+          position: 'relative',
+          zIndex: 1,
+        }}
+      />
+      {/* Custom Clock Icon (adjusted to overlay on the default one) */}
+      <ClockIcon
+        style={{
+          position: 'absolute',
+          right: '16px', // Move the icon slightly to the left to cover the default one
+          top: '50%', // Center icon vertically
+          transform: 'translateY(-50%)', // Ensure proper centering
+          color: 'white', // Icon color
+          pointerEvents: 'none', // Avoid interference with input
+          zIndex: 2,
+        }}
+      />
+    </div>
+  </div>
+</div>
 
           <hr className="my-2 border-gray-700" />
 

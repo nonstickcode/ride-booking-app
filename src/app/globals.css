@@ -9,7 +9,7 @@
   :root {
     /* Centralized input styles */
 
-    --input-bg-color: #1f2937; /* Equivalent to Tailwind's gray-800 */
+    --input-bg-color: custom-blue-gray; /* Equivalent to Tailwind's gray-800 */
     --input-border-color: #6b7280; /* Equivalent to Tailwind's gray-500 */
     --input-text-color: #ffffff; /* Equivalent to Tailwind's white */
     --input-placeholder-color: #9ca3af; /* Equivalent to Tailwind's gray-400 */

@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        'custom-blue-gray': '#161e29', // Custom form input and current location background color
       },
       borderRadius: {
         lg: 'var(--radius)',
