@@ -178,42 +178,45 @@ const AdminSettingsModal = ({ onClose }) => {
           <hr className="my-4 border-gray-700" />
 
           {/* Location Input */}
-<div className="text-white">
-  <label className="mb-2 block text-lg font-bold">Home Location:</label>
-  <div>
-    <input
-      type="text"
-      value={value || newSettings.home_location_text || ''} // Use value or DB value
-      onChange={(e) => setValue(e.target.value)}
-      disabled={!ready}
-      placeholder={initialSettings.home_location_text || 'Enter location'} // Placeholder from DB
-      className={getInputClass(
-        value || newSettings.home_location_text,
-        initialSettings.home_location_text
-      )}
-    />
-  </div>
+          <div className="text-white">
+            <label className="mb-2 block text-lg font-bold">
+              Home Location:
+            </label>
+            <div>
+              <input
+                type="text"
+                value={value || newSettings.home_location_text || ''} // Use value or DB value
+                onChange={(e) => setValue(e.target.value)}
+                disabled={!ready}
+                placeholder={
+                  initialSettings.home_location_text || 'Enter location'
+                } // Placeholder from DB
+                className={getInputClass(
+                  value || newSettings.home_location_text,
+                  initialSettings.home_location_text
+                )}
+              />
+            </div>
 
-  {/* Suggestions dropdown */}
-  {status === 'OK' && (
-    <div className="bg-gray-800 text-white mt-1 rounded-lg shadow-lg">
-      {data.map(({ place_id, description }) => (
-        <div
-          key={place_id}
-          onClick={() => {
-            setValue(description, false); // Set selected place value
-            clearSuggestions();
-            handleSelect(description); // Handle lat/lng selection
-          }}
-          className="cursor-pointer p-2 hover:bg-gray-700"
-        >
-          {description}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
+            {/* Suggestions dropdown */}
+            {status === 'OK' && (
+              <div className="mt-1 rounded-lg bg-gray-800 text-white shadow-lg">
+                {data.map(({ place_id, description }) => (
+                  <div
+                    key={place_id}
+                    onClick={() => {
+                      setValue(description, false); // Set selected place value
+                      clearSuggestions();
+                      handleSelect(description); // Handle lat/lng selection
+                    }}
+                    className="cursor-pointer p-2 hover:bg-gray-700"
+                  >
+                    {description}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <hr className="my-4 border-gray-700" />
 
@@ -226,7 +229,7 @@ const AdminSettingsModal = ({ onClose }) => {
           </p>
           <div className="flex gap-4">
             <div className="w-full">
-              <label className="mb-1 block">Start Time</label>
+              <label className="mb-1 text-sm block">Start Time</label>
               <input
                 type="time"
                 name="timeoff_start_time"
@@ -239,7 +242,7 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div className="w-full">
-              <label className="mb-1 block">End Time</label>
+              <label className="mb-1 text-sm  block">End Time</label>
               <input
                 type="time"
                 name="timeoff_end_time"
@@ -261,7 +264,7 @@ const AdminSettingsModal = ({ onClose }) => {
           </label>
           <div className="flex gap-4">
             <div>
-              <label className="mb-1 block">Hours</label>
+              <label className="mb-1 text-sm  block">Hours</label>
               <input
                 type="number"
                 name="lead_time_hours"
@@ -274,7 +277,7 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div>
-              <label className="mb-1 block">Minutes</label>
+              <label className="mb-1 text-sm  block">Minutes</label>
               <input
                 type="number"
                 name="lead_time_minutes"
@@ -294,7 +297,7 @@ const AdminSettingsModal = ({ onClose }) => {
           <label className="mb-2 block text-lg font-bold">Ride Pricing: </label>
           <div className="flex gap-4">
             <div className="w-full">
-              <label className="mb-1 block">Per Mile Rate ($)</label>
+              <label className="mb-1  text-sm  block">Per Mile Rate ($)</label>
               <input
                 type="number"
                 name="cost_per_mile_rate"
@@ -307,7 +310,7 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div className="w-full">
-              <label className="mb-1 block">Trip Surcharge ($)</label>
+              <label className="mb-1  text-sm  block">Trip Surcharge ($)</label>
               <input
                 type="number"
                 name="cost_trip_surcharge"
@@ -327,7 +330,7 @@ const AdminSettingsModal = ({ onClose }) => {
           <label className="mb-2 block text-lg font-bold">Miscellaneous:</label>
           <div className="flex gap-4">
             <div className="w-full">
-              <label className="mb-1 block">
+              <label className="mb-1 text-sm block">
                 Range Limit from Home (miles)
               </label>
               <input
@@ -342,7 +345,7 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div className="w-full">
-              <label className="mb-1 block">
+              <label className="mb-1 text-sm block">
                 Advanced Booking Limit (months)
               </label>
               <input
