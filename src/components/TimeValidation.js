@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaSpinner } from 'react-icons/fa';
 import { combineDateAndTime } from '@/utils/dateUtils';
+import addMonths from 'date-fns/addMonths'; // Add this for date comparison
 import supabase from '@/utils/supabaseClient';
 
-// TODO: connect value misc_advance_booking_limit_months from adminSettings DB to validate the date is not allowed past the limit of state
-
+// Custom TimeValidation component
 const TimeValidation = ({
   date,
   time,
-  isValidTime, // needed here to show the red or green alerts here in TimeValidation.js for available or not
-  setIsValidTime, // this is set here then read in booking modal to disable submit button until valid time and date set
+  isValidTime, 
+  setIsValidTime, 
 }) => {
   const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });
   const [offHours, setOffHours] = useState({
@@ -18,14 +18,15 @@ const TimeValidation = ({
   });
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [message, setMessage] = useState('');
+  const [bookingLimitMonths, setBookingLimitMonths] = useState(null); // State to store booking limit in months
 
-  // Fetch lead time and off-hours from the database
+  // Fetch booking limit, lead time, and off-hours from the database
   useEffect(() => {
     const fetchSettings = async () => {
       const { data, error } = await supabase
         .from('AdminSettings')
         .select(
-          'lead_time_hours, lead_time_minutes, timeoff_start_time, timeoff_end_time'
+          'lead_time_hours, lead_time_minutes, timeoff_start_time, timeoff_end_time, misc_advance_booking_limit_months'
         )
         .limit(1)
         .single();
@@ -44,21 +45,26 @@ const TimeValidation = ({
           start: data.timeoff_start_time,
           end: data.timeoff_end_time,
         });
+        setBookingLimitMonths(data.misc_advance_booking_limit_months || null); // Fetch booking limit in months
       }
     };
 
     fetchSettings();
   }, []);
 
-  // Helper function to format off-hours range as a string
-  const formatOffHours = useCallback((start, end) => {
-    const formatHour = (hour) => {
-      const period = hour >= 12 ? 'pm' : 'am';
-      const hourFormatted = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
-      return `${hourFormatted}${period}`;
-    };
-    return `No bookings are available between ${formatHour(start)} and ${formatHour(end)}.`;
-  }, []);
+  // Check if the selected date is beyond the allowed booking limit
+  const checkIfDateExceedsLimit = useCallback((selectedDate) => {
+    if (bookingLimitMonths !== null) {
+      const maxAllowedDate = addMonths(new Date(), bookingLimitMonths); // Calculate max date
+      if (selectedDate > maxAllowedDate) {
+        const monthText = bookingLimitMonths === 1 ? 'month' : 'months';
+        setMessage(`Bookings are not accepted more than ${bookingLimitMonths} ${monthText} in advance.`);
+        setIsValidTime(false); // Mark time as invalid and stop further checks
+        return true;
+      }
+    }
+    return false;
+  }, [bookingLimitMonths, setIsValidTime]);
 
   // Parse time from HH:MM:SS format to just hours
   const parseTime = useCallback((timeString) => {
@@ -75,19 +81,19 @@ const TimeValidation = ({
 
       if (start > end) {
         if (selectedHour >= start || selectedHour < end) {
-          setMessage(formatOffHours(start, end));
+          setMessage(`No bookings are available between ${start} and ${end}.`);
           return true;
         }
       } else {
         if (selectedHour >= start && selectedHour < end) {
-          setMessage(formatOffHours(start, end));
+          setMessage(`No bookings are available between ${start} and ${end}.`);
           return true;
         }
       }
 
       return false;
     },
-    [offHours, formatOffHours, parseTime]
+    [offHours, parseTime]
   );
 
   // Convert lead time from hours and minutes to milliseconds
@@ -96,7 +102,7 @@ const TimeValidation = ({
     return hours * 60 * 60 * 1000 + minutes * 60 * 1000;
   }, [leadTime]);
 
-  // Validate the selected time
+  // Validate the selected time and date
   const validateTime = useCallback(
     async (selectedTime) => {
       if (!selectedTime || !date) {
@@ -106,6 +112,11 @@ const TimeValidation = ({
       }
 
       const combinedDateTime = combineDateAndTime(date, selectedTime);
+
+      // Check if the date exceeds the booking limit first
+      if (checkIfDateExceedsLimit(date)) {
+        return; // Skip other checks if date exceeds the limit
+      }
 
       if (combinedDateTime < new Date()) {
         setMessage('You cannot select a time in the past.');
@@ -127,14 +138,16 @@ const TimeValidation = ({
 
         if (combinedDateTime < leadTimeLimit) {
           setMessage(
-            `Please select a time at least ${leadTime.hours} hours and ${leadTime.minutes} minutes in advance.`
+            `The driver needs at least ${leadTime.hours} ${leadTime.hours === 1 ? 'hour' : 'hours'}${leadTime.minutes > 0 ? ` and ${leadTime.minutes} minutes` : ''} notice for a ride request. Please select a later time.`
           );
+          
+          
           setIsValidTime(false);
           return;
         }
       }
 
-      // Proceed with API check for availability if all prior checks pass (in the past, off time, lead time checks)
+      // Proceed with API check for availability if all prior checks pass
       setLoadingAvailability(true);
       const startTime = combinedDateTime.toISOString();
       const endTime = new Date(
@@ -179,6 +192,7 @@ const TimeValidation = ({
       }
     },
     [
+      checkIfDateExceedsLimit,
       checkIfTimeInOffHours,
       convertLeadTimeToMilliseconds,
       date,

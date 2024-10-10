@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -6,16 +6,46 @@ import { TimePicker as MUITimePicker } from '@mui/x-date-pickers/TimePicker';
 import addMonths from 'date-fns/addMonths';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { ClockIcon } from '@mui/x-date-pickers';
-import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import supabase from '@/utils/supabaseClient';
+
+// Function to fetch the admin location settings from the database
+const getAdminSettings = async () => {
+  let { data, error } = await supabase
+    .from('AdminSettings')
+    .select('misc_advance_booking_limit_months')
+    .single(); // There is only one row in this table
+
+  return { data, error };
+};
 
 // Custom DatePicker component
 const DatePicker = ({ date, setDate }) => {
-  // Calculate the max date (3 months from the current date)
-  // TODO: Add 3 month limit to admin settings for driver preferences (this is how far out the calendar will allow booking selections / disables past 3 months with this setting of 3)
-  const maxDate = addMonths(new Date(), 3);
+  const [maxDate, setMaxDate] = useState(null); // State for the maximum date
 
   // Set the minimum date to today to prevent selecting past dates
   const minDate = new Date();
+
+  // Fetch the advance booking limit from admin settings on mount
+  useEffect(() => {
+    const fetchMaxDate = async () => {
+      const { data, error } = await getAdminSettings();
+      if (!error && data?.misc_advance_booking_limit_months) {
+        // Use the value from the database (in months) to calculate the max date
+        const monthsLimit = data.misc_advance_booking_limit_months;
+        setMaxDate(addMonths(new Date(), monthsLimit));
+      } else {
+        // Fallback: if there's an error, use the default 3 months
+        setMaxDate(addMonths(new Date(), 3));
+      }
+    };
+
+    fetchMaxDate();
+  }, []);
+
+  // Return null if the maxDate has not been set yet
+  if (!maxDate) {
+    return null; // Optionally, you can show a loading spinner here
+  }
 
   return (
     <div className="mb-6 flex w-full flex-col">
@@ -29,7 +59,7 @@ const DatePicker = ({ date, setDate }) => {
           disabled={false}
           showDaysOutsideCurrentMonth
           minDate={minDate}
-          maxDate={maxDate}
+          maxDate={maxDate} // Dynamically set maxDate from the fetched value
           slots={{
             openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
           }}
@@ -71,6 +101,7 @@ const TimePicker = ({ time, setTime }) => {
           }}
         />
       </LocalizationProvider>
+      
     </div>
   );
 };
