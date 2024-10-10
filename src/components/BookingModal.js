@@ -233,8 +233,8 @@ const BookingModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="modal-container relative w-[90vw] max-w-sm p-2 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
+        className="modal-container relative max-h-[95vh] w-[90vw] max-w-sm overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
+        onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
         <Button
@@ -250,21 +250,19 @@ const BookingModal = ({ onClose }) => {
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md p-8 shadow-xl">
-          <h2 className="mx-auto mb-2 text-center text-2xl font-bold text-white">
+          <h2 className="mx-auto text-center text-2xl font-bold text-white">
             Book a Ride
           </h2>
 
           {user?.email && (
-            <p className="mb-4 text-center text-lg text-gray-300">
-              {user.email}
-            </p>
+            <p className="text-center text-lg text-gray-300">{user.email}</p>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+            {' '}
+            {/* Added gap-2 here */}
             <DatePicker date={date} setDate={setDate} />
-
-            <hr className="mb-4 border-gray-700" />
-
+            <hr className="border-gray-700" />
             <div>
               <TimePicker time={time} setTime={setTime} />
 
@@ -275,18 +273,13 @@ const BookingModal = ({ onClose }) => {
                 setIsValidTime={setIsValidTime}
               />
             </div>
-
-            <hr className="mb-4 mt-2 border-gray-700" />
-
+            <hr className="border-gray-700" />
             <LocationPickers setSelected={setPickupLocation} label="Pickup:" />
-
-            <hr className="mb-4 border-gray-700" />
-
+            <hr className="border-gray-700" />
             <LocationPickers
               setSelected={setDropoffLocation}
               label="Drop-off:"
             />
-
             {pickupLocation &&
               dropoffLocation &&
               !loadingRoute &&
@@ -294,41 +287,40 @@ const BookingModal = ({ onClose }) => {
               duration &&
               cost !== null && (
                 <>
-                  <hr className="mb-2 border-gray-700" />
+                  <hr className="border-gray-700" />
+
                   <a
                     href={generateGoogleMapsLinkForTrip()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mb-2 mt-2 text-blue-500 underline"
+                    className="text-blue-500 underline"
                   >
                     View trip on Google Maps
                   </a>
-                  <p>Estimated Distance: {distance}</p>
-                  <p>Estimated Time: {duration}</p>
-                  <p>Estimated Cost: ${cost}</p>
+                  <div className="gap-1">
+                    <p>Estimated Distance: {distance}</p>
+                    <p>Estimated Time: {duration}</p>
+                    <p>Estimated Cost: ${cost}</p>
+                  </div>
                 </>
               )}
-
             {loadingRoute && (
               <div className="flex items-center space-x-2">
-                <FaSpinner className="mr-2 animate-spin font-bold" />
+                <FaSpinner className="animate-spin font-bold" />
                 <p>Calculating distance and time...</p>
               </div>
             )}
-
             {exceedsRange && (
-              <p className="mb-4 text-lg font-bold text-red-500">
+              <p className="text-lg font-bold text-red-500">
                 Driver&apos;s current Range Limit is {rangeLimitMiles} miles
                 from {homeLocationVisibleToUser}
               </p>
             )}
-
             {showAlert && (
               <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-xl text-white">
                 Submission successful! Please await an Email or SMS response.
               </div>
             )}
-
             <Button
               type="submit"
               disabled={

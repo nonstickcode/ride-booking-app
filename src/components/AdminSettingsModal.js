@@ -172,12 +172,12 @@ const AdminSettingsModal = ({ onClose }) => {
         </Button>
 
         {/* Modal Content */}
-        <div className="mx-auto w-full max-w-md p-8">
+        <div className="mx-auto w-full max-w-md p-4">
           <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
             ADMIN SETTINGS
           </h2>
 
-          <hr className="my-3 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Location Input */}
           <div className="text-white">
@@ -220,16 +220,16 @@ const AdminSettingsModal = ({ onClose }) => {
             )}
           </div>
 
-          <hr className="my-3 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Non-Working Hours Inputs */}
           <label className="mb-2 block text-lg font-bold text-blue-200">
             Non-Working Hours:
           </label>
-          <p className="mb-2 text-sm text-gray-400">
-            * All bookings blocked in this window
-          </p>
-          <div className="flex gap-4">
+
+          <div className="flex flex-col gap-2">
+            {' '}
+            {/* Changed to flex-col for vertical stacking */}
             <div className="w-full">
               <label className="mb-1 block text-sm">Start Time</label>
               <input
@@ -243,6 +243,9 @@ const AdminSettingsModal = ({ onClose }) => {
                 )}
               />
             </div>
+            <p className="mb-0 text-sm text-gray-400">
+              * All bookings blocked in this window
+            </p>
             <div className="w-full">
               <label className="mb-1 block text-sm">End Time</label>
               <input
@@ -258,7 +261,7 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-3 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Lead Time Inputs */}
           <label className="mb-2 block text-lg font-bold text-blue-200">
@@ -297,7 +300,7 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-3 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Cost Settings Inputs */}
           <label className="mb-2 block text-lg font-bold text-blue-200">
@@ -336,11 +339,11 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-3 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Miscellaneous */}
           <label className="mb-2 block text-lg font-bold text-blue-200">
-            Miscellaneous:
+            Max Limits:
           </label>
           <div className="flex gap-4">
             <div className="w-full">
@@ -379,7 +382,7 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-3 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Save Button */}
           <Button

@@ -48,7 +48,7 @@ const DatePicker = ({ date, setDate }) => {
   }
 
   return (
-    <div className="mb-6 flex w-full flex-col">
+    <div className="mb-2 flex w-full flex-col">
       <label className="mb-2 text-white">Date:</label>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <MUIDatePicker
@@ -79,7 +79,7 @@ const DatePicker = ({ date, setDate }) => {
 // Custom TimePicker component
 const TimePicker = ({ time, setTime }) => {
   return (
-    <div className="mb-4 flex w-full flex-col">
+    <div className="mb-2 flex w-full flex-col">
       <label className="mb-2 text-white">Time:</label>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <MUITimePicker

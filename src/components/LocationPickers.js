@@ -80,7 +80,7 @@ const LocationPickers = ({ setSelected, label }) => {
   };
 
   return (
-    <div className="mb-6 flex w-full flex-col">
+    <div className="mb-2 flex w-full flex-col">
       <div className="mb-2 flex items-center justify-between">
         <label className="text-white">{label}</label>
         <a
