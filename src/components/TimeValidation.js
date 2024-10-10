@@ -79,6 +79,8 @@ const TimeValidation = ({
       const start = parseTime(offHours.start);
       const end = parseTime(offHours.end);
 
+
+      // TODO: these times are not being formatted to AM PM to show to user, both start and end need to be formatted properly before user sees them
       if (start > end) {
         if (selectedHour >= start || selectedHour < end) {
           setMessage(`No bookings are available between ${start} and ${end}.`);
