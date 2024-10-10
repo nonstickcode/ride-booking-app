@@ -23,7 +23,9 @@ const AdminSettingsModal = ({ onClose }) => {
     misc_range_limit_miles: 0,
     misc_advance_booking_limit_months: 0,
   });
+
   const [newSettings, setNewSettings] = useState(settings);
+  const [initialSettings, setInitialSettings] = useState(settings); // Store initial settings
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -41,7 +43,7 @@ const AdminSettingsModal = ({ onClose }) => {
     debounce: 300,
   });
 
-  // Handle input changes and update the newSettings state
+  // Handle input changes and track changes for styling
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewSettings((prevSettings) => ({
@@ -61,12 +63,13 @@ const AdminSettingsModal = ({ onClose }) => {
     }));
   };
 
+  // Save updated settings
   const handleSaveSettings = async () => {
-    setIsSaving(true); // Disable button during saving process
+    setIsSaving(true);
 
     const { error } = await supabase.from('AdminSettings').upsert([
       {
-        id: settings.id, // Target the row using its unique ID
+        id: settings.id,
         home_location_text: newSettings.home_location_text,
         home_location_latitude: newSettings.home_location_latitude,
         home_location_longitude: newSettings.home_location_longitude,
@@ -90,23 +93,17 @@ const AdminSettingsModal = ({ onClose }) => {
     if (error) {
       setAlertMessage('Failed to save settings. Please try again.');
       setAlertType('error');
-
-      // Hide the alert after 3 seconds
-      setTimeout(() => {
-        setAlertMessage('');
-        setAlertType('');
-      }, 3000);
     } else {
-      setSettings(newSettings); // Reflect the new data in the component state
+      setSettings(newSettings); // Update current settings
+      setInitialSettings(newSettings); // Reset initial settings to saved values
       setAlertMessage('Settings saved successfully!');
-      setAlertType('success'); // Set alert type to success
-
-      // Hide the alert after 3 seconds
-      setTimeout(() => {
-        setAlertMessage('');
-        setAlertType('');
-      }, 3000);
+      setAlertType('success');
     }
+
+    setTimeout(() => {
+      setAlertMessage('');
+      setAlertType('');
+    }, 3000);
   };
 
   useEffect(() => {
@@ -115,15 +112,15 @@ const AdminSettingsModal = ({ onClose }) => {
         .from('AdminSettings')
         .select('*')
         .limit(1)
-        .single(); // Fetch the first row, assuming there's only one row (only one row always)
+        .single();
 
       if (error) {
-        console.error('Error fetching settings:', error);
         setAlertMessage('Failed to load settings. Please try again.');
-        setAlertType('error'); // Display error in alert
+        setAlertType('error');
       } else {
-        setSettings(data); // Save the fetched settings
-        setNewSettings(data); // Initialize newSettings with fetched data
+        setSettings(data);
+        setNewSettings(data);
+        setInitialSettings(data); // Set initial settings to current DB values
       }
 
       setLoading(false);
@@ -132,7 +129,10 @@ const AdminSettingsModal = ({ onClose }) => {
     fetchSettings();
   }, [supabase]);
 
-  // When loading, return nothing
+  // Helper to apply the correct styles based on whether the field is changed
+  const getInputClass = (fieldValue, initialFieldValue) =>
+    fieldValue !== initialFieldValue ? 'admin-input changed' : 'admin-input';
+
   if (loading) return null;
 
   return (
@@ -178,36 +178,42 @@ const AdminSettingsModal = ({ onClose }) => {
           <hr className="my-4 border-gray-700" />
 
           {/* Location Input */}
-          <div className="text-white">
-            <label className="mb-2 block text-lg font-bold">
-              Home Location:{' '}
-            </label>
-            <div>
-              <input
-                type="text"
-                value={value || ''} // Ensure value is either an empty string or the input value
-                onChange={(e) => setValue(e.target.value)}
-                disabled={!ready}
-                placeholder={newSettings.home_location_text} // This placeholder should show when value is empty
-                className="w-full rounded p-2 text-black placeholder:text-black" // Placeholder color class
-              />
-            </div>
-            {/* Suggestions dropdown */}
-            {status === 'OK' &&
-              data.map(({ place_id, description }) => (
-                <div
-                  key={place_id} // Ensure the key is unique for each child
-                  onClick={() => {
-                    setValue(description, false);
-                    clearSuggestions();
-                    handleSelect(description);
-                  }}
-                  className="cursor-pointer"
-                >
-                  {description}
-                </div>
-              ))}
-          </div>
+<div className="text-white">
+  <label className="mb-2 block text-lg font-bold">Home Location:</label>
+  <div>
+    <input
+      type="text"
+      value={value || newSettings.home_location_text || ''} // Use value or DB value
+      onChange={(e) => setValue(e.target.value)}
+      disabled={!ready}
+      placeholder={initialSettings.home_location_text || 'Enter location'} // Placeholder from DB
+      className={getInputClass(
+        value || newSettings.home_location_text,
+        initialSettings.home_location_text
+      )}
+    />
+  </div>
+
+  {/* Suggestions dropdown */}
+  {status === 'OK' && (
+    <div className="bg-gray-800 text-white mt-1 rounded-lg shadow-lg">
+      {data.map(({ place_id, description }) => (
+        <div
+          key={place_id}
+          onClick={() => {
+            setValue(description, false); // Set selected place value
+            clearSuggestions();
+            handleSelect(description); // Handle lat/lng selection
+          }}
+          className="cursor-pointer p-2 hover:bg-gray-700"
+        >
+          {description}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
           <hr className="my-4 border-gray-700" />
 
@@ -226,7 +232,10 @@ const AdminSettingsModal = ({ onClose }) => {
                 name="timeoff_start_time"
                 value={newSettings.timeoff_start_time}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.timeoff_start_time,
+                  initialSettings.timeoff_start_time
+                )}
               />
             </div>
             <div className="w-full">
@@ -236,7 +245,10 @@ const AdminSettingsModal = ({ onClose }) => {
                 name="timeoff_end_time"
                 value={newSettings.timeoff_end_time}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.timeoff_end_time,
+                  initialSettings.timeoff_end_time
+                )}
               />
             </div>
           </div>
@@ -255,10 +267,12 @@ const AdminSettingsModal = ({ onClose }) => {
                 name="lead_time_hours"
                 value={newSettings.lead_time_hours || 0}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.lead_time_hours,
+                  initialSettings.lead_time_hours
+                )}
               />
             </div>
-
             <div>
               <label className="mb-1 block">Minutes</label>
               <input
@@ -266,7 +280,10 @@ const AdminSettingsModal = ({ onClose }) => {
                 name="lead_time_minutes"
                 value={newSettings.lead_time_minutes || 0}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.lead_time_minutes,
+                  initialSettings.lead_time_minutes
+                )}
               />
             </div>
           </div>
@@ -276,35 +293,40 @@ const AdminSettingsModal = ({ onClose }) => {
           {/* Cost Settings Inputs */}
           <label className="mb-2 block text-lg font-bold">Ride Pricing: </label>
           <div className="flex gap-4">
-            <div>
+            <div className="w-full">
               <label className="mb-1 block">Per Mile Rate ($)</label>
               <input
                 type="number"
                 name="cost_per_mile_rate"
                 value={newSettings.cost_per_mile_rate || 0}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.cost_per_mile_rate,
+                  initialSettings.cost_per_mile_rate
+                )}
               />
             </div>
-            <div>
+            <div className="w-full">
               <label className="mb-1 block">Trip Surcharge ($)</label>
               <input
                 type="number"
                 name="cost_trip_surcharge"
                 value={newSettings.cost_trip_surcharge || 0}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.cost_trip_surcharge,
+                  initialSettings.cost_trip_surcharge
+                )}
               />
             </div>
           </div>
 
           <hr className="my-4 border-gray-700" />
 
-          {/* This is new section not yet hooked up */}
           {/* Miscellaneous */}
           <label className="mb-2 block text-lg font-bold">Miscellaneous:</label>
           <div className="flex gap-4">
-            <div>
+            <div className="w-full">
               <label className="mb-1 block">
                 Range Limit from Home (miles)
               </label>
@@ -313,11 +335,13 @@ const AdminSettingsModal = ({ onClose }) => {
                 name="misc_range_limit_miles"
                 value={newSettings.misc_range_limit_miles || 0}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.misc_range_limit_miles,
+                  initialSettings.misc_range_limit_miles
+                )}
               />
             </div>
-
-            <div>
+            <div className="w-full">
               <label className="mb-1 block">
                 Advanced Booking Limit (months)
               </label>
@@ -326,7 +350,10 @@ const AdminSettingsModal = ({ onClose }) => {
                 name="misc_advance_booking_limit_months"
                 value={newSettings.misc_advance_booking_limit_months || 0}
                 onChange={handleInputChange}
-                className="w-full rounded p-2 text-black"
+                className={getInputClass(
+                  newSettings.misc_advance_booking_limit_months,
+                  initialSettings.misc_advance_booking_limit_months
+                )}
               />
             </div>
           </div>
@@ -340,7 +367,7 @@ const AdminSettingsModal = ({ onClose }) => {
             size="md"
             className="w-full"
             title="Save Settings"
-            disabled={isSaving} // Disable button when saving
+            disabled={isSaving}
           >
             {isSaving ? 'Saving...' : 'Save Settings'}
           </Button>

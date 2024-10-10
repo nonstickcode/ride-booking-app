@@ -66,6 +66,26 @@ body {
 
 /* ======================== Input Fields ======================== */
 
+/* Global Admin Input Style */
+.admin-input {
+  background-color: var(--input-bg-color); /* Tailwind gray-800 background */
+  color: var(--input-text-color); /* White text */
+  border: 1px solid var(--input-border-color); /* Gray border */
+  border-radius: var(--input-radius); /* Rounded input */
+  padding: var(--input-padding); /* Input padding */
+  font-family: var(--input-font-family); /* Font family */
+  font-size: var(--input-font-size); /* Font size */
+  height: var(--input-height); /* Input height */
+  width: 100%; /* Full width */
+}
+
+.admin-input.changed {
+  color: #6ee7b7; /* Tailwind green-300 */
+  border-color: #6ee7b7; /* Tailwind green-300 */
+}
+
+
+
 /* General input field styles */
 .input-field {
   background-color: var(--input-bg-color); /* Tailwind gray-800 background */

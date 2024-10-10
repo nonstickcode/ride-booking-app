@@ -78,7 +78,7 @@ export async function POST(request) {
         <p>You have received a new booking request with the following details:</p>
     
         <ul style="padding-left: 0; list-style-position: inside;">
-          <li style="padding-bottom: 2px;"><strong>User requesting ride booking:</strong> ${user_email}</li>
+          <li style="padding-bottom: 2px;"><strong>User:</strong> ${user_email}</li>
           <li style="padding-bottom: 2px;"><strong>Date:</strong> ${formattedDate}</li>
           <li style="padding-bottom: 2px;"><strong>Time:</strong> ${formattedTime}</li>
           <li style="padding-bottom: 2px;"><strong>Pickup Location:</strong> <a href="${pickupGoogleMapsLink}" target="_blank">${pickupLocation.address || 'View Location in Google Maps'}</a></li>

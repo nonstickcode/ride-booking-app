@@ -72,6 +72,13 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
     return hours;
   }, []);
 
+  // Format hours for user display
+  const formatTimeForDisplay = useCallback((hours) => {
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours} ${period}`;
+  }, []);
+
   // Check if the selected time is within off-hours
   const checkIfTimeInOffHours = useCallback(
     (time) => {
@@ -79,22 +86,28 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
       const start = parseTime(offHours.start);
       const end = parseTime(offHours.end);
 
-      // TODO: these times are not being formatted to AM PM to show to user, both start and end need to be formatted properly before user sees them
+      const startDisplay = formatTimeForDisplay(start);
+      const endDisplay = formatTimeForDisplay(end);
+
       if (start > end) {
         if (selectedHour >= start || selectedHour < end) {
-          setMessage(`No bookings are available between ${start} and ${end}.`);
+          setMessage(
+            `No bookings are available between ${startDisplay} and ${endDisplay}.`
+          );
           return true;
         }
       } else {
         if (selectedHour >= start && selectedHour < end) {
-          setMessage(`No bookings are available between ${start} and ${end}.`);
+          setMessage(
+            `No bookings are available between ${startDisplay} and ${endDisplay}.`
+          );
           return true;
         }
       }
 
       return false;
     },
-    [offHours, parseTime]
+    [offHours, parseTime, formatTimeForDisplay]
   );
 
   // Convert lead time from hours and minutes to milliseconds
@@ -106,6 +119,8 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
   // Validate the selected time and date
   const validateTime = useCallback(
     async (selectedTime) => {
+      setMessage(''); // Clear any previous messages
+
       if (!selectedTime || !date) {
         setMessage('Please select a valid date and time.');
         setIsValidTime(false);
@@ -119,17 +134,20 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
         return; // Skip other checks if date exceeds the limit
       }
 
+      // Check if time is in the past
       if (combinedDateTime < new Date()) {
         setMessage('You cannot select a time in the past.');
         setIsValidTime(false);
         return;
       }
 
+      // Check if time falls within off-hours
       if (checkIfTimeInOffHours(combinedDateTime)) {
         setIsValidTime(false);
         return;
       }
 
+      // Check for lead time if booking for today
       if (new Date().toDateString() === date.toDateString()) {
         const currentTime = new Date();
         const leadTimeInMilliseconds = convertLeadTimeToMilliseconds();
