@@ -9,6 +9,8 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from 'use-places-autocomplete';
 import ClockIcon from '@mui/icons-material/AccessTime';
+import { FaSpinner } from 'react-icons/fa';
+import { MyLocationSharp } from '@mui/icons-material';
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
@@ -31,6 +33,7 @@ const AdminSettingsModal = ({ onClose }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
+  const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
   const supabase = useSupabaseClient();
 
   const {
@@ -43,6 +46,48 @@ const AdminSettingsModal = ({ onClose }) => {
     requestOptions: {},
     debounce: 300,
   });
+
+// Get the user's current location using Geolocation API
+const handleCurrentLocation = () => {
+  if (!navigator.geolocation) {
+    alert('Geolocation is not supported by your browser');
+    return;
+  }
+
+  setCurrentLocationLoading(true);
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
+      try {
+        const results = await getGeocode({
+          location: { lat: latitude, lng: longitude },
+        });
+        const address = results[0].formatted_address;
+
+        // Set the address value in the input
+        setValue(address, false);
+
+        // Update newSettings with the current location data
+        setNewSettings((prev) => ({
+          ...prev,
+          home_location_text: address,
+          home_location_latitude: latitude,
+          home_location_longitude: longitude,
+        }));
+
+      } catch (error) {
+        console.error('Error fetching location:', error);
+      }
+      setCurrentLocationLoading(false);
+    },
+    (error) => {
+      console.error('Error getting current location:', error);
+      setCurrentLocationLoading(false);
+    }
+  );
+};
+
 
   // Handle input changes and track changes for styling
   const handleInputChange = (e) => {
@@ -180,129 +225,151 @@ const AdminSettingsModal = ({ onClose }) => {
 
           {/* Location Input */}
           <div className="text-white">
-            <label className="mb-2 block text-lg font-bold text-blue-200">
-              Home Location:
-            </label>
-            <div>
-              <input
-                type="text"
-                value={value || newSettings.home_location_text || ''} // Use value or DB value
-                onChange={(e) => setValue(e.target.value)}
-                disabled={!ready}
-                placeholder={
-                  initialSettings.home_location_text || 'Enter location'
-                } // Placeholder from DB
-                className={getInputClass(
-                  value || newSettings.home_location_text,
-                  initialSettings.home_location_text
-                )}
-              />
-            </div>
+            <div className="">
+              <label className="mb-2 block text-lg font-bold text-blue-200">
+                Home Location:
+              </label>
 
-            {/* Suggestions dropdown */}
-            {status === 'OK' && (
-              <div className="mt-1 rounded-lg bg-gray-800 text-white shadow-lg">
-                {data.map(({ place_id, description }) => (
-                  <div
-                    key={place_id}
-                    onClick={() => {
-                      setValue(description, false); // Set selected place value
-                      clearSuggestions();
-                      handleSelect(description); // Handle lat/lng selection
-                    }}
-                    className="cursor-pointer p-2 hover:bg-gray-700"
-                  >
-                    {description}
-                  </div>
-                ))}
+              {/* Flex container for input and button */}
+              <div className="flex items-center gap-2">
+                {' '}
+                {/* Use flex and gap for horizontal alignment */}
+                <input
+                  type="text"
+                  value={value || newSettings.home_location_text || ''} // Use value or DB value
+                  onChange={(e) => setValue(e.target.value)}
+                  disabled={!ready}
+                  placeholder={
+                    initialSettings.home_location_text || 'Enter location'
+                  } // Placeholder from DB
+                  className={getInputClass(
+                    value || newSettings.home_location_text,
+                    initialSettings.home_location_text
+                  )}
+                />
+                {/* Current Location Button */}
+                <Button
+                  onClick={handleCurrentLocation}
+                  variant="location"
+                  size="smallIcon"
+                  disabled={currentLocationLoading}
+                  title="Use current location"
+                >
+                  {currentLocationLoading ? (
+                    <FaSpinner className="animate-spin" />
+                  ) : (
+                    <MyLocationSharp className="" />
+                  )}
+                </Button>
               </div>
-            )}
+
+              {/* Suggestions dropdown */}
+              {status === 'OK' && (
+                <div className="mt-1 rounded-lg bg-gray-800 text-white shadow-lg">
+                  {data.map(({ place_id, description }) => (
+                    <div
+                      key={place_id}
+                      onClick={() => {
+                        setValue(description, false); // Set selected place value
+                        clearSuggestions();
+                        handleSelect(description); // Handle lat/lng selection
+                      }}
+                      className="cursor-pointer p-2 hover:bg-gray-700"
+                    >
+                      {description}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <hr className="my-2 border-gray-700" />
 
-{/* Non-Working Hours Inputs */}
-<label className="mb-2 block text-lg font-bold text-blue-200">
-  Non-Working Hours:
-</label>
+          {/* Non-Working Hours Inputs */}
+          <label className="mb-2 block text-lg font-bold text-blue-200">
+            Non-Working Hours:
+          </label>
 
-<div className="flex flex-col gap-2">
-  {/* Start Time Input */}
-  <div className="w-full relative">
-    <label className="mb-1 block text-sm">Start Time</label> {/* Ensure label is on top */}
-    <div className="relative w-full">
-      <input
-        type="time"
-        name="timeoff_start_time"
-        value={newSettings.timeoff_start_time}
-        onChange={handleInputChange}
-        className={`w-full pr-10 ${getInputClass(
-          newSettings.timeoff_start_time,
-          initialSettings.timeoff_start_time
-        )}`} // Add padding for the icon
-        style={{
-          appearance: 'none', // Hide default time picker icon for all browsers
-          WebkitAppearance: 'none', // Hide default icon on WebKit browsers
-          MozAppearance: 'textfield', // Hide default icon on Firefox
-          position: 'relative',
-          zIndex: 1,
-        }}
-      />
-      {/* Custom Clock Icon (adjusted to overlay on the default one) */}
-      <ClockIcon
-        style={{
-          position: 'absolute',
-          right: '16px', // Move the icon slightly to the left to cover the default one
-          top: '50%', // Center icon vertically
-          transform: 'translateY(-50%)', // Ensure proper centering
-          color: 'white', // Icon color
-          pointerEvents: 'none', // Avoid interference with input
-          zIndex: 2,
-        }}
-      />
-    </div>
-  </div>
+          <div className="flex flex-col gap-2">
+            {/* Start Time Input */}
+            <div className="relative w-full">
+              <label className="mb-1 block text-sm">Start Time</label>{' '}
+              {/* Ensure label is on top */}
+              <div className="relative w-full">
+                <input
+                  type="time"
+                  name="timeoff_start_time"
+                  value={newSettings.timeoff_start_time}
+                  onChange={handleInputChange}
+                  className={`w-full pr-10 ${getInputClass(
+                    newSettings.timeoff_start_time,
+                    initialSettings.timeoff_start_time
+                  )}`} // Add padding for the icon
+                  style={{
+                    appearance: 'none', // Hide default time picker icon for all browsers
+                    WebkitAppearance: 'none', // Hide default icon on WebKit browsers
+                    MozAppearance: 'textfield', // Hide default icon on Firefox
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                />
+                {/* Custom Clock Icon (adjusted to overlay on the default one) */}
+                <ClockIcon
+                  style={{
+                    position: 'absolute',
+                    right: '16px', // Move the icon slightly to the left to cover the default one
+                    top: '50%', // Center icon vertically
+                    transform: 'translateY(-50%)', // Ensure proper centering
+                    color: 'white', // Icon color
+                    pointerEvents: 'none', // Avoid interference with input
+                    zIndex: 2,
+                  }}
+                />
+              </div>
+            </div>
 
-  <p className="mb-0 text-sm text-gray-400">
-    * All bookings blocked in this window
-  </p>
+            <p className="mb-0 text-sm text-gray-400">
+              * All bookings blocked in this window
+            </p>
 
-  {/* End Time Input */}
-  <div className="w-full relative">
-    <label className="mb-1 block text-sm">End Time</label> {/* Ensure label is on top */}
-    <div className="relative w-full">
-      <input
-        type="time"
-        name="timeoff_end_time"
-        value={newSettings.timeoff_end_time}
-        onChange={handleInputChange}
-        className={`w-full pr-10 ${getInputClass(
-          newSettings.timeoff_end_time,
-          initialSettings.timeoff_end_time
-        )}`} // Add padding for the icon
-        style={{
-          appearance: 'none', // Hide default time picker icon for all browsers
-          WebkitAppearance: 'none', // Hide default icon on WebKit browsers
-          MozAppearance: 'textfield', // Hide default icon on Firefox
-          position: 'relative',
-          zIndex: 1,
-        }}
-      />
-      {/* Custom Clock Icon (adjusted to overlay on the default one) */}
-      <ClockIcon
-        style={{
-          position: 'absolute',
-          right: '16px', // Move the icon slightly to the left to cover the default one
-          top: '50%', // Center icon vertically
-          transform: 'translateY(-50%)', // Ensure proper centering
-          color: 'white', // Icon color
-          pointerEvents: 'none', // Avoid interference with input
-          zIndex: 2,
-        }}
-      />
-    </div>
-  </div>
-</div>
+            {/* End Time Input */}
+            <div className="relative w-full">
+              <label className="mb-1 block text-sm">End Time</label>{' '}
+              {/* Ensure label is on top */}
+              <div className="relative w-full">
+                <input
+                  type="time"
+                  name="timeoff_end_time"
+                  value={newSettings.timeoff_end_time}
+                  onChange={handleInputChange}
+                  className={`w-full pr-10 ${getInputClass(
+                    newSettings.timeoff_end_time,
+                    initialSettings.timeoff_end_time
+                  )}`} // Add padding for the icon
+                  style={{
+                    appearance: 'none', // Hide default time picker icon for all browsers
+                    WebkitAppearance: 'none', // Hide default icon on WebKit browsers
+                    MozAppearance: 'textfield', // Hide default icon on Firefox
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                />
+                {/* Custom Clock Icon (adjusted to overlay on the default one) */}
+                <ClockIcon
+                  style={{
+                    position: 'absolute',
+                    right: '16px', // Move the icon slightly to the left to cover the default one
+                    top: '50%', // Center icon vertically
+                    transform: 'translateY(-50%)', // Ensure proper centering
+                    color: 'white', // Icon color
+                    pointerEvents: 'none', // Avoid interference with input
+                    zIndex: 2,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
 
           <hr className="my-2 border-gray-700" />
 
