@@ -8,6 +8,8 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from 'use-places-autocomplete';
+import { ClockIcon } from '@mui/x-date-pickers';
+import { Clock } from '@mui/x-date-pickers/TimeClock/Clock';
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
@@ -143,7 +145,7 @@ const AdminSettingsModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="modal-container relative w-[90vw] max-w-sm p-4 shadow-xl"
+        className="modal-container relative max-h-[95vh] w-[90vw] max-w-sm overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Alert */}
@@ -171,15 +173,15 @@ const AdminSettingsModal = ({ onClose }) => {
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md p-8">
-          <h2 className="mx-auto mb-4 text-center font-mono text-2xl font-bold text-red-500">
+          <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
             ADMIN SETTINGS
           </h2>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-3 border-gray-700" />
 
           {/* Location Input */}
           <div className="text-white">
-            <label className="mb-2 block text-lg font-bold">
+            <label className="mb-2 block text-lg font-bold text-blue-200">
               Home Location:
             </label>
             <div>
@@ -218,10 +220,10 @@ const AdminSettingsModal = ({ onClose }) => {
             )}
           </div>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-3 border-gray-700" />
 
           {/* Non-Working Hours Inputs */}
-          <label className="mb-2 block text-lg font-bold">
+          <label className="mb-2 block text-lg font-bold text-blue-200">
             Non-Working Hours:
           </label>
           <p className="mb-2 text-sm text-gray-400">
@@ -229,7 +231,7 @@ const AdminSettingsModal = ({ onClose }) => {
           </p>
           <div className="flex gap-4">
             <div className="w-full">
-              <label className="mb-1 text-sm block">Start Time</label>
+              <label className="mb-1 block text-sm">Start Time</label>
               <input
                 type="time"
                 name="timeoff_start_time"
@@ -242,7 +244,7 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div className="w-full">
-              <label className="mb-1 text-sm  block">End Time</label>
+              <label className="mb-1 block text-sm">End Time</label>
               <input
                 type="time"
                 name="timeoff_end_time"
@@ -256,17 +258,19 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-3 border-gray-700" />
 
           {/* Lead Time Inputs */}
-          <label className="mb-2 block text-lg font-bold">
+          <label className="mb-2 block text-lg font-bold text-blue-200">
             Required Lead Time:{' '}
           </label>
           <div className="flex gap-4">
             <div>
-              <label className="mb-1 text-sm  block">Hours</label>
+              <label className="mb-1 block text-sm">Hours</label>
               <input
                 type="number"
+                inputMode="numeric" // Ensures numeric keypad
+                pattern="[0-9]*" // Fallback for iOS devices
                 name="lead_time_hours"
                 value={newSettings.lead_time_hours || 0}
                 onChange={handleInputChange}
@@ -277,9 +281,11 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div>
-              <label className="mb-1 text-sm  block">Minutes</label>
+              <label className="mb-1 block text-sm">Minutes</label>
               <input
                 type="number"
+                inputMode="numeric" // Ensures numeric keypad
+                pattern="[0-9]*" // Fallback for iOS devices
                 name="lead_time_minutes"
                 value={newSettings.lead_time_minutes || 0}
                 onChange={handleInputChange}
@@ -291,15 +297,19 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-3 border-gray-700" />
 
           {/* Cost Settings Inputs */}
-          <label className="mb-2 block text-lg font-bold">Ride Pricing: </label>
+          <label className="mb-2 block text-lg font-bold text-blue-200">
+            Ride Pricing:{' '}
+          </label>
           <div className="flex gap-4">
             <div className="w-full">
-              <label className="mb-1  text-sm  block">Per Mile Rate ($)</label>
+              <label className="mb-1 block text-sm">Per Mile Rate ($)</label>
               <input
                 type="number"
+                inputMode="numeric" // Ensures numeric keypad
+                pattern="[0-9]*" // Fallback for iOS devices
                 name="cost_per_mile_rate"
                 value={newSettings.cost_per_mile_rate || 0}
                 onChange={handleInputChange}
@@ -310,9 +320,11 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div className="w-full">
-              <label className="mb-1  text-sm  block">Trip Surcharge ($)</label>
+              <label className="mb-1 block text-sm">Trip Surcharge ($)</label>
               <input
                 type="number"
+                inputMode="numeric" // Ensures numeric keypad
+                pattern="[0-9]*" // Fallback for iOS devices
                 name="cost_trip_surcharge"
                 value={newSettings.cost_trip_surcharge || 0}
                 onChange={handleInputChange}
@@ -324,17 +336,21 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-3 border-gray-700" />
 
           {/* Miscellaneous */}
-          <label className="mb-2 block text-lg font-bold">Miscellaneous:</label>
+          <label className="mb-2 block text-lg font-bold text-blue-200">
+            Miscellaneous:
+          </label>
           <div className="flex gap-4">
             <div className="w-full">
-              <label className="mb-1 text-sm block">
+              <label className="mb-1 block text-sm">
                 Range Limit from Home (miles)
               </label>
               <input
                 type="number"
+                inputMode="numeric" // Ensures numeric keypad
+                pattern="[0-9]*" // Fallback for iOS devices
                 name="misc_range_limit_miles"
                 value={newSettings.misc_range_limit_miles || 0}
                 onChange={handleInputChange}
@@ -345,11 +361,13 @@ const AdminSettingsModal = ({ onClose }) => {
               />
             </div>
             <div className="w-full">
-              <label className="mb-1 text-sm block">
+              <label className="mb-1 block text-sm">
                 Advanced Booking Limit (months)
               </label>
               <input
                 type="number"
+                inputMode="numeric" // Ensures numeric keypad
+                pattern="[0-9]*" // Fallback for iOS devices
                 name="misc_advance_booking_limit_months"
                 value={newSettings.misc_advance_booking_limit_months || 0}
                 onChange={handleInputChange}
@@ -361,7 +379,7 @@ const AdminSettingsModal = ({ onClose }) => {
             </div>
           </div>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-3 border-gray-700" />
 
           {/* Save Button */}
           <Button
