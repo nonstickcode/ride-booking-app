@@ -47,47 +47,45 @@ const AdminSettingsModal = ({ onClose }) => {
     debounce: 300,
   });
 
-// Get the user's current location using Geolocation API
-const handleCurrentLocation = () => {
-  if (!navigator.geolocation) {
-    alert('Geolocation is not supported by your browser');
-    return;
-  }
-
-  setCurrentLocationLoading(true);
-
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const { latitude, longitude } = position.coords;
-      try {
-        const results = await getGeocode({
-          location: { lat: latitude, lng: longitude },
-        });
-        const address = results[0].formatted_address;
-
-        // Set the address value in the input
-        setValue(address, false);
-
-        // Update newSettings with the current location data
-        setNewSettings((prev) => ({
-          ...prev,
-          home_location_text: address,
-          home_location_latitude: latitude,
-          home_location_longitude: longitude,
-        }));
-
-      } catch (error) {
-        console.error('Error fetching location:', error);
-      }
-      setCurrentLocationLoading(false);
-    },
-    (error) => {
-      console.error('Error getting current location:', error);
-      setCurrentLocationLoading(false);
+  // Get the user's current location using Geolocation API
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
     }
-  );
-};
 
+    setCurrentLocationLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const results = await getGeocode({
+            location: { lat: latitude, lng: longitude },
+          });
+          const address = results[0].formatted_address;
+
+          // Set the address value in the input
+          setValue(address, false);
+
+          // Update newSettings with the current location data
+          setNewSettings((prev) => ({
+            ...prev,
+            home_location_text: address,
+            home_location_latitude: latitude,
+            home_location_longitude: longitude,
+          }));
+        } catch (error) {
+          console.error('Error fetching location:', error);
+        }
+        setCurrentLocationLoading(false);
+      },
+      (error) => {
+        console.error('Error getting current location:', error);
+        setCurrentLocationLoading(false);
+      }
+    );
+  };
 
   // Handle input changes and track changes for styling
   const handleInputChange = (e) => {

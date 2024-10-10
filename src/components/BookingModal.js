@@ -186,7 +186,7 @@ const BookingModal = ({ onClose }) => {
       }
 
       // Send the booking data to the email route
-      const emailResponse = await fetch('/api/sendEmail', {
+      const emailResponse = await fetch('/api/sendBookingRequestEmailToAdmin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

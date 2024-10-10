@@ -54,8 +54,9 @@ export async function POST(request) {
     const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${pickupCoords}&destination=${dropoffCoords}&travelmode=driving`;
 
     // Links for accepting or declining the booking
-    const acceptLink = `${process.env.APP_URL}/api/bookings/${id}/accept`; // Link to accept the booking
-    const declineLink = `${process.env.APP_URL}/api/bookings/${id}/decline`; // Link to decline the booking
+    const acceptLink = `${process.env.APP_URL}/api/bookings/actions/${id}/accept?key=${process.env.RYDEBLK_SECRET_KEY_EMAIL_API_VALIDATION}`;
+const declineLink = `${process.env.APP_URL}/api/bookings/actions/${id}/decline?key=${process.env.RYDEBLK_SECRET_KEY_EMAIL_API_VALIDATION}`;
+
 
     // Configure Nodemailer with Brevo's SMTP service
     const transporter = nodemailer.createTransport({
