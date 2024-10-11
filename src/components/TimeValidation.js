@@ -4,6 +4,8 @@ import { combineDateAndTime } from '@/utils/dateUtils';
 import addMonths from 'date-fns/addMonths'; // Add this for date comparison
 import supabase from '@/utils/supabaseClient';
 
+// TODO: look in to error i got entering time with keyboard and it didnt seem to trigger off time alert or was not entered yet and saw an error in console when the time was entered, it still worked fine from user perspective but look into this
+
 // Custom TimeValidation component
 const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
   const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });

@@ -1,4 +1,3 @@
-// src/app/api/bookings/actions/[id]/accept/route.js
 import supabase from '@/utils/supabaseServerClient'; // Use server-side Supabase client
 
 export async function GET(request, { params }) {
@@ -14,8 +13,8 @@ export async function GET(request, { params }) {
     return new Response(
       JSON.stringify(
         { success: false, message: 'Unauthorized: Invalid key' },
-        null, // replacer
-        2     // space argument for indentation
+        null,
+        2
       ),
       { status: 403, headers: { 'Content-Type': 'application/json' } }
     );
@@ -31,16 +30,15 @@ export async function GET(request, { params }) {
     let { data: booking, error } = await supabase
       .from('NewBookingData')
       .select('*')
-      .eq('id', id) // Ensure the 'id' matches the column in your table
+      .eq('id', id)
       .single();
 
     if (error || !booking) {
-      console.error('Error fetching booking:', error);
       return new Response(
         JSON.stringify(
           { success: false, message: 'Booking not found' },
-          null, // replacer
-          2     // space argument for indentation
+          null,
+          2
         ),
         { status: 404, headers: { 'Content-Type': 'application/json' } }
       );
@@ -49,16 +47,15 @@ export async function GET(request, { params }) {
     // Update the booking status to 'approved'
     let { error: updateError } = await supabase
       .from('NewBookingData')
-      .update({ status: 'approved' }) // Update the status to "approved"
+      .update({ status: 'approved' })
       .eq('id', id);
 
     if (updateError) {
-      console.error('Error updating booking status:', updateError);
       return new Response(
         JSON.stringify(
           { success: false, message: 'Failed to update booking status' },
-          null, // replacer
-          2     // space argument for indentation
+          null,
+          2
         ),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
@@ -67,8 +64,17 @@ export async function GET(request, { params }) {
     // Manually update the booking object to reflect the status change
     booking.status = 'approved';
 
-    // Log the success message
-    console.log('Booking APPROVED successfully:', id);
+    // Call the API to send the email to the user about the booking status
+    await fetch(`${process.env.APP_URL}/api/sendBookingResponseEmailToUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: booking.id,
+        status: 'approved', // This booking is approved
+      }),
+    });
 
     // Return the success message and booking data, formatted nicely
     return new Response(
@@ -78,18 +84,17 @@ export async function GET(request, { params }) {
           message: 'Booking APPROVED',
           booking: booking // Include the full booking data with updated status
         },
-        null, // replacer
-        2     // space argument for indentation
+        null,
+        2
       ),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error processing acceptance:', error);
     return new Response(
       JSON.stringify(
         { success: false, error: error.message },
-        null, // replacer
-        2     // space argument for indentation
+        null,
+        2
       ),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
