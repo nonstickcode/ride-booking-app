@@ -10,14 +10,14 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import RideImage from '@/components/RideImage';
-import BookingModal from '@/components/BookingModal';
-import SignInModal from '@/components/SignInModal';
+import BookingModal from '@/components/modals/BookingModal';
+import SignInModal from '@/components/modals/SignInModal';
 import HamburgerMenu from '@/components/HamburgerMenu';
 import { FaCheckCircle } from 'react-icons/fa';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useSearchParams } from 'next/navigation';
-import AdminBookingsDecisionModal from '@/components/adminBookingsDecisionModal';
+import AdminDecisionModal from '@/components/modals/AdminDecisionModal';
 
 function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -107,7 +107,7 @@ function HomeContent() {
   const handleSignInComplete = async () => {
     setShowSignInModal(false); // Close the sign-in modal
 
-    // After sign-in, check if decisionId is present to open the AdminBookingsDecisionModal
+    // After sign-in, check if decisionId is present to open the AdminDecisionModal
     if (decisionId) {
       setShowAdminDecisionModal(true); // Open decision modal if decisionId is in the query params
     } else {
@@ -168,7 +168,7 @@ function HomeContent() {
 
         {/* Show Admin Decision Modal if decisionId exists and modal is triggered */}
         {showAdminDecisionModal && (
-          <AdminBookingsDecisionModal
+          <AdminDecisionModal
             decisionId={decisionId}
             onClose={() => setShowAdminDecisionModal(false)} // Close modal when done
           />

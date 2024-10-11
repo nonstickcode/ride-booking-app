@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { DatePicker, TimePicker } from '@/components/DateAndTimePicker';
-import LocationPickers from '@/components/LocationPickers';
+import { DatePicker, TimePicker } from '@/components/pickers/DateAndTimePicker';
+import LocationPickers from '@/components/pickers/LocationPickers';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';

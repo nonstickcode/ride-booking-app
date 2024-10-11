@@ -8,10 +8,10 @@ import {
   FaSignInAlt,
 } from 'react-icons/fa';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; // Use Supabase session hooks
-import NotificationsModal from '@/components/NotificationsModal';
-import MyRidesModal from '@/components/MyRidesModal';
-import SettingsModal from '@/components/SettingsModal';
-import AdminSettingsModal from '@/components/AdminSettingsModal'; // New Admin Settings Modal import
+import NotificationsModal from '@/components/modals/NotificationsModal';
+import MyRidesModal from '@/components/modals/MyRidesModal';
+import SettingsModal from '@/components/modals/SettingsModal';
+import AdminSettingsModal from '@/components/modals/AdminSettingsModal'; // New Admin Settings Modal import
 import {
   DropdownMenu,
   DropdownMenuTrigger,

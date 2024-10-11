@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
-import SignInModal from '@/components/SignInModal';
+import SignInModal from '@/components/modals/SignInModal';
 import supabase from '@/utils/supabaseClient';
 
-const AdminBookingsDecisionModal = ({ decisionId, onClose }) => {
+const AdminDecisionModal = ({ decisionId, onClose }) => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -229,4 +229,4 @@ const AdminBookingsDecisionModal = ({ decisionId, onClose }) => {
   );
 };
 
-export default AdminBookingsDecisionModal;
+export default AdminDecisionModal;
