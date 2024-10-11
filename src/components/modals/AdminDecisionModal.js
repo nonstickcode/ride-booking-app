@@ -238,7 +238,7 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
                 href={googleMapsTripLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-blue-300 underline hover:text-green-300"
+                className="font-bold text-blue-300 underline hover:text-green-300"
               >
                 View Trip on Google Maps
               </a>
