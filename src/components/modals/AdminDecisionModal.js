@@ -120,129 +120,126 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
 
   return (
     <div className="modal-background fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="modal-container relative max-h-[95vh] w-[90vw] max-w-sm overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
+  <div
+    className="modal-container relative max-h-[95vh] w-[90vw] max-w-sm overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
+    onClick={(e) => e.stopPropagation()}
+  >
+    <Button
+      onClick={onClose}
+      variant="close"
+      size="icon"
+      className="absolute right-1 top-1"
+      aria-label="Close"
+      title="Close window"
+    >
+      <X className="h-6 w-6" />
+    </Button>
+
+    <div className="mx-auto w-full max-w-md p-4">
+      {/* Title */}
+      <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
+        <span>MANAGE BOOKING</span>
+        <br />
+        <span>REQUEST</span>
+      </h2>
+
+      <hr className="my-2 border-gray-700" />
+
+      {/* Booking Details */}
+      <div className="gap-8 text-white">
+        <p className="my-1">
+          <strong className="italic mr-3 text-blue-300">User Email:</strong> {booking.user_email}
+        </p>
+        <p className="my-2">
+          <strong className="italic mr-3 text-blue-300">Date & Time:</strong> {new Date(booking.date).toLocaleString()}
+        </p>
+        <p className="my-2">
+          <strong className="italic mr-3 text-blue-300">Pickup:</strong>{' '}
+          <a
+            href={pickupGoogleMapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className=" text-white hover:text-blue-500"
+          >
+            {booking.pickup_location.address}
+          </a>
+        </p>
+        <p className="my-2">
+          <strong className="italic mr-3 text-blue-300">Dropoff:</strong>{' '}
+          <a
+            href={dropoffGoogleMapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className=" text-white hover:text-blue-500"
+          >
+            {booking.dropoff_location.address}
+          </a>
+        </p>
+        <p className="my-2">
+          <strong className="italic mr-3 text-blue-300">Distance:</strong> {booking.distance}
+        </p>
+        <p className="my-2">
+          <strong className="italic mr-3 text-blue-300">Duration:</strong> {booking.duration}
+        </p>
+        <p className="my-2">
+          <strong className="italic mr-3 text-blue-300">Cost:</strong> ${booking.cost}
+        </p>
+        <p className="my-1">
+          <a
+            href={googleMapsTripLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-blue-500"
+          >
+            View Trip on Google Maps
+          </a>
+        </p>
+      </div>
+
+      <hr className="my-2 border-gray-700" />
+
+      {/* Optional comments text input */}
+      <div className="mt-4">
+        <label htmlFor="comments" className="mb-3 font-bold text-gray-300">
+          Comments (optional):
+        </label>
+        <textarea
+          id="comments"
+          name="comments"
+          rows="4"
+          maxLength="1000"
+          placeholder={`Add comments for ${booking.user_email}. These will be included in the automated email or SMS notifying them of your decision.`}
+          className="w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <hr className="my-2 border-gray-700" />
+
+      {/* Buttons with spacing */}
+      <div className="mt-4 flex justify-between gap-4">
         <Button
-          onClick={onClose}
-          variant="close"
-          size="icon"
-          className="absolute right-1 top-1"
-          aria-label="Close"
-          title="Close window"
+          onClick={() => handleDecision('declined')}
+          variant="red"
+          size="md"
+          className="w-full"
+          title="Decline Booking"
         >
-          <X className="h-6 w-6" />
+          Decline
         </Button>
-
-        <div className="mx-auto w-full max-w-md p-4">
-          {/* Title */}
-          <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
-            <span>MANAGE BOOKING</span>
-            <br />
-            <span>REQUEST</span>
-          </h2>
-
-          <hr className="my-2 border-gray-700" />
-
-          {/* Booking Details */}
-          <div className="gap-8 text-white">
-            <p>
-              <strong className="text-gray-300">User Email:</strong>{' '}
-              {booking.user_email}
-            </p>
-            <p>
-              <strong className="text-gray-300">Date & Time:</strong>{' '}
-              {new Date(booking.date).toLocaleString()}
-            </p>
-            <p>
-              <strong className="text-gray-300">Pickup:</strong>{' '}
-              <a
-                href={pickupGoogleMapsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-300 underline"
-              >
-                {booking.pickup_location.address}
-              </a>
-            </p>
-            <p>
-              <strong className="text-gray-300">Dropoff:</strong>{' '}
-              <a
-                href={dropoffGoogleMapsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-300 underline"
-              >
-                {booking.dropoff_location.address}
-              </a>
-            </p>
-            <p>
-              <strong className="text-gray-300">Distance:</strong>{' '}
-              {booking.distance}
-            </p>
-            <p>
-              <strong className="text-gray-300">Duration:</strong>{' '}
-              {booking.duration}
-            </p>
-            <p>
-              <strong className="text-gray-300">Cost:</strong> ${booking.cost}
-            </p>
-            <p>
-              <a
-                href={googleMapsTripLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-300 underline"
-              >
-                View Trip on Google Maps
-              </a>
-            </p>
-          </div>
-
-          <hr className="my-2 border-gray-700" />
-
-          {/* Optional comments text input */}
-          <div className="mt-4">
-            <label htmlFor="comments" className="mb-3 font-bold text-gray-300">
-              Comments (optional):
-            </label>
-            <textarea
-              id="comments"
-              name="comments"
-              rows="4"
-              maxLength="1000"
-              placeholder={`Add comments for ${booking.user_email}. These will be included in the automated email or SMS notifying them of your decision.`}
-              className="w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <hr className="my-2 border-gray-700" />
-
-          {/* Buttons with spacing */}
-          <div className="mt-4 flex justify-between gap-4">
-            <Button
-              onClick={() => handleDecision('declined')}
-              variant="red"
-              size="md"
-              className="w-full"
-              title="Decline Booking"
-            >
-              Decline
-            </Button>
-            <Button
-              onClick={() => handleDecision('accepted')}
-              variant="green"
-              size="md"
-              className="w-full"
-              title="Accept Booking"
-            >
-              Accept
-            </Button>
-          </div>
-        </div>
+        <Button
+          onClick={() => handleDecision('accepted')}
+          variant="green"
+          size="md"
+          className="w-full"
+          title="Accept Booking"
+        >
+          Accept
+        </Button>
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 
