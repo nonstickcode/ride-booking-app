@@ -138,15 +138,18 @@ const AdminBookingsDecisionModal = ({ decisionId, onClose }) => {
         <div className="mx-auto w-full max-w-md p-4">
           {/* Title */}
           <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
-            MANAGE BOOKING REQUEST
+            <span>MANAGE BOOKING</span>
+            <br />
+            <span>REQUEST</span>
           </h2>
 
           <hr className="my-2 border-gray-700" />
 
           {/* Booking Details */}
-          <div className="text-white gap-8">
+          <div className="gap-8 text-white">
             <p>
-              <strong className="text-gray-300">User Email:</strong> {booking.user_email}
+              <strong className="text-gray-300">User Email:</strong>{' '}
+              {booking.user_email}
             </p>
             <p>
               <strong className="text-gray-300">Date & Time:</strong>{' '}
@@ -175,10 +178,12 @@ const AdminBookingsDecisionModal = ({ decisionId, onClose }) => {
               </a>
             </p>
             <p>
-              <strong className="text-gray-300">Distance:</strong> {booking.distance}
+              <strong className="text-gray-300">Distance:</strong>{' '}
+              {booking.distance}
             </p>
             <p>
-              <strong className="text-gray-300">Duration:</strong> {booking.duration}
+              <strong className="text-gray-300">Duration:</strong>{' '}
+              {booking.duration}
             </p>
             <p>
               <strong className="text-gray-300">Cost:</strong> ${booking.cost}
@@ -199,7 +204,7 @@ const AdminBookingsDecisionModal = ({ decisionId, onClose }) => {
 
           {/* Buttons with spacing */}
           <div className="mt-4 flex justify-between gap-4">
-          <Button
+            <Button
               onClick={() => handleDecision('declined')}
               variant="red"
               size="md"
@@ -217,7 +222,6 @@ const AdminBookingsDecisionModal = ({ decisionId, onClose }) => {
             >
               Accept
             </Button>
-            
           </div>
         </div>
       </div>

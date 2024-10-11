@@ -1,4 +1,4 @@
-// pages/api/sendSMS.js
+// pages/api/sms/sendSMS.js
 
 // TODO: connect TFN when issued from request through Brevo
 

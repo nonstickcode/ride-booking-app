@@ -51,6 +51,7 @@ export async function POST(request) {
     // Initialize Google Calendar API
     const calendar = google.calendar({ version: 'v3', auth });
 
+    // TODO: Look into how much of the calendar is checked, we only need to check ahead = to advanced booking limit in AdminSettings DB
     // Query the Free/Busy information from the specific calendar
     const response = await calendar.freebusy.query({
       requestBody: {

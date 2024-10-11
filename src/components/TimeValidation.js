@@ -182,13 +182,16 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
       };
 
       try {
-        const response = await fetch('/api/checkCalendarAvailability', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        });
+        const response = await fetch(
+          '/api/calendar/checkCalendarAvailability',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
 
         if (!response.ok) {
           setMessage('This time is unavailable. Please choose another time.');

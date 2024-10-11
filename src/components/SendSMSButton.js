@@ -19,7 +19,7 @@ const SendSMSButton = () => {
     setMessage('');
 
     try {
-      const response = await fetch('/api/sendSMS', {
+      const response = await fetch('/api/sms/sendSMS', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
