@@ -35,7 +35,7 @@ const SignInModal = ({ onClose, onSignInSuccess, bookingId }) => {
     try {
       // Determine redirect URL based on bookingId (if provided) or default to base URL
       const redirectUrl = bookingId
-        ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/?decisionId=${bookingId}` // Redirect to home page with decisionId
+        ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/?bookingId=${bookingId}` // Redirect to home page with bookingId
         : process.env.NEXT_PUBLIC_NEXTAUTH_URL; // Default to base URL if no bookingId
 
       const { error } = await supabase.auth.signInWithOAuth({
@@ -60,7 +60,7 @@ const SignInModal = ({ onClose, onSignInSuccess, bookingId }) => {
 
   const handleEmailSignIn = async () => {
     const redirectUrl = bookingId
-      ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/?decisionId=${bookingId}` // Redirect to home page with decisionId
+      ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/?bookingId=${bookingId}` // Redirect to home page with bookingId
       : process.env.NEXT_PUBLIC_NEXTAUTH_URL; // Default to base URL if no bookingId
 
     const { error } = await supabase.auth.signInWithOtp({

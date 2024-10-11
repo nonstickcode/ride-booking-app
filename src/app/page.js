@@ -37,18 +37,18 @@ function HomeContent() {
 
   // Handle decisions update
   const searchParams = useSearchParams();
-  const decisionId = searchParams.get('decisionId'); // Extract the decisionId from the query params
+  const bookingId = searchParams.get('bookingId'); // Extract the bookingId from the query params
 
   // Consistently check session status and modals based on sign-in state
   useEffect(() => {
     const handleSessionChange = () => {
-      if (decisionId && user) {
-        setShowAdminDecisionModal(true); // Open the Admin Decision Modal if user is logged in and decisionId is present
+      if (bookingId && user) {
+        setShowAdminDecisionModal(true); // Open the Admin Decision Modal if user is logged in and bookingId is present
         setShowSignInModal(false); // Ensure SignInModal is closed
-      } else if (decisionId && !user) {
+      } else if (bookingId && !user) {
         setShowSignInModal(true); // Show the SignInModal if no user is logged in
         setShowAdminDecisionModal(false); // Ensure the Admin Decision Modal is closed if not signed in
-      } else if (!decisionId && !user) {
+      } else if (!bookingId && !user) {
         setShowSignInModal(true); // Show SignInModal for other interactions when user is not logged in
       } else {
         setShowSignInModal(false); // Close SignInModal once signed in
@@ -57,7 +57,7 @@ function HomeContent() {
 
     // Call the function initially and on session changes
     handleSessionChange();
-  }, [user, decisionId]);
+  }, [user, bookingId]);
 
   // Monitor session changes and handle admin check
   useEffect(() => {
@@ -107,9 +107,9 @@ function HomeContent() {
   const handleSignInComplete = async () => {
     setShowSignInModal(false); // Close the sign-in modal
 
-    // After sign-in, check if decisionId is present to open the AdminDecisionModal
-    if (decisionId) {
-      setShowAdminDecisionModal(true); // Open decision modal if decisionId is in the query params
+    // After sign-in, check if bookingId is present to open the AdminDecisionModal
+    if (bookingId) {
+      setShowAdminDecisionModal(true); // Open decision modal if bookingId is in the query params
     } else {
       setShowBookingModal(false); // Otherwise close the booking modal
     }
@@ -166,10 +166,10 @@ function HomeContent() {
           </Button>
         </main>
 
-        {/* Show Admin Decision Modal if decisionId exists and modal is triggered */}
+        {/* Show Admin Decision Modal if bookingId exists and modal is triggered */}
         {showAdminDecisionModal && (
           <AdminDecisionModal
-            decisionId={decisionId}
+            bookingId={bookingId}
             onClose={() => setShowAdminDecisionModal(false)} // Close modal when done
           />
         )}
@@ -182,7 +182,7 @@ function HomeContent() {
           <SignInModal
             onClose={closeSignIn}
             onSignInComplete={handleSignInComplete} // Pass the sign-in complete handler
-            bookingId={decisionId} // Pass decisionId (optional)
+            bookingId={bookingId} // Pass bookingId (optional)
           />
         )}
 

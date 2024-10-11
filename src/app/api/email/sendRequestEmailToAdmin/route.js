@@ -52,7 +52,7 @@ export async function POST(request) {
     const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${pickupCoords}&destination=${dropoffCoords}&travelmode=driving`;
 
     // Link to the decision page where the admin can accept or decline the booking
-    const manageBookingLink = `${process.env.APP_URL}/?decisionId=${id}`;
+    const manageBookingLink = `${process.env.APP_URL}/?bookingId=${id}`;
 
     // Configure Nodemailer with Brevo's SMTP service
     const transporter = nodemailer.createTransport({

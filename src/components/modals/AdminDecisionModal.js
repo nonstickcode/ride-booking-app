@@ -5,7 +5,6 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import SignInModal from '@/components/modals/SignInModal';
-import supabase from '@/utils/supabaseClient';
 import { FaArrowDown } from 'react-icons/fa';
 
 // Helper function to generate the Gmail compose link
@@ -60,10 +59,11 @@ const generateCalendarLink = (booking) => {
   }
 };
 
-const AdminDecisionModal = ({ decisionId, onClose }) => {
+const AdminDecisionModal = ({ bookingId, onClose }) => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [comment, setComment] = useState('');
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isBouncing, setIsBouncing] = useState(true);
 
@@ -81,24 +81,24 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
     }
   }, [user]);
 
-      // Remove bounce after a few seconds
-      useEffect(() => {
-        const bounceTimeout = setTimeout(() => {
-          setIsBouncing(false);
-        }, 5000); // Stops bouncing after 3 seconds
-    
-        return () => clearTimeout(bounceTimeout);
-      }, []);
+  // Remove bounce after a few seconds
+  useEffect(() => {
+    const bounceTimeout = setTimeout(() => {
+      setIsBouncing(false);
+    }, 5000); // Stops bouncing after 5 seconds
 
-  // Fetch booking data when decisionId is provided
+    return () => clearTimeout(bounceTimeout);
+  }, []);
+
+  // Fetch booking data when bookingId is provided
   useEffect(() => {
     const fetchBooking = async () => {
-      if (decisionId && isAdmin) {
+      if (bookingId && isAdmin) {
         try {
           const { data, error } = await supabaseClient
             .from('NewBookingData')
             .select('*')
-            .eq('id', decisionId)
+            .eq('id', bookingId)
             .single();
 
           if (error) {
@@ -115,7 +115,49 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
     };
 
     fetchBooking();
-  }, [decisionId, isAdmin, supabaseClient]);
+  }, [bookingId, isAdmin, supabaseClient]);
+
+  // Handle accept/decline action
+  const handleDecision = async (status) => {
+    // Use correct verb forms based on the status
+    const verb = status === 'accepted' ? 'accept' : 'decline';
+
+    const confirmAction = window.confirm(
+      `Are you sure you want to ${verb} this booking?`
+    );
+    if (!confirmAction) return; // Exit if the user cancels the confirmation
+
+    const commentToSend =
+      comment.trim() === '' ? 'No comment given with decision' : comment;
+
+    console.log('Submitting decision with comment:', commentToSend);
+
+    try {
+      const response = await fetch(`/api/decision`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: bookingId,
+          status,
+          comment: commentToSend,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('Response from /api/decision:', data);
+
+      if (data.success) {
+        alert(`Booking ${status}`); // Keeps the status capitalized in the final alert
+        onClose(); // Close modal after decision
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Failed to update booking:', error);
+    }
+  };
 
   if (loading) return null;
 
@@ -127,8 +169,6 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
       />
     );
   }
-
-
 
   if (user && !isAdmin) {
     return (
@@ -175,14 +215,14 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
             MANAGE BOOKING
             <br />
             <div className="flex items-center justify-center">
-            <FaArrowDown
-                className={`mr-10 text-gray-400 w-5 h-5 ${
+              <FaArrowDown
+                className={`mr-10 h-5 w-5 text-gray-400 ${
                   isBouncing ? 'animate-bounce-down' : ''
                 }`}
               />
               <span>REQUEST</span>
               <FaArrowDown
-                className={`ml-10 text-gray-400 w-5 h-5 ${
+                className={`ml-10 h-5 w-5 text-gray-400 ${
                   isBouncing ? 'animate-bounce-down' : ''
                 }`}
               />
@@ -195,8 +235,8 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
               <strong className="mr-3 italic text-gray-300">User Email:</strong>
               <a
                 href={gmailLink}
-                target="_blank" // Ensures the link opens in a new tab
-                rel="noopener noreferrer" // Improves security for links opening in new tabs
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-blue-300 underline hover:text-green-300"
               >
                 {booking.user_email}
@@ -216,7 +256,7 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
                   {new Date(booking.date).toLocaleString()}
                 </a>
               ) : (
-                <span>{new Date(booking.date).toLocaleString()}</span> // Displays full date and time if link generation fails
+                <span>{new Date(booking.date).toLocaleString()}</span>
               )}
             </div>
             <div className="my-2 flex">
@@ -279,9 +319,11 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
               id="comments"
               name="comments"
               rows="4"
-              maxLength="1000"
+              maxLength="10000"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)} // Update comment state
               placeholder={`Add comments for ${booking.user_email}. These will be included in the automated email or SMS notifying them of your decision.`}
-              className="w-full mt-2 rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-500"
+              className="mt-2 w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
           <hr className="my-2 border-gray-700" />
