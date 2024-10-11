@@ -4,7 +4,9 @@ import { combineDateAndTime } from '@/utils/dateUtils';
 import addMonths from 'date-fns/addMonths'; // Add this for date comparison
 import supabase from '@/utils/supabaseClient';
 
-// TODO: look in to error i got entering time with keyboard and it didnt seem to trigger off time alert or was not entered yet and saw an error in console when the time was entered, it still worked fine from user perspective but look into this
+// TODO: look in to error i got entering time with keyboard and it did not seem to trigger off time alert or was not entered yet and saw an error in console when the time was entered, it still worked fine from user perspective but look into this
+
+// TODO: Need to block the time and date from being altered while checking google calender is loading, or its can be set to violate rules
 
 // Custom TimeValidation component
 const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
@@ -231,13 +233,13 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
   return (
     <div>
       {loadingAvailability ? (
-        <div className="flex items-center">
+        <div className="mt-3 flex items-center">
           <FaSpinner className="mr-2 animate-spin" />
           <p>Checking availability...</p>
         </div>
       ) : (
         <p
-          className={`text-md mb-1 ${isValidTime ? 'text-green-500' : 'text-red-500'}`}
+          className={`text-md mt-3 ${isValidTime ? 'text-green-500' : 'text-red-500'}`}
         >
           {message}
         </p>

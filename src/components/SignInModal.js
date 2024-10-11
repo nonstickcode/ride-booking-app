@@ -8,9 +8,7 @@ import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react'; // Use Supabase hooks
 import validator from 'validator';
 
-// TODO: move auth to server side route to not expose tokens in URL as they are now
-
-const SignInModal = ({ onClose, onSignInSuccess }) => {
+const SignInModal = ({ onClose, onSignInSuccess, bookingId }) => {
   const [signingInWithEmail, setSigningInWithEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
@@ -22,8 +20,8 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
 
   // Check if a session exists on load
   useEffect(() => {
-    if (user) {
-      // User is already signed in, trigger the success handler
+    if (user && onSignInSuccess) {
+      // User is already signed in, trigger the success handler if it exists
       onSignInSuccess();
     }
   }, [user, onSignInSuccess]);
@@ -35,8 +33,16 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
 
   const handleGoogleSignIn = async () => {
     try {
+      // Determine redirect URL based on bookingId (if provided) or default to base URL
+      const redirectUrl = bookingId
+        ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/?decisionId=${bookingId}` // Redirect to home page with decisionId
+        : process.env.NEXT_PUBLIC_NEXTAUTH_URL; // Default to base URL if no bookingId
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          redirectTo: redirectUrl, // Use the appropriate redirect URL
+        },
       });
 
       if (error) {
@@ -53,10 +59,14 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
   };
 
   const handleEmailSignIn = async () => {
+    const redirectUrl = bookingId
+      ? `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/?decisionId=${bookingId}` // Redirect to home page with decisionId
+      : process.env.NEXT_PUBLIC_NEXTAUTH_URL; // Default to base URL if no bookingId
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        redirectTo: window.location.origin, // Redirect user to the app after sign-in
+        redirectTo: redirectUrl, // Use the appropriate redirect URL
       },
     });
     if (error) {
@@ -90,8 +100,20 @@ const SignInModal = ({ onClose, onSignInSuccess }) => {
         </Button>
 
         <div className="p-8">
+          {/* Dynamic title based on bookingId */}
           <div className="mx-auto mb-6 w-[80%] text-center text-xl font-bold text-white">
-            Sign-In to Book a Ride
+            {bookingId ? (
+              <>
+                Hi Jamie!{' '}
+                <span role="img" aria-label="wave">
+                  👋
+                </span>
+                <br />
+                Sign-In to Manage Booking
+              </>
+            ) : (
+              'Sign-In to Book a Ride'
+            )}
           </div>
 
           {signingInWithEmail ? (

@@ -26,7 +26,15 @@ export async function POST(request) {
       );
     }
 
-    const { user_email, date, pickup_location: pickupLocation, dropoff_location: dropoffLocation, distance, duration, cost } = booking;
+    const {
+      user_email,
+      date,
+      pickup_location: pickupLocation,
+      dropoff_location: dropoffLocation,
+      distance,
+      duration,
+      cost,
+    } = booking;
 
     // Format the date and time
     const bookingDate = new Date(date);
@@ -49,10 +57,14 @@ export async function POST(request) {
     const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${pickupCoords}&destination=${dropoffCoords}&travelmode=driving`;
 
     // Set the email subject and content based on the status
-    const subject = status === 'approved' ? 'Booking Request Accepted' : 'Booking Request Declined';
-    const message = status === 'approved'
-      ? '<strong>Congratulations, your booking has been accepted!</strong>'
-      : '<strong>Unfortunately, your booking request has been declined.</strong>';
+    const subject =
+      status === 'approved'
+        ? 'Booking Request Accepted'
+        : 'Booking Request Declined';
+    const message =
+      status === 'approved'
+        ? '<strong>Congratulations, your booking has been accepted!</strong>'
+        : '<strong>Unfortunately, your booking request has been declined.</strong>';
 
     // Configure Nodemailer with Brevo's SMTP service
     const transporter = nodemailer.createTransport({
@@ -97,7 +109,10 @@ export async function POST(request) {
     await transporter.sendMail(mailOptions);
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Booking status email sent to user' }),
+      JSON.stringify({
+        success: true,
+        message: 'Booking status email sent to user',
+      }),
       { status: 200 }
     );
   } catch (error) {

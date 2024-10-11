@@ -15,12 +15,14 @@ import SignInModal from '@/components/SignInModal';
 import HamburgerMenu from '@/components/HamburgerMenu';
 import { FaCheckCircle } from 'react-icons/fa';
 import Head from 'next/head';
-import SendSMSButton from '@/components/SendSMSButton';
 import Script from 'next/script';
+import { useSearchParams } from 'next/navigation';
+import AdminBookingsDecisionModal from '@/components/adminBookingsDecisionModal';
 
 function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [showAdminDecisionModal, setShowAdminDecisionModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const session = useSession(); // Supabase session hook to get the current user session
@@ -30,39 +32,57 @@ function HomeContent() {
   // State to manage alerts for sign-in/sign-out events
   const [authAlert, setAuthAlert] = useState(null);
 
-  // shared state for Hamburger to show Admin option for admin settings
+  // Admin check state
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Monitor session changes and trigger alerts for sign-in and sign-out events
+  // Handle decisions update
+  const searchParams = useSearchParams();
+  const decisionId = searchParams.get('decisionId'); // Extract the decisionId from the query params
+
+  // Consistently check session status and modals based on sign-in state
+  useEffect(() => {
+    const handleSessionChange = () => {
+      if (decisionId && user) {
+        setShowAdminDecisionModal(true); // Open the Admin Decision Modal if user is logged in and decisionId is present
+        setShowSignInModal(false); // Ensure SignInModal is closed
+      } else if (decisionId && !user) {
+        setShowSignInModal(true); // Show the SignInModal if no user is logged in
+        setShowAdminDecisionModal(false); // Ensure the Admin Decision Modal is closed if not signed in
+      } else if (!decisionId && !user) {
+        setShowSignInModal(true); // Show SignInModal for other interactions when user is not logged in
+      } else {
+        setShowSignInModal(false); // Close SignInModal once signed in
+      }
+    };
+
+    // Call the function initially and on session changes
+    handleSessionChange();
+  }, [user, decisionId]);
+
+  // Monitor session changes and handle admin check
   useEffect(() => {
     if (session && user) {
-      // User has signed in, check if they are admin
       const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-      if (user.email === adminEmail) {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
+      setIsAdmin(user.email === adminEmail);
       setAuthAlert({ message: 'Signed in successfully!', type: 'success' });
     } else if (session && !user) {
-      // User has signed out
       setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
     }
 
-    // Clear the alert after 3 seconds
     const alertTimeout = setTimeout(() => setAuthAlert(null), 3000);
     return () => clearTimeout(alertTimeout);
   }, [user, session]);
 
+  // Stop loading after checking session
   useEffect(() => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getSession();
-      setLoading(false); // Stop loading after session check
+      setLoading(false);
     };
-
     fetchUser();
   }, [supabase]);
 
+  // Handle showing the booking modal or sign-in modal
   const openBooking = () => {
     if (user) {
       setShowBookingModal(true);
@@ -71,27 +91,36 @@ function HomeContent() {
     }
   };
 
+  // Close booking modal
   const closeBooking = (e) => {
     if (e) e.stopPropagation();
     setShowBookingModal(false);
   };
 
+  // Close sign-in modal
   const closeSignIn = (e) => {
     if (e) e.stopPropagation();
     setShowSignInModal(false);
   };
 
+  // Handle completion of sign-in
   const handleSignInComplete = async () => {
-    setShowSignInModal(false);
-    setShowBookingModal(true); // Show booking modal after successful sign-in
+    setShowSignInModal(false); // Close the sign-in modal
+
+    // After sign-in, check if decisionId is present to open the AdminBookingsDecisionModal
+    if (decisionId) {
+      setShowAdminDecisionModal(true); // Open decision modal if decisionId is in the query params
+    } else {
+      setShowBookingModal(false); // Otherwise close the booking modal
+    }
   };
 
+  // Handle sign out
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error signing out:', error);
     } else {
-      // Show sign-out alert when the user successfully signs out
       setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
     }
   };
@@ -137,16 +166,25 @@ function HomeContent() {
           </Button>
         </main>
 
-        {showBookingModal && <BookingModal onClose={closeBooking} />}
-        {showSignInModal && (
-          <SignInModal
-            onClose={closeSignIn}
-            onSignInComplete={handleSignInComplete}
+        {/* Show Admin Decision Modal if decisionId exists and modal is triggered */}
+        {showAdminDecisionModal && (
+          <AdminBookingsDecisionModal
+            decisionId={decisionId}
+            onClose={() => setShowAdminDecisionModal(false)} // Close modal when done
           />
         )}
 
-        {/* uncomment if needed */}
-        {/* <SendSMSButton /> */}
+        {/* Show Booking Modal */}
+        {showBookingModal && <BookingModal onClose={closeBooking} />}
+
+        {/* Show Sign In Modal */}
+        {showSignInModal && (
+          <SignInModal
+            onClose={closeSignIn}
+            onSignInComplete={handleSignInComplete} // Pass the sign-in complete handler
+            bookingId={decisionId} // Pass decisionId (optional)
+          />
+        )}
 
         <footer className="mt-8 text-center">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>
@@ -159,13 +197,11 @@ function HomeContent() {
 export default function Home() {
   const handleLoad = () => {
     console.log('Google Maps API is fully loaded and ready to use.');
-    // You can initiate map setups or state updates here
   };
 
   return (
     <>
       <Head>
-        {/* Meta tag to set background color during page load */}
         <meta name="theme-color" content="#000000" />
       </Head>
       <Script

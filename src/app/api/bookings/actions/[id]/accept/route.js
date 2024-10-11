@@ -82,7 +82,7 @@ export async function GET(request, { params }) {
         {
           success: true,
           message: 'Booking APPROVED',
-          booking: booking // Include the full booking data with updated status
+          booking: booking, // Include the full booking data with updated status
         },
         null,
         2
@@ -91,11 +91,7 @@ export async function GET(request, { params }) {
     );
   } catch (error) {
     return new Response(
-      JSON.stringify(
-        { success: false, error: error.message },
-        null,
-        2
-      ),
+      JSON.stringify({ success: false, error: error.message }, null, 2),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
