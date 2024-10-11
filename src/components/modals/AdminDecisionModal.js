@@ -19,7 +19,7 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
 
   // Check if the user is admin (based on email)
   useEffect(() => {
-    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;  // TODO: Change this to use UUID of admin instead of email, also in other file used.
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL; // TODO: Change this to use UUID of admin instead of email, also in other file used.
     if (user) {
       if (user.email === adminEmail) {
         setIsAdmin(true);
@@ -198,6 +198,23 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
                 View Trip on Google Maps
               </a>
             </p>
+          </div>
+
+          <hr className="my-2 border-gray-700" />
+
+          {/* Optional comments text input */}
+          <div className="mt-4">
+            <label htmlFor="comments" className="mb-3 font-bold text-gray-300">
+              Comments (optional):
+            </label>
+            <textarea
+              id="comments"
+              name="comments"
+              rows="4"
+              maxLength="1000"
+              placeholder={`Add comments for ${booking.user_email}. These will be included in the automated email or SMS notifying them of your decision.`}
+              className="w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
 
           <hr className="my-2 border-gray-700" />
