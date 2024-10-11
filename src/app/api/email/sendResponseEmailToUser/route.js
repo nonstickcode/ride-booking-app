@@ -1,28 +1,16 @@
 import nodemailer from 'nodemailer';
-import supabase from '@/utils/supabaseServerClient'; // Assuming you are using Supabase for fetching data
 
 export async function POST(request) {
   try {
-    const { id, status } = await request.json(); // Accepts the booking ID and the current status
+    const { booking } = await request.json(); // Accepts the booking data, including status and comment
 
-    if (!id || !status) {
+    if (!booking || !booking.status) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Missing required fields' }),
+        JSON.stringify({
+          success: false,
+          error: 'Missing booking data or status',
+        }),
         { status: 400 }
-      );
-    }
-
-    // Fetch the booking data from the NewBookingData table using the UUID
-    let { data: booking, error } = await supabase
-      .from('NewBookingData')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error || !booking) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Booking not found' }),
-        { status: 404 }
       );
     }
 
@@ -34,6 +22,8 @@ export async function POST(request) {
       distance,
       duration,
       cost,
+      status,
+      comment,
     } = booking;
 
     // Format the date and time
@@ -58,13 +48,18 @@ export async function POST(request) {
 
     // Set the email subject and content based on the status
     const subject =
-      status === 'approved'
+      status === 'accepted'
         ? 'Booking Request Accepted'
         : 'Booking Request Declined';
+
     const message =
-      status === 'approved'
-        ? '<strong>Congratulations, your booking has been accepted!</strong>'
+      status === 'accepted'
+        ? '<strong>Hey hey, your booking has been accepted!</strong>'
         : '<strong>Unfortunately, your booking request has been declined.</strong>';
+
+    const commentSection = comment
+      ? `<p><strong>Comment from Driver:</strong> ${comment}</p>`
+      : `<p><strong>Comment from Driver:</strong> No comment provided.</p>`;
 
     // Configure Nodemailer with Brevo's SMTP service
     const transporter = nodemailer.createTransport({
@@ -76,7 +71,7 @@ export async function POST(request) {
       },
     });
 
-    // Email content with formatted date, time, and booking details
+    // Email content with formatted date, time, booking details, and optional comment
     const mailOptions = {
       from: 'rydeblk@gmail.com', // Verified sender email
       to: user_email, // User email from the booking
@@ -97,7 +92,9 @@ export async function POST(request) {
           <li style="padding-bottom: 2px;"><strong>Estimated Duration:</strong> ${duration}</li>
           <li style="padding-bottom: 2px;"><strong>Estimated Cost:</strong> $${cost}</li>
         </ul>
-    
+
+        ${commentSection} <!-- Optional comment added here -->
+
         <p>You can view the full trip route on Google Maps by clicking the following link:</p>
         <a href="${googleMapsTripLink}" target="_blank">View trip on Google Maps</a>
 

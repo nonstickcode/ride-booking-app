@@ -5,7 +5,7 @@ export async function POST(request) {
     const { id, status, comment } = await request.json();
 
     // Log received data for debugging
-    console.log('Received decision data:', { id, status, comment }); // Ensure this logs the correct comment
+    console.log('Received decision data:', { id, status, comment });
 
     // Validate required fields
     if (!id || !status) {
@@ -35,7 +35,7 @@ export async function POST(request) {
       .from('NewBookingData')
       .update({
         status,
-        comment: comment || 'No comment given with decision', // Default value for empty comments
+        comment: comment || 'No comment given with decision',
       })
       .eq('id', id);
 
@@ -50,12 +50,40 @@ export async function POST(request) {
       );
     }
 
-    console.log('Booking updated successfully with comment:', comment); // Ensure this logs the correct comment
 
+    // TODO: when sms ready add check to either send sms if user setting say preferences is sms or default email.
+    // Call the email route with the booking data, status, and comment
+    const emailResponse = await fetch(
+      `${process.env.APP_URL}/api/email/sendResponseEmailToUser`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          booking: { ...booking, status, comment },
+        }),
+      }
+    );
+
+    const emailData = await emailResponse.json();
+
+    if (!emailData.success) {
+      console.error('Failed to send email:', emailData.error);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: `Booking ${status.toUpperCase()} but failed to send email.`,
+        }),
+        { status: 500 }
+      );
+    }
+
+    // Return success response
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Booking ${status.toUpperCase()}`,
+        message: `Booking ${status.toUpperCase()} and email sent successfully.`,
         booking: { ...booking, status, comment },
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }

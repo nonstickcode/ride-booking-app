@@ -119,9 +119,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
 
   // Handle accept/decline action
   const handleDecision = async (status) => {
-    // Use correct verb forms based on the status
     const verb = status === 'accepted' ? 'accept' : 'decline';
-
     const confirmAction = window.confirm(
       `Are you sure you want to ${verb} this booking?`
     );
@@ -149,13 +147,27 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       console.log('Response from /api/decision:', data);
 
       if (data.success) {
-        alert(`Booking ${status}`); // Keeps the status capitalized in the final alert
-        onClose(); // Close modal after decision
+        // Handling success/failure scenarios
+        if (data.message.includes('and email sent')) {
+          alert(
+            `Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`
+          );
+        } else {
+          alert(
+            `Booking ${status.toUpperCase()} but response email / sms FAILED to send ⚠️`
+          );
+        }
       } else {
-        alert(`Error: ${data.message}`);
+        alert(
+          `Booking ${status.toUpperCase()} but FAILED to process response email/sms ⚠️`
+        );
       }
+      onClose(); // Close modal after decision
     } catch (error) {
-      console.error('Failed to update booking:', error);
+      console.error('FAILED to update booking: ⚠️ ', error);
+      alert(
+        'ERROR processing booking and sending email / sms response. Please try again. ⚠️'
+      );
     }
   };
 
