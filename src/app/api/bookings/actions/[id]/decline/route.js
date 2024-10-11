@@ -11,10 +11,13 @@ export async function GET(request, { params }) {
 
   // Validate the key from the query against the server-side private key
   if (keyFromQuery !== privateKey) {
-    // If the key doesn't match, return an Unauthorized response
     return new Response(
-      JSON.stringify({ success: false, message: 'Unauthorized: Invalid key' }),
-      { status: 403 }
+      JSON.stringify(
+        { success: false, message: 'Unauthorized: Invalid key' },
+        null, // replacer
+        2     // space argument for indentation
+      ),
+      { status: 403, headers: { 'Content-Type': 'application/json' } }
     );
   }
 
@@ -22,7 +25,7 @@ export async function GET(request, { params }) {
     const { id } = params; // Extract booking ID from the URL params
 
     // Log the ID for debugging purposes
-    console.log('Booking ID received for acceptance:', id);
+    console.log('Booking ID received for decline:', id);
 
     // Fetch the booking data from the NewBookingData table using the UUID
     let { data: booking, error } = await supabase
@@ -34,8 +37,12 @@ export async function GET(request, { params }) {
     if (error || !booking) {
       console.error('Error fetching booking:', error);
       return new Response(
-        JSON.stringify({ success: false, message: 'Booking not found' }),
-        { status: 404 }
+        JSON.stringify(
+          { success: false, message: 'Booking not found' },
+          null, // replacer
+          2     // space argument for indentation
+        ),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -48,23 +55,43 @@ export async function GET(request, { params }) {
     if (updateError) {
       console.error('Error updating booking status:', updateError);
       return new Response(
-        JSON.stringify({ success: false, message: 'Failed to update booking status' }),
-        { status: 500 }
+        JSON.stringify(
+          { success: false, message: 'Failed to update booking status' },
+          null, // replacer
+          2     // space argument for indentation
+        ),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    // Manually update the booking object to reflect the status change
+    booking.status = 'declined';
 
     // Log the success message
     console.log('Booking DECLINED successfully:', id);
 
+    // Return the success message and booking data, formatted nicely
     return new Response(
-      JSON.stringify({ success: true, message: 'Booking DECLINED' }),
-      { status: 200 }
+      JSON.stringify(
+        {
+          success: true,
+          message: 'Booking DECLINED',
+          booking: booking // Include the full booking data with updated status
+        },
+        null, // replacer
+        2     // space argument for indentation
+      ),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error processing acceptance:', error);
+    console.error('Error processing decline:', error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      { status: 500 }
+      JSON.stringify(
+        { success: false, error: error.message },
+        null, // replacer
+        2     // space argument for indentation
+      ),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
