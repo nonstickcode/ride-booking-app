@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import SignInModal from '@/components/modals/SignInModal';
 import supabase from '@/utils/supabaseClient';
+import { FaArrowDown } from 'react-icons/fa';
 
 // Helper function to generate the Gmail compose link
 const generateGmailLink = (booking) => {
@@ -64,6 +65,7 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [isBouncing, setIsBouncing] = useState(true);
 
   const session = useSession();
   const supabaseClient = useSupabaseClient();
@@ -78,6 +80,15 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
       setShowSignInModal(true);
     }
   }, [user]);
+
+      // Remove bounce after a few seconds
+      useEffect(() => {
+        const bounceTimeout = setTimeout(() => {
+          setIsBouncing(false);
+        }, 5000); // Stops bouncing after 3 seconds
+    
+        return () => clearTimeout(bounceTimeout);
+      }, []);
 
   // Fetch booking data when decisionId is provided
   useEffect(() => {
@@ -116,6 +127,8 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
       />
     );
   }
+
+
 
   if (user && !isAdmin) {
     return (
@@ -158,11 +171,24 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
           <X className="h-6 w-6" />
         </Button>
         <div className="mx-auto w-full max-w-md p-4">
-          <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
+          <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold tracking-widest text-red-500">
             MANAGE BOOKING
             <br />
-            REQUEST
+            <div className="flex items-center justify-center">
+            <FaArrowDown
+                className={`mr-10 text-gray-400 w-5 h-5 ${
+                  isBouncing ? 'animate-bounce-down' : ''
+                }`}
+              />
+              <span>REQUEST</span>
+              <FaArrowDown
+                className={`ml-10 text-gray-400 w-5 h-5 ${
+                  isBouncing ? 'animate-bounce-down' : ''
+                }`}
+              />
+            </div>
           </h2>
+
           <hr className="my-2 border-gray-700" />
           <div className="gap-8 text-white">
             <div className="my-1">
@@ -245,8 +271,8 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
             </div>
           </div>
           <hr className="my-2 border-gray-700" />
-          <div className="mt-4">
-            <label htmlFor="comments" className="mb-3 font-bold text-gray-300">
+          <div className="">
+            <label htmlFor="comments" className="font-bold text-gray-300">
               Comments (optional):
             </label>
             <textarea
@@ -255,7 +281,7 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
               rows="4"
               maxLength="1000"
               placeholder={`Add comments for ${booking.user_email}. These will be included in the automated email or SMS notifying them of your decision.`}
-              className="w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-500"
+              className="w-full mt-2 rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
           <hr className="my-2 border-gray-700" />

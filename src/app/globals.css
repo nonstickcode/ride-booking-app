@@ -4,6 +4,21 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@keyframes bounce-down {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px); /* Moves down by 8px */
+  }
+}
+
+.animate-bounce-down {
+  animation: bounce-down 1s infinite;
+}
+
+
 /* ======================== Root Variables ======================== */
 @layer base {
   :root {
