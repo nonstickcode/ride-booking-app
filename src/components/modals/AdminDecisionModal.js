@@ -149,25 +149,17 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       if (data.success) {
         // Handling success/failure scenarios
         if (data.message.includes('and email sent')) {
-          alert(
-            `Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`
-          );
+          alert(`Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`);
         } else {
-          alert(
-            `Booking ${status.toUpperCase()} but response email / sms FAILED to send ⚠️`
-          );
+          alert(`Booking ${status.toUpperCase()} but response email / sms FAILED to send ❗`);
         }
       } else {
-        alert(
-          `Booking ${status.toUpperCase()} but FAILED to process response email/sms ⚠️`
-        );
+        alert(`Booking ${status.toUpperCase()} but FAILED to process response email/sms ❗`);
       }
       onClose(); // Close modal after decision
     } catch (error) {
-      console.error('FAILED to update booking: ⚠️ ', error);
-      alert(
-        'ERROR processing booking and sending email / sms response. Please try again. ⚠️'
-      );
+      console.error('FAILED to update booking:', error);
+      alert('❌ ERROR processing booking and sending email / sms response. Please try again. ❌');
     }
   };
 
