@@ -19,7 +19,7 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
 
   // Check if the user is admin (based on email)
   useEffect(() => {
-    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;  // TODO: Change this to use UUID of admin instead of email, also in other file used.
     if (user) {
       if (user.email === adminEmail) {
         setIsAdmin(true);
