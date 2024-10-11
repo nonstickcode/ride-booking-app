@@ -9,7 +9,9 @@ import supabase from '@/utils/supabaseClient';
 
 // Helper function to generate the Gmail compose link
 const generateGmailLink = (booking) => {
-  const subject = encodeURIComponent(`Booking Details for ${booking.user_email}`);
+  const subject = encodeURIComponent(
+    `Booking Details for ${booking.user_email}`
+  );
   const body = encodeURIComponent(`
 Hi 👋 Jamie here with RYDEBLK
 
@@ -29,6 +31,33 @@ Hi 👋 Jamie here with RYDEBLK
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${booking.user_email}&su=${subject}&body=${body}`;
 };
 
+// Helper function to generate a Google Calendar link
+const generateCalendarLink = (booking) => {
+  if (!booking.date) {
+    console.error('Invalid date:', booking.date);
+    return '#'; // Return a safe value that won't cause navigation
+  }
+
+  try {
+    const startDate = new Date(booking.date);
+    if (isNaN(startDate.getTime())) {
+      throw new Error('Invalid date value');
+    }
+
+    // Extract the year, month, and day from the booking date
+    const year = startDate.getFullYear();
+    const month = startDate.getMonth() + 1; // Months are zero-indexed, so we add 1
+    const day = startDate.getDate();
+
+    // Generate the Google Calendar URL for the specific day
+    const url = `https://calendar.google.com/calendar/u/0/r/day/${year}/${month}/${day}`;
+
+    return url;
+  } catch (error) {
+    console.error('Error generating calendar link:', error);
+    return '#'; // Return a safe value that won't cause navigation
+  }
+};
 
 const AdminDecisionModal = ({ decisionId, onClose }) => {
   const [booking, setBooking] = useState(null);
@@ -92,7 +121,12 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
     return (
       <div className="modal-background fixed inset-0 z-50 flex items-center justify-center">
         <div className="modal-container relative w-[90vw] max-w-sm border border-red-500 bg-white p-2 shadow-xl">
-          <Button onClick={onClose} variant="close" size="icon" className="absolute right-1 top-1">
+          <Button
+            onClick={onClose}
+            variant="close"
+            size="icon"
+            className="absolute right-1 top-1"
+          >
             <X className="h-6 w-6" />
           </Button>
           <div className="p-8 text-center text-red-600">
@@ -110,61 +144,102 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
   const dropoffGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.dropoff_location.address)}`;
   const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(booking.pickup_location.address)}&destination=${encodeURIComponent(booking.dropoff_location.address)}&travelmode=driving`;
   const gmailLink = generateGmailLink(booking);
+  const calendarLink = generateCalendarLink(booking);
 
   return (
     <div className="modal-background fixed inset-0 z-50 flex items-center justify-center">
       <div className="modal-container relative max-h-[95vh] w-[90vw] max-w-sm overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]">
-        <Button onClick={onClose} variant="close" size="icon" className="absolute right-1 top-1">
+        <Button
+          onClick={onClose}
+          variant="close"
+          size="icon"
+          className="absolute right-1 top-1"
+        >
           <X className="h-6 w-6" />
         </Button>
         <div className="mx-auto w-full max-w-md p-4">
           <h2 className="mx-auto mb-3 text-center font-mono text-2xl font-bold text-red-500">
-            MANAGE BOOKING<br/>REQUEST
+            MANAGE BOOKING
+            <br />
+            REQUEST
           </h2>
           <hr className="my-2 border-gray-700" />
           <div className="gap-8 text-white">
             <div className="my-1">
               <strong className="mr-3 italic text-gray-300">User Email:</strong>
               <a
-  href={gmailLink}
-  target="_blank" // Ensures the link opens in a new tab
-  rel="noopener noreferrer" // Improves security for links opening in new tabs
-  className="text-blue-400 underline hover:text-green-500"
->
-  {booking.user_email}
-</a>
-
+                href={gmailLink}
+                target="_blank" // Ensures the link opens in a new tab
+                rel="noopener noreferrer" // Improves security for links opening in new tabs
+                className="text-blue-300 underline hover:text-green-300"
+              >
+                {booking.user_email}
+              </a>
             </div>
             <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">Date & Time:</strong>
-              {new Date(booking.date).toLocaleString()}
+              <strong className="mr-3 italic text-gray-300">
+                Date & Time:
+              </strong>
+              {calendarLink !== '#' ? (
+                <a
+                  href={calendarLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-300 underline hover:text-green-300"
+                >
+                  {new Date(booking.date).toLocaleString()}
+                </a>
+              ) : (
+                <span>{new Date(booking.date).toLocaleString()}</span> // Displays full date and time if link generation fails
+              )}
             </div>
             <div className="my-2 flex">
               <strong className="mr-3 italic text-gray-300">Pickup:</strong>
-              <a href={pickupGoogleMapsLink} target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-500">
+              <a
+                href={pickupGoogleMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-300 underline hover:text-green-300"
+              >
                 {booking.pickup_location.address}
               </a>
             </div>
             <div className="my-2 flex">
               <strong className="mr-3 italic text-gray-300">Dropoff:</strong>
-              <a href={dropoffGoogleMapsLink} target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-500">
+              <a
+                href={dropoffGoogleMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-300 underline hover:text-green-300"
+              >
                 {booking.dropoff_location.address}
               </a>
             </div>
             <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">Estimated Distance:</strong>
+              <strong className="mr-3 italic text-gray-300">
+                Estimated Distance:
+              </strong>
               {booking.distance}
             </div>
             <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">Estimated Duration:</strong>
+              <strong className="mr-3 italic text-gray-300">
+                Estimated Duration:
+              </strong>
               {booking.duration}
             </div>
             <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">Estimated Cost:</strong>
+              <strong className="mr-3 italic text-gray-300">
+                Estimated Cost:
+              </strong>
               ${booking.cost}
             </div>
             <div className="my-1">
-              <a href={googleMapsTripLink} target="_blank" rel="noopener noreferrer" className="font-mono text-blue-400 underline hover:text-green-500">
+              <a
+                href={googleMapsTripLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-blue-300 underline hover:text-green-300"
+              >
                 View Trip on Google Maps
               </a>
             </div>
@@ -185,10 +260,22 @@ const AdminDecisionModal = ({ decisionId, onClose }) => {
           </div>
           <hr className="my-2 border-gray-700" />
           <div className="mt-4 flex justify-between gap-4">
-            <Button onClick={() => handleDecision('declined')} variant="red" size="md" className="w-full" title="Decline Booking">
+            <Button
+              onClick={() => handleDecision('declined')}
+              variant="red"
+              size="md"
+              className="w-full"
+              title="Decline Booking"
+            >
               Decline
             </Button>
-            <Button onClick={() => handleDecision('accepted')} variant="green" size="md" className="w-full" title="Accept Booking">
+            <Button
+              onClick={() => handleDecision('accepted')}
+              variant="green"
+              size="md"
+              className="w-full"
+              title="Accept Booking"
+            >
               Accept
             </Button>
           </div>
