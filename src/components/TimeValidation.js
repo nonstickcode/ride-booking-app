@@ -4,6 +4,8 @@ import { combineDateAndTime } from '@/utils/dateUtils';
 import addMonths from 'date-fns/addMonths'; // Add this for date comparison
 import supabase from '@/utils/supabaseClient';
 
+// TODO: swap out using utils/dateUtils for utils/dateTime for new Luxon methods for time zone, keep logic here but use new file and delete old when not using anymore anywhere
+
 // TODO: look in to error i got entering time with keyboard and it did not seem to trigger off time alert or was not entered yet and saw an error in console when the time was entered, it still worked fine from user perspective but look into this
 
 // TODO: Need to block the time and date from being altered while checking google calender is loading, or its can be set to violate rules
