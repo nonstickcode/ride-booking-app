@@ -15,7 +15,7 @@ import {
 } from '@/utils/routeCalculations';
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
-import { combineDateAndTime } from '@/utils/dateUtils';
+import { combineDateAndTime } from '@/utils/dateTime';
 
 // Function to fetch admin settings
 const getAdminSettings = async () => {
@@ -158,6 +158,7 @@ const BookingModal = ({ onClose }) => {
     e.preventDefault();
     setLoadingSubmit(true);
 
+    // Combine date and time using Luxon
     const combinedDateTime = combineDateAndTime(date, time);
 
     const bookingId = uuidv4(); // Generate a new UUID for the booking
@@ -165,7 +166,7 @@ const BookingModal = ({ onClose }) => {
       id: bookingId, // UUID
       user_uuid: user.id, // User UUID
       user_email: user.email, // User email
-      date: combinedDateTime.toISOString(),
+      requestedDateAndTime: combinedDateTime.toISO(), // Save in ISO format for timezonez column
       pickup_location: pickupLocation,
       dropoff_location: dropoffLocation,
       distance,

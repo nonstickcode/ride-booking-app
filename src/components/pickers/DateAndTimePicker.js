@@ -54,7 +54,10 @@ const DatePicker = ({ date, setDate }) => {
         <MUIDatePicker
           value={date}
           onChange={(newDate) => {
-            setDate(newDate);
+            // Extract only the date part (ignoring time)
+            const dateOnly = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+            console.log('Selected Date (Truncated):', dateOnly);
+            setDate(dateOnly); // Pass the truncated date to the parent
           }}
           disabled={false}
           showDaysOutsideCurrentMonth
@@ -87,7 +90,14 @@ const TimePicker = ({ time, setTime }) => {
           formatDensity="spacious"
           format="hh:mm a" // 12-hour format with AM/PM
           onChange={(newTime) => {
-            setTime(newTime);
+            // Extract just the time and the timezone
+            const timeOnly = {
+              hours: newTime.getHours(),
+              minutes: newTime.getMinutes(),
+              timezoneOffset: newTime.getTimezoneOffset(),
+            };
+            console.log('Selected Time (Hours, Minutes, Timezone Offset):', timeOnly);
+            setTime(newTime); // Pass the full time object to the parent for combining
           }}
           slots={{
             openPickerIcon: () => <ClockIcon className="h-5 w-5" />,

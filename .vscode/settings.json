@@ -5,9 +5,11 @@
     "Crosshairs",
     "datetime",
     "dropoff",
+    "Luxon",
     "NEXTAUTH",
     "nextjs",
     "RYDEBLK",
-    "timeoff"
+    "timeoff",
+    "uuidv"
   ]
 }
