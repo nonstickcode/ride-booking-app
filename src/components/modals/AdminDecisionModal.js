@@ -305,40 +305,39 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
             </div>
           </div>
 
-          <div className="text-center mt-4">
-  <div className="my-2 flex justify-center">
-    <strong className="italic text-gray-300 mr-2">
-      Estimated Distance:
-    </strong>
-    <span>{booking.distance}</span>
-  </div>
+          <div className="mt-4 text-center">
+            <div className="my-2 flex justify-center">
+              <strong className="mr-2 italic text-gray-300">
+                Estimated Distance:
+              </strong>
+              <span>{booking.distance}</span>
+            </div>
 
-  <div className="my-2 flex justify-center">
-    <strong className="italic text-gray-300 mr-2">
-      Estimated Duration:
-    </strong>
-    <span>{booking.duration}</span>
-  </div>
+            <div className="my-2 flex justify-center">
+              <strong className="mr-2 italic text-gray-300">
+                Estimated Duration:
+              </strong>
+              <span>{booking.duration}</span>
+            </div>
 
-  <div className="my-2 flex justify-center">
-    <strong className="italic text-gray-300 mr-2">
-      Estimated Cost:
-    </strong>
-    <span>${booking.cost}</span>
-  </div>
+            <div className="my-2 flex justify-center">
+              <strong className="mr-2 italic text-gray-300">
+                Estimated Cost:
+              </strong>
+              <span>${booking.cost}</span>
+            </div>
 
-  <div className="my-1">
-    <a
-      href={googleMapsTripLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="font-bold text-blue-300 underline hover:text-green-300"
-    >
-      View Trip on Google Maps
-    </a>
-  </div>
-</div>
-
+            <div className="my-1">
+              <a
+                href={googleMapsTripLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-blue-300 underline hover:text-green-300"
+              >
+                View Trip on Google Maps
+              </a>
+            </div>
+          </div>
 
           <hr className="my-2 border-gray-700" />
           <div className="">

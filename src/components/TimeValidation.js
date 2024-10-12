@@ -1,16 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaSpinner } from 'react-icons/fa';
-import { combineDateAndTime } from '@/utils/dateUtils';
-import addMonths from 'date-fns/addMonths'; // Add this for date comparison
+import { DateTime } from 'luxon';
+import { combineDateAndTime } from '@/utils/dateTime';
 import supabase from '@/utils/supabaseClient';
 
-// TODO: swap out using utils/dateUtils for utils/dateTime for new Luxon methods for time zone, keep logic here but use new file and delete old when not using anymore anywhere
-
-// TODO: look in to error i got entering time with keyboard and it did not seem to trigger off time alert or was not entered yet and saw an error in console when the time was entered, it still worked fine from user perspective but look into this
-
-// TODO: Need to block the time and date from being altered while checking google calender is loading, or its can be set to violate rules
-
-// Custom TimeValidation component
 const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
   const [leadTime, setLeadTime] = useState({ hours: 0, minutes: 0 });
   const [offHours, setOffHours] = useState({
@@ -19,7 +12,7 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
   });
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [message, setMessage] = useState('');
-  const [bookingLimitMonths, setBookingLimitMonths] = useState(null); // State to store booking limit in months
+  const [bookingLimitMonths, setBookingLimitMonths] = useState(null);
 
   // Fetch booking limit, lead time, and off-hours from the database
   useEffect(() => {
@@ -46,24 +39,26 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
           start: data.timeoff_start_time,
           end: data.timeoff_end_time,
         });
-        setBookingLimitMonths(data.misc_advance_booking_limit_months || null); // Fetch booking limit in months
+        setBookingLimitMonths(data.misc_advance_booking_limit_months || null);
       }
     };
 
     fetchSettings();
   }, []);
 
-  // Check if the selected date is beyond the allowed booking limit
+  // Check if the selected date exceeds the allowed booking limit
   const checkIfDateExceedsLimit = useCallback(
     (selectedDate) => {
       if (bookingLimitMonths !== null) {
-        const maxAllowedDate = addMonths(new Date(), bookingLimitMonths); // Calculate max date
+        const maxAllowedDate = DateTime.now().plus({
+          months: bookingLimitMonths,
+        });
         if (selectedDate > maxAllowedDate) {
           const monthText = bookingLimitMonths === 1 ? 'month' : 'months';
           setMessage(
             `Bookings are not accepted more than ${bookingLimitMonths} ${monthText} in advance.`
           );
-          setIsValidTime(false); // Mark time as invalid and stop further checks
+          setIsValidTime(false);
           return true;
         }
       }
@@ -72,57 +67,37 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
     [bookingLimitMonths, setIsValidTime]
   );
 
-  // Parse time from HH:MM:SS format to just hours
-  const parseTime = useCallback((timeString) => {
-    const [hours] = timeString.split(':').map(Number);
-    return hours;
-  }, []);
-
-  // Format hours for user display
-  const formatTimeForDisplay = useCallback((hours) => {
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    return `${formattedHours} ${period}`;
-  }, []);
+  // Convert the lead time to milliseconds for easier comparison
+  const convertLeadTimeToMilliseconds = useCallback(() => {
+    const { hours, minutes } = leadTime;
+    return hours * 3600000 + minutes * 60000; // Convert lead time to milliseconds
+  }, [leadTime]);
 
   // Check if the selected time is within off-hours
   const checkIfTimeInOffHours = useCallback(
     (time) => {
       const selectedHour = time.getHours();
-      const start = parseTime(offHours.start);
-      const end = parseTime(offHours.end);
+      const startHour = DateTime.fromFormat(offHours.start, 'HH:mm:ss').hour;
+      const endHour = DateTime.fromFormat(offHours.end, 'HH:mm:ss').hour;
 
-      const startDisplay = formatTimeForDisplay(start);
-      const endDisplay = formatTimeForDisplay(end);
-
-      if (start > end) {
-        if (selectedHour >= start || selectedHour < end) {
+      if (startHour > endHour) {
+        if (selectedHour >= startHour || selectedHour < endHour) {
           setMessage(
-            `No bookings are available between ${startDisplay} and ${endDisplay}.`
+            `No bookings are available between ${offHours.start} and ${offHours.end}.`
           );
           return true;
         }
-      } else {
-        if (selectedHour >= start && selectedHour < end) {
-          setMessage(
-            `No bookings are available between ${startDisplay} and ${endDisplay}.`
-          );
-          return true;
-        }
+      } else if (selectedHour >= startHour && selectedHour < endHour) {
+        setMessage(
+          `No bookings are available between ${offHours.start} and ${offHours.end}.`
+        );
+        return true;
       }
-
       return false;
     },
-    [offHours, parseTime, formatTimeForDisplay]
+    [offHours]
   );
 
-  // Convert lead time from hours and minutes to milliseconds
-  const convertLeadTimeToMilliseconds = useCallback(() => {
-    const { hours, minutes } = leadTime;
-    return hours * 60 * 60 * 1000 + minutes * 60 * 1000;
-  }, [leadTime]);
-
-  // Validate the selected time and date
   const validateTime = useCallback(
     async (selectedTime) => {
       setMessage(''); // Clear any previous messages
@@ -133,39 +108,41 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
         return;
       }
 
-      const combinedDateTime = combineDateAndTime(date, selectedTime);
+      // Convert date and time to Luxon DateTime if necessary
+      const luxonDate = DateTime.fromJSDate(date);
+      const combinedDateTime = combineDateAndTime(luxonDate, selectedTime);
 
       // Check if the date exceeds the booking limit first
-      if (checkIfDateExceedsLimit(date)) {
+      if (checkIfDateExceedsLimit(luxonDate)) {
         return; // Skip other checks if date exceeds the limit
       }
 
-      // Check if time is in the past
-      if (combinedDateTime < new Date()) {
+      const now = DateTime.now();
+
+      // Check if the selected time is in the past
+      if (combinedDateTime < now) {
         setMessage('You cannot select a time in the past.');
         setIsValidTime(false);
         return;
       }
 
-      // Check if time falls within off-hours
-      if (checkIfTimeInOffHours(combinedDateTime)) {
+      // Check if the selected time falls within off-hours
+      if (checkIfTimeInOffHours(combinedDateTime.toJSDate())) {
         setIsValidTime(false);
         return;
       }
 
-      // Check for lead time if booking for today
-      if (new Date().toDateString() === date.toDateString()) {
-        const currentTime = new Date();
+      // Check lead time if booking for today
+      if (now.toISODate() === luxonDate.toISODate()) {
         const leadTimeInMilliseconds = convertLeadTimeToMilliseconds();
-        const leadTimeLimit = new Date(
-          currentTime.getTime() + leadTimeInMilliseconds
-        );
+        const leadTimeLimit = now.plus({
+          milliseconds: leadTimeInMilliseconds,
+        });
 
         if (combinedDateTime < leadTimeLimit) {
           setMessage(
             `The driver needs at least ${leadTime.hours} ${leadTime.hours === 1 ? 'hour' : 'hours'}${leadTime.minutes > 0 ? ` and ${leadTime.minutes} minutes` : ''} notice for a ride request. Please select a later time.`
           );
-
           setIsValidTime(false);
           return;
         }
@@ -173,10 +150,8 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
 
       // Proceed with API check for availability if all prior checks pass
       setLoadingAvailability(true);
-      const startTime = combinedDateTime.toISOString();
-      const endTime = new Date(
-        combinedDateTime.getTime() + 2 * 60 * 60 * 1000
-      ).toISOString();
+      const startTime = combinedDateTime.toISO();
+      const endTime = combinedDateTime.plus({ hours: 2 }).toISO();
 
       const requestBody = {
         timeMin: startTime,
@@ -207,7 +182,7 @@ const TimeValidation = ({ date, time, isValidTime, setIsValidTime }) => {
           setMessage('This time is unavailable. Please choose another time.');
           setIsValidTime(false);
         } else {
-          setMessage('This date and time is available.'); // TODO: i need to see how the calendar api is being checked time frame wise and see how im setting time to check for
+          setMessage('This date and time is available.');
           setIsValidTime(true);
         }
       } catch (error) {

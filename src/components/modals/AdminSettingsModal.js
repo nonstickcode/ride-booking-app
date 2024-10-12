@@ -110,45 +110,76 @@ const AdminSettingsModal = ({ onClose }) => {
   // Save updated settings
   const handleSaveSettings = async () => {
     setIsSaving(true);
-
-    const { error } = await supabase.from('AdminSettings').upsert([
-      {
-        id: settings.id,
-        home_location_text: newSettings.home_location_text,
-        home_location_latitude: newSettings.home_location_latitude,
-        home_location_longitude: newSettings.home_location_longitude,
-        timeoff_start_time: newSettings.timeoff_start_time,
-        timeoff_end_time: newSettings.timeoff_end_time,
-        lead_time_hours: parseInt(newSettings.lead_time_hours, 10),
-        lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
-        cost_per_mile_rate: parseFloat(newSettings.cost_per_mile_rate),
-        cost_trip_surcharge: parseFloat(newSettings.cost_trip_surcharge),
-        misc_range_limit_miles: parseFloat(newSettings.misc_range_limit_miles),
-        misc_advance_booking_limit_months: parseInt(
-          newSettings.misc_advance_booking_limit_months,
-          10
-        ),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
-
-    setIsSaving(false);
-
-    if (error) {
-      setAlertMessage('Failed to save settings. Please try again.');
-      setAlertType('error');
-    } else {
-      setSettings(newSettings); // Update current settings
-      setInitialSettings(newSettings); // Reset initial settings to saved values
+    try {
+      let home_location_timezone = null;
+  
+      // Check if latitude and longitude have changed and call the /api/timezone route if needed
+      if (
+        newSettings.home_location_latitude !== initialSettings.home_location_latitude ||
+        newSettings.home_location_longitude !== initialSettings.home_location_longitude
+      ) {
+        const timezoneResponse = await fetch('/api/timezone', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            lat: newSettings.home_location_latitude,
+            lng: newSettings.home_location_longitude,
+          }),
+        });
+  
+        const timezoneData = await timezoneResponse.json();
+        if (!timezoneResponse.ok) {
+          throw new Error(timezoneData.error || 'Failed to fetch timezone');
+        }
+        home_location_timezone = timezoneData.timezone; // Store the returned timezone
+      }
+  
+      // Upsert the settings to Supabase, including the new timezone if we fetched it
+      const { error } = await supabase.from('AdminSettings').upsert([
+        {
+          id: settings.id,
+          home_location_text: newSettings.home_location_text,
+          home_location_latitude: newSettings.home_location_latitude,
+          home_location_longitude: newSettings.home_location_longitude,
+          home_location_timezone: home_location_timezone || settings.home_location_timezone, // Use the new timezone if fetched, otherwise the old one
+          timeoff_start_time: newSettings.timeoff_start_time,
+          timeoff_end_time: newSettings.timeoff_end_time,
+          lead_time_hours: parseInt(newSettings.lead_time_hours, 10),
+          lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
+          cost_per_mile_rate: parseFloat(newSettings.cost_per_mile_rate),
+          cost_trip_surcharge: parseFloat(newSettings.cost_trip_surcharge),
+          misc_range_limit_miles: parseFloat(newSettings.misc_range_limit_miles),
+          misc_advance_booking_limit_months: parseInt(
+            newSettings.misc_advance_booking_limit_months,
+            10
+          ),
+          updated_at: new Date().toISOString(),
+        },
+      ]);
+  
+      if (error) {
+        throw new Error('Failed to save settings');
+      }
+  
+      setSettings(newSettings);
+      setInitialSettings(newSettings); // Update initial settings to saved values
       setAlertMessage('Settings saved successfully!');
       setAlertType('success');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      setAlertMessage(error.message || 'Failed to save settings');
+      setAlertType('error');
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => {
+        setAlertMessage('');
+        setAlertType('');
+      }, 3000);
     }
-
-    setTimeout(() => {
-      setAlertMessage('');
-      setAlertType('');
-    }, 3000);
   };
+  
 
   useEffect(() => {
     const fetchSettings = async () => {

@@ -27,8 +27,8 @@ export async function POST(request) {
       comment,
     } = booking;
 
-
-    const { formattedDate, formattedTime } = formatDateTime(requestedDateAndTime);
+    const { formattedDate, formattedTime } =
+      formatDateTime(requestedDateAndTime);
 
     // Create Google Maps links for pickup and dropoff locations
     const pickupCoords = `${pickupLocation.lat},${pickupLocation.lng}`;
