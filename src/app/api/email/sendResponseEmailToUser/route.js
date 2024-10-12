@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { formatDateTime } from '@/utils/dateTime'; // Importing the utility function
 
 export async function POST(request) {
   try {
@@ -16,7 +17,7 @@ export async function POST(request) {
 
     const {
       user_email,
-      date,
+      requestedDateAndTime,
       pickup_location: pickupLocation,
       dropoff_location: dropoffLocation,
       distance,
@@ -26,20 +27,8 @@ export async function POST(request) {
       comment,
     } = booking;
 
-    // Format the date and time
-    const bookingDate = new Date(date);
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(bookingDate);
 
-    const formattedTime = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    }).format(bookingDate);
+    const { formattedDate, formattedTime } = formatDateTime(requestedDateAndTime);
 
     // Create Google Maps links for pickup and dropoff locations
     const pickupCoords = `${pickupLocation.lat},${pickupLocation.lng}`;

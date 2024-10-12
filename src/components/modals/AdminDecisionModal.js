@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import SignInModal from '@/components/modals/SignInModal';
 import { FaArrowDown } from 'react-icons/fa';
+import { formatDateTime } from '@/utils/dateTime';
 
 // Helper function to generate the Gmail compose link
 const generateGmailLink = (booking) => {
@@ -149,17 +150,25 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       if (data.success) {
         // Handling success/failure scenarios
         if (data.message.includes('and email sent')) {
-          alert(`Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`);
+          alert(
+            `Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`
+          );
         } else {
-          alert(`Booking ${status.toUpperCase()} but response email / sms FAILED to send ❗`);
+          alert(
+            `Booking ${status.toUpperCase()} but response email / sms FAILED to send ❗`
+          );
         }
       } else {
-        alert(`Booking ${status.toUpperCase()} but FAILED to process response email/sms ❗`);
+        alert(
+          `Booking ${status.toUpperCase()} but FAILED to process response email/sms ❗`
+        );
       }
       onClose(); // Close modal after decision
     } catch (error) {
       console.error('FAILED to update booking:', error);
-      alert('❌ ERROR processing booking and sending email / sms response. Please try again. ❌');
+      alert(
+        '❌ ERROR processing booking and sending email / sms response. Please try again. ❌'
+      );
     }
   };
 
@@ -197,11 +206,15 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
 
   if (!booking) return <div>Booking not found.</div>;
 
+  const { formattedDate, formattedTime } = formatDateTime(
+    booking.requestedDateAndTime
+  );
+
   const pickupGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.pickup_location.address)}`;
   const dropoffGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.dropoff_location.address)}`;
   const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(booking.pickup_location.address)}&destination=${encodeURIComponent(booking.dropoff_location.address)}&travelmode=driving`;
   const gmailLink = generateGmailLink(booking);
-  const calendarLink = generateCalendarLink(booking);
+  const calendarLink = generateCalendarLink(booking); // need to hook this up to create the new calendar event option for user now including time zone in event creation
 
   return (
     <div className="modal-background fixed inset-0 z-50 flex items-center justify-center">
@@ -235,85 +248,98 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
 
           <hr className="my-2 border-gray-700" />
           <div className="gap-8 text-white">
-            <div className="my-1">
-              <strong className="mr-3 italic text-gray-300">User Email:</strong>
+            <div className="my-2 flex">
+              <strong className="min-w-[110px] italic text-gray-300">
+                User Email:
+              </strong>
               <a
                 href={gmailLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-300 underline hover:text-green-300"
+                className="flex-grow text-blue-300 underline hover:text-green-300"
               >
                 {booking.user_email}
               </a>
             </div>
-            <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">
-                Date & Time:
-              </strong>
-              {calendarLink !== '#' ? (
-                <a
-                  href={calendarLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-300 underline hover:text-green-300"
-                >
-                  {new Date(booking.date).toLocaleString()}
-                </a>
-              ) : (
-                <span>{new Date(booking.date).toLocaleString()}</span>
-              )}
-            </div>
+
             <div className="my-2 flex">
-              <strong className="mr-3 italic text-gray-300">Pickup:</strong>
+              <strong className="min-w-[110px] italic text-gray-300">
+                Date:
+              </strong>
+              <span className="flex-grow">{formattedDate}</span>
+            </div>
+
+            <div className="my-2 flex">
+              <strong className="min-w-[110px] italic text-gray-300">
+                Time:
+              </strong>
+              <span className="flex-grow">{formattedTime}</span>
+            </div>
+
+            <div className="my-2 flex">
+              <strong className="min-w-[110px] italic text-gray-300">
+                Pickup:
+              </strong>
               <a
                 href={pickupGoogleMapsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-300 underline hover:text-green-300"
+                className="flex-grow text-blue-300 underline hover:text-green-300"
               >
                 {booking.pickup_location.address}
               </a>
             </div>
+
             <div className="my-2 flex">
-              <strong className="mr-3 italic text-gray-300">Dropoff:</strong>
+              <strong className="min-w-[110px] italic text-gray-300">
+                Dropoff:
+              </strong>
               <a
                 href={dropoffGoogleMapsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-300 underline hover:text-green-300"
+                className="flex-grow text-blue-300 underline hover:text-green-300"
               >
                 {booking.dropoff_location.address}
               </a>
             </div>
-            <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">
-                Estimated Distance:
-              </strong>
-              {booking.distance}
-            </div>
-            <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">
-                Estimated Duration:
-              </strong>
-              {booking.duration}
-            </div>
-            <div className="my-2">
-              <strong className="mr-3 italic text-gray-300">
-                Estimated Cost:
-              </strong>
-              ${booking.cost}
-            </div>
-            <div className="my-1">
-              <a
-                href={googleMapsTripLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold text-blue-300 underline hover:text-green-300"
-              >
-                View Trip on Google Maps
-              </a>
-            </div>
           </div>
+
+          <div className="text-center mt-4">
+  <div className="my-2 flex justify-center">
+    <strong className="italic text-gray-300 mr-2">
+      Estimated Distance:
+    </strong>
+    <span>{booking.distance}</span>
+  </div>
+
+  <div className="my-2 flex justify-center">
+    <strong className="italic text-gray-300 mr-2">
+      Estimated Duration:
+    </strong>
+    <span>{booking.duration}</span>
+  </div>
+
+  <div className="my-2 flex justify-center">
+    <strong className="italic text-gray-300 mr-2">
+      Estimated Cost:
+    </strong>
+    <span>${booking.cost}</span>
+  </div>
+
+  <div className="my-1">
+    <a
+      href={googleMapsTripLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-bold text-blue-300 underline hover:text-green-300"
+    >
+      View Trip on Google Maps
+    </a>
+  </div>
+</div>
+
+
           <hr className="my-2 border-gray-700" />
           <div className="">
             <label htmlFor="comments" className="font-bold text-gray-300">

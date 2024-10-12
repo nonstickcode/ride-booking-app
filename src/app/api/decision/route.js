@@ -50,7 +50,6 @@ export async function POST(request) {
       );
     }
 
-
     // TODO: when sms ready add check to either send sms if user setting say preferences is sms or default email.
     // Call the email route with the booking data, status, and comment
     const emailResponse = await fetch(

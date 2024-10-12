@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/utils/dateLuxon';
 import nodemailer from 'nodemailer';
 
 export async function POST(request) {
@@ -29,24 +30,9 @@ export async function POST(request) {
       );
     }
 
-    // Parse the requestedDateAndTime into a JavaScript Date object
-    const bookingDate = new Date(requestedDateAndTime);
-
-    // Format the date to Thu Nov 28, 2024
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }).format(bookingDate);
-
-    // Format the time to hh:mm AM/PM and include time zone abbreviation
-    const formattedTime = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-      timeZoneName: 'short', // This will give the abbreviated time zone (e.g., PST, EST)
-    }).format(bookingDate);
+    // Use the new formatDateTime utility to format date and time
+    const { formattedDate, formattedTime } =
+      formatDateTime(requestedDateAndTime);
 
     // Create Google Maps links for pickup and dropoff locations
     const pickupCoords = `${pickupLocation.lat},${pickupLocation.lng}`;

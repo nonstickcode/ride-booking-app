@@ -19,3 +19,38 @@ export const combineDateAndTime = (selectedDate, selectedTime) => {
 
   return combinedDateTime;
 };
+
+// Utility function to format the booking's date and time
+export const formatDateTime = (isoString) => {
+  if (!isoString) return { formattedDate: '', formattedTime: '' };
+
+  const bookingDateTime = DateTime.fromISO(isoString);
+
+  // Format the date as: Thu, Nov 28, 2024
+  const formattedDate = bookingDateTime.toLocaleString({
+    weekday: 'short', // Thu
+    month: 'short', // Nov
+    day: '2-digit', // 28
+    year: 'numeric', // 2024
+  });
+
+  // Format the time as: 3:55 PM MST
+  const formattedTime = bookingDateTime.toLocaleString({
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true, // AM/PM
+    timeZoneName: 'short', // MST
+  });
+
+  return { formattedDate, formattedTime };
+};
+
+// Function to parse a date string and return a Luxon DateTime object
+export const parseDateString = (dateString) => {
+  try {
+    return DateTime.fromISO(dateString);
+  } catch (error) {
+    console.error('Invalid date string:', dateString);
+    return null;
+  }
+};

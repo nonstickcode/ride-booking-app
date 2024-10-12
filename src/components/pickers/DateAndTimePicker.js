@@ -55,7 +55,11 @@ const DatePicker = ({ date, setDate }) => {
           value={date}
           onChange={(newDate) => {
             // Extract only the date part (ignoring time)
-            const dateOnly = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+            const dateOnly = new Date(
+              newDate.getFullYear(),
+              newDate.getMonth(),
+              newDate.getDate()
+            );
             console.log('Selected Date (Truncated):', dateOnly);
             setDate(dateOnly); // Pass the truncated date to the parent
           }}
@@ -96,7 +100,10 @@ const TimePicker = ({ time, setTime }) => {
               minutes: newTime.getMinutes(),
               timezoneOffset: newTime.getTimezoneOffset(),
             };
-            console.log('Selected Time (Hours, Minutes, Timezone Offset):', timeOnly);
+            console.log(
+              'Selected Time (Hours, Minutes, Timezone Offset):',
+              timeOnly
+            );
             setTime(newTime); // Pass the full time object to the parent for combining
           }}
           slots={{
