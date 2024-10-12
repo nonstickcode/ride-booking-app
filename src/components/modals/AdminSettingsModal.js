@@ -11,12 +11,14 @@ import usePlacesAutocomplete, {
 import ClockIcon from '@mui/icons-material/AccessTime';
 import { FaSpinner } from 'react-icons/fa';
 import { MyLocationSharp } from '@mui/icons-material';
+import { getTimezoneAbbreviation } from '@/utils/dateTime';
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({
     home_location_text: '',
     home_location_latitude: '',
     home_location_longitude: '',
+    home_location_timezone: '', // Add this to state for timezone handling
     timeoff_start_time: '',
     timeoff_end_time: '',
     lead_time_hours: 0,
@@ -108,12 +110,11 @@ const AdminSettingsModal = ({ onClose }) => {
   };
 
   // Save updated settings
-  // Save updated settings
   const handleSaveSettings = async () => {
     setIsSaving(true);
 
     try {
-      let home_location_timezone = null;
+      let home_location_timezone = newSettings.home_location_timezone;
 
       // Check if latitude and longitude have changed and call the /api/timezone route if needed
       if (
@@ -170,8 +171,23 @@ const AdminSettingsModal = ({ onClose }) => {
         throw new Error('Failed to save settings');
       }
 
+      // After saving, update the newSettings and initialSettings with the updated timezone
       setSettings(newSettings);
-      setInitialSettings(newSettings); // Update initial settings to saved values
+      setInitialSettings(newSettings);
+
+      // After saving, update the newSettings and initialSettings with the updated timezone
+      setSettings((prev) => ({
+        ...prev,
+        home_location_timezone,
+      }));
+      setNewSettings((prev) => ({
+        ...prev,
+        home_location_timezone,
+      }));
+      setInitialSettings((prev) => ({
+        ...prev,
+        home_location_timezone,
+      }));
 
       // Update button to show "Save Complete"
       setAlertMessage('Settings saved successfully!');
@@ -326,7 +342,12 @@ const AdminSettingsModal = ({ onClose }) => {
 
           {/* Non-Working Hours Inputs */}
           <label className="mb-2 block text-lg font-bold text-blue-200">
-            Non-Working Hours:
+            Non-Working Hours: (
+            {getTimezoneAbbreviation(
+              newSettings.home_location_timezone ||
+                initialSettings.home_location_timezone
+            )}
+            )
           </label>
 
           <div className="flex flex-col gap-2">

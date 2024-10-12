@@ -54,3 +54,13 @@ export const parseDateString = (dateString) => {
     return null;
   }
 };
+
+// Function to get timezone abbreviation from the full timezone string
+export const getTimezoneAbbreviation = (timezone) => {
+  if (!timezone) return '';
+
+  const dt = DateTime.now().setZone(timezone);
+
+  // Use toLocaleString to get the 3-letter abbreviation (e.g., "EST", "PST")
+  return dt.toLocaleString({ timeZoneName: 'short' }).split(' ').pop();
+};
