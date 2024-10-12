@@ -17,15 +17,15 @@ export async function POST(req) {
       throw new Error(data.errorMessage || 'Failed to fetch timezone');
     }
 
-    return new Response(
-      JSON.stringify({ timezone: data.timeZoneId }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ timezone: data.timeZoneId }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Error fetching timezone:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch timezone' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'Failed to fetch timezone' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

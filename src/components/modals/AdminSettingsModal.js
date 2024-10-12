@@ -108,15 +108,19 @@ const AdminSettingsModal = ({ onClose }) => {
   };
 
   // Save updated settings
+  // Save updated settings
   const handleSaveSettings = async () => {
     setIsSaving(true);
+
     try {
       let home_location_timezone = null;
-  
+
       // Check if latitude and longitude have changed and call the /api/timezone route if needed
       if (
-        newSettings.home_location_latitude !== initialSettings.home_location_latitude ||
-        newSettings.home_location_longitude !== initialSettings.home_location_longitude
+        newSettings.home_location_latitude !==
+          initialSettings.home_location_latitude ||
+        newSettings.home_location_longitude !==
+          initialSettings.home_location_longitude
       ) {
         const timezoneResponse = await fetch('/api/timezone', {
           method: 'POST',
@@ -128,14 +132,14 @@ const AdminSettingsModal = ({ onClose }) => {
             lng: newSettings.home_location_longitude,
           }),
         });
-  
+
         const timezoneData = await timezoneResponse.json();
         if (!timezoneResponse.ok) {
           throw new Error(timezoneData.error || 'Failed to fetch timezone');
         }
         home_location_timezone = timezoneData.timezone; // Store the returned timezone
       }
-  
+
       // Upsert the settings to Supabase, including the new timezone if we fetched it
       const { error } = await supabase.from('AdminSettings').upsert([
         {
@@ -143,14 +147,17 @@ const AdminSettingsModal = ({ onClose }) => {
           home_location_text: newSettings.home_location_text,
           home_location_latitude: newSettings.home_location_latitude,
           home_location_longitude: newSettings.home_location_longitude,
-          home_location_timezone: home_location_timezone || settings.home_location_timezone, // Use the new timezone if fetched, otherwise the old one
+          home_location_timezone:
+            home_location_timezone || settings.home_location_timezone, // Use the new timezone if fetched, otherwise the old one
           timeoff_start_time: newSettings.timeoff_start_time,
           timeoff_end_time: newSettings.timeoff_end_time,
           lead_time_hours: parseInt(newSettings.lead_time_hours, 10),
           lead_time_minutes: parseInt(newSettings.lead_time_minutes, 10),
           cost_per_mile_rate: parseFloat(newSettings.cost_per_mile_rate),
           cost_trip_surcharge: parseFloat(newSettings.cost_trip_surcharge),
-          misc_range_limit_miles: parseFloat(newSettings.misc_range_limit_miles),
+          misc_range_limit_miles: parseFloat(
+            newSettings.misc_range_limit_miles
+          ),
           misc_advance_booking_limit_months: parseInt(
             newSettings.misc_advance_booking_limit_months,
             10
@@ -158,13 +165,15 @@ const AdminSettingsModal = ({ onClose }) => {
           updated_at: new Date().toISOString(),
         },
       ]);
-  
+
       if (error) {
         throw new Error('Failed to save settings');
       }
-  
+
       setSettings(newSettings);
       setInitialSettings(newSettings); // Update initial settings to saved values
+
+      // Update button to show "Save Complete"
       setAlertMessage('Settings saved successfully!');
       setAlertType('success');
     } catch (error) {
@@ -172,14 +181,14 @@ const AdminSettingsModal = ({ onClose }) => {
       setAlertMessage(error.message || 'Failed to save settings');
       setAlertType('error');
     } finally {
-      setIsSaving(false);
+      // Set button text to "Save Complete"
       setTimeout(() => {
         setAlertMessage('');
         setAlertType('');
-      }, 3000);
+        setIsSaving(false); // Revert to normal button after save is complete
+      }, 2000); // Delay before reverting back to normal button
     }
   };
-  
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -529,10 +538,27 @@ const AdminSettingsModal = ({ onClose }) => {
             variant="green"
             size="md"
             className="w-full"
-            title="Save Settings"
+            title={
+              isSaving
+                ? alertMessage
+                  ? 'Save Complete'
+                  : 'Saving...'
+                : 'Save Settings'
+            }
             disabled={isSaving}
           >
-            {isSaving ? 'Saving...' : 'Save Settings'}
+            {isSaving ? (
+              alertMessage ? (
+                'Save Complete'
+              ) : (
+                <>
+                  <FaSpinner className="mr-2 animate-spin" />
+                  Saving...
+                </>
+              )
+            ) : (
+              'Save Settings'
+            )}
           </Button>
         </div>
       </div>
