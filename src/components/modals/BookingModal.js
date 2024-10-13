@@ -266,10 +266,12 @@ const BookingModal = ({ onClose }) => {
             {/* Date and Time Picker */}
             <DateAndTimePicker
               setCombinedDateTime={(newDateTime) => {
-                console.log(
+                {
+                  /* console.log(
                   'Setting Combined Date and Time in BookingModal:',
                   newDateTime
-                );
+                ); */
+                }
                 setCombinedDateTime(newDateTime);
               }}
             />
