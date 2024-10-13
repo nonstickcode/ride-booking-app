@@ -93,7 +93,6 @@ export async function POST(request) {
 
     // TODO: Need to add back the link for Rider to add event for pick up to their Google Calendar now that we have TZ we can create proper new event with alert and TZ with a link they just hit create event
 
-    
     // Send the email
     await transporter.sendMail(mailOptions);
 

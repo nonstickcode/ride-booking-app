@@ -249,15 +249,15 @@ const TimeValidation = ({
   }, [combinedDateAndTime, validateTime]);
 
   return (
-    <div>
+    <div className={message || loadingAvailability ? 'mb-1 mt-3' : 'h-0'}>
       {loadingAvailability ? (
-        <div className="mt-3 flex items-center">
+        <div className="flex items-center">
           <FaSpinner className="mr-2 animate-spin" />
           <p>Checking availability...</p>
         </div>
       ) : (
         <p
-          className={`text-md mt-3 ${
+          className={`text-md ${
             isValidTime ? 'text-green-500' : 'text-red-500'
           }`}
         >

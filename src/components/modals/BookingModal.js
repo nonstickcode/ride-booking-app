@@ -251,11 +251,12 @@ const BookingModal = ({ onClose }) => {
           </h2>
 
           {user?.email && (
-            <p className="text-center text-lg text-gray-300">{user.email}</p>
+            <p className="mb-2 mt-1 text-center text-lg text-gray-300">
+              {user.email}
+            </p>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            {' '}
             {/* Date and Time Picker */}
             <DateAndTimePicker
               setCombinedDateTime={(newDateTime) => {
@@ -271,9 +272,9 @@ const BookingModal = ({ onClose }) => {
               isValidTime={isValidTime}
               setIsValidTime={setIsValidTime}
             />
-            <hr className="border-gray-700" />
+            <hr className="my-2 border-gray-700" />
             <LocationPickers setSelected={setPickupLocation} label="Pickup:" />
-            <hr className="border-gray-700" />
+            <hr className="mb-2 mt-4 border-gray-700" />
             <LocationPickers
               setSelected={setDropoffLocation}
               label="Drop-off:"

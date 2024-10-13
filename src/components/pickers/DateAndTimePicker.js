@@ -22,48 +22,50 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
   }, [date, time, setCombinedDateTime]);
 
   return (
-    <div className="mb-2 flex w-full flex-col">
+    <div className="w-full">
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <div className="mb-2">
-          <label className="mb-2 text-white">Date:</label>
-          <MUIDatePicker
-            value={date}
-            onChange={(newDate) => {
-              setDate(newDate); // Update the date state
-              // console.log('Date picker: ', newDate); // Log the new date value
-            }}
-            minDate={new Date()}
-            slots={{
-              openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
-            }}
-            slotProps={{
-              textField: {
-                placeholder: 'Select a Date',
-                className: 'input-field',
-                fullWidth: true,
-              },
-            }}
-          />
+        <div className="grid grid-cols-1 gap-0">
+          {/* Date Picker */}
+          <div className="mb-2">
+            <span className="mb-2 block text-sm text-white">Date:</span>
+
+            <MUIDatePicker
+              value={date}
+              onChange={(newDate) => setDate(newDate)}
+              minDate={new Date()}
+              slots={{
+                openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
+              }}
+              slotProps={{
+                textField: {
+                  placeholder: 'Select a Date',
+                  className: 'flex-grow text-sm',
+                  fullWidth: true,
+                },
+              }}
+            />
+          </div>
 
           <hr className="my-4 border-gray-700" />
 
-          <MUITimePicker
-            value={time}
-            onChange={(newTime) => {
-              setTime(newTime); // Update the time state
-              // console.log('Time picker: ', newTime); // Log the new time value
-            }}
-            slots={{
-              openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
-            }}
-            slotProps={{
-              textField: {
-                placeholder: 'Select a Time',
-                className: 'input-field',
-                fullWidth: true,
-              },
-            }}
-          />
+          {/* Time Picker */}
+          <div>
+            <span className="mb-2 block text-sm text-white">Time:</span>
+            <MUITimePicker
+              value={time}
+              onChange={(newTime) => setTime(newTime)}
+              slots={{
+                openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
+              }}
+              slotProps={{
+                textField: {
+                  placeholder: 'Select a Time',
+                  className: 'flex-grow text-sm',
+                  fullWidth: true,
+                },
+              }}
+            />
+          </div>
         </div>
       </LocalizationProvider>
     </div>

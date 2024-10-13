@@ -80,59 +80,59 @@ const LocationPickers = ({ setSelected, label }) => {
   };
 
   return (
-    <div className="mb-2 flex w-full flex-col">
-      <div className="mb-2 flex items-center justify-between">
-        <label className="text-white">{label}</label>
-        <a
-          href={generateGoogleMapsLink()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-gray-300 hover:text-gray-400"
-        >
-          Use Google Maps
-        </a>
-      </div>
-
-      <div className="flex items-center space-x-2">
-        {/* Input Field */}
-        <TextField
-          value={value}
-          onChange={handleInput}
-          disabled={!ready || currentLocationLoading} // Disable if API isn't ready or loading location
-          placeholder="Search by Name or Address"
-          className="input-field flex-grow"
-        />
-
-        {/* Current Location Button */}
-        <Button
-          onClick={handleCurrentLocation}
-          variant="location"
-          size="smallIcon"
-          disabled={currentLocationLoading}
-          title="Use current location"
-        >
-          {currentLocationLoading ? (
-            <FaSpinner className="animate-spin" />
-          ) : (
-            <MyLocationSharp className="" />
-          )}
-        </Button>
-      </div>
-
-      {/* Suggestions List */}
-      {status === 'OK' && (
-        <div className="mt-2 rounded-lg bg-gray-500 shadow-lg">
-          {data.map(({ place_id, description }) => (
-            <div
-              key={place_id}
-              className="cursor-pointer p-2 hover:bg-gray-800"
-              onClick={() => handleSelect(description)}
-            >
-              {description}
-            </div>
-          ))}
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-0">
+        {/* Label and Google Maps link */}
+        <div className="flex items-center justify-between">
+          <span className="mb-2 block text-sm text-white">{label}</span>
+          <a
+            href={generateGoogleMapsLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-300 hover:text-gray-400"
+          >
+            Use Google Maps
+          </a>
         </div>
-      )}
+
+        {/* Input Field and Button */}
+        <div className="flex items-center gap-2">
+          <TextField
+            value={value}
+            onChange={handleInput}
+            disabled={!ready || currentLocationLoading}
+            placeholder="Search by Name or Address"
+            className="flex-grow text-sm"
+          />
+          <Button
+            onClick={handleCurrentLocation}
+            variant="location"
+            size="smallIcon"
+            disabled={currentLocationLoading}
+          >
+            {currentLocationLoading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              <MyLocationSharp />
+            )}
+          </Button>
+        </div>
+
+        {/* Suggestions */}
+        {status === 'OK' && (
+          <div className="rounded-lg bg-gray-500 shadow-lg">
+            {data.map(({ place_id, description }) => (
+              <div
+                key={place_id}
+                className="cursor-pointer p-2 text-sm hover:bg-gray-800"
+                onClick={() => handleSelect(description)}
+              >
+                {description}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
