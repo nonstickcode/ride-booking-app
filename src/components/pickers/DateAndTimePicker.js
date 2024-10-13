@@ -16,7 +16,10 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
     if (date && time) {
       // Combine the date and time and pass it to the parent component
       const combinedDateTime = combineDateAndTimeLuxon(date, time);
-      console.log('Combined DateTime in DateAndTimePicker:', combinedDateTime);
+
+      {
+        /* console.log('Combined DateTime in DateAndTimePicker:', combinedDateTime); */
+      }
       setCombinedDateTime(combinedDateTime);
     }
   }, [date, time, setCombinedDateTime]);
