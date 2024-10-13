@@ -96,54 +96,40 @@ const TimeValidation = ({
   // Check if the selected time is within off-hours
   const checkIfTimeInOffHours = useCallback(
     (selectedDateTime) => {
-      const timeoffStartWithTZ = combineTimeWithTimezone(
-        offHours.start,
-        homeTimeZone
-      ).set({ year: 0, month: 0, day: 0 });
-      const timeoffEndWithTZ = combineTimeWithTimezone(
-        offHours.end,
-        homeTimeZone
-      ).set({ year: 0, month: 0, day: 0 });
-
+      const timeoffStartWithTZ = combineTimeWithTimezone(offHours.start, homeTimeZone).set({ year: 0, month: 0, day: 0 });
+      const timeoffEndWithTZ = combineTimeWithTimezone(offHours.end, homeTimeZone).set({ year: 0, month: 0, day: 0 });
+  
       const selectedTimeOnly = selectedDateTime.set({
         year: 0,
         month: 0,
         day: 0,
       });
-
-      console.log(
-        'Selected time (stripped):',
-        selectedTimeOnly.toFormat('HH:mm:ss ZZZ')
-      );
-      console.log(
-        'Time-off start:',
-        timeoffStartWithTZ.toFormat('HH:mm:ss ZZZ')
-      );
+  
+      // Helper function to format time
+      const formatTime = (time) => {
+        return time.minute === 0
+          ? time.toFormat('h a') // No minutes, just hour and AM/PM
+          : time.toFormat('h:mm a'); // Include minutes and AM/PM
+      };
+  
+      const startDisplay = formatTime(timeoffStartWithTZ);
+      const endDisplay = formatTime(timeoffEndWithTZ);
+  
+      console.log('Selected time (stripped):', selectedTimeOnly.toFormat('HH:mm:ss ZZZ'));
+      console.log('Time-off start:', timeoffStartWithTZ.toFormat('HH:mm:ss ZZZ'));
       console.log('Time-off end:', timeoffEndWithTZ.toFormat('HH:mm:ss ZZZ'));
-
+  
       if (timeoffStartWithTZ > timeoffEndWithTZ) {
-        if (
-          selectedTimeOnly >= timeoffStartWithTZ ||
-          selectedTimeOnly < timeoffEndWithTZ
-        ) {
-          setMessage(
-            `No bookings are available between ${timeoffStartWithTZ.toFormat(
-              'HH:mm'
-            )} and ${timeoffEndWithTZ.toFormat('HH:mm')} (${homeTimeZone}).`
-          );
+        // Overnight shift (start time is later in the day, end time is in the morning)
+        if (selectedTimeOnly >= timeoffStartWithTZ || selectedTimeOnly < timeoffEndWithTZ) {
+          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${homeTimeZone}).`);
           console.log('Off-hours check triggered.');
           return true;
         }
       } else {
-        if (
-          selectedTimeOnly >= timeoffStartWithTZ &&
-          selectedTimeOnly < timeoffEndWithTZ
-        ) {
-          setMessage(
-            `No bookings are available between ${timeoffStartWithTZ.toFormat(
-              'HH:mm'
-            )} and ${timeoffEndWithTZ.toFormat('HH:mm')} (${homeTimeZone}).`
-          );
+        // Regular off-hours (start time earlier than end time on the same day)
+        if (selectedTimeOnly >= timeoffStartWithTZ && selectedTimeOnly < timeoffEndWithTZ) {
+          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${homeTimeZone}).`);
           console.log('Off-hours check triggered.');
           return true;
         }
@@ -153,6 +139,7 @@ const TimeValidation = ({
     },
     [offHours, homeTimeZone]
   );
+  
 
   // Main time validation logic
   const validateTime = useCallback(async () => {
