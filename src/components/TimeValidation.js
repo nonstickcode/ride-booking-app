@@ -4,11 +4,10 @@ import { DateTime } from 'luxon';
 import { combineTimeWithTimezone } from '@/utils/dateTimeUtilsLuxon';
 import { getTimezoneAbbreviation } from '@/utils/dateLuxon';
 import supabase from '@/utils/supabaseClient';
-import { Alert } from '@mui/material';
-import { CheckCircleIcon } from 'lucide-react';
+import ValidationAlert from './ValidationAlert'; // Import ValidationAlert
 
 const TimeValidation = ({
-  combinedDateAndTime, // The combined date and time in ISO format
+  combinedDateAndTime,
   isValidTime,
   setIsValidTime,
 }) => {
@@ -20,6 +19,7 @@ const TimeValidation = ({
   const [homeTimeZone, setHomeTimeZone] = useState('');
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState('info'); // Added severity state
   const [bookingLimitMonths, setBookingLimitMonths] = useState(null);
 
   // Fetch settings from the database (e.g., lead time, off-hours, timezone)
@@ -68,6 +68,7 @@ const TimeValidation = ({
           setMessage(
             `Bookings are not accepted more than ${bookingLimitMonths} ${monthText} in advance.`
           );
+          setSeverity('warning'); // Set severity to warning for booking in advance
           setIsValidTime(false);
           return true;
         }
@@ -76,12 +77,6 @@ const TimeValidation = ({
     },
     [bookingLimitMonths, setIsValidTime]
   );
-
-  // Convert the lead time to a Luxon Duration for easier comparison
-  const convertLeadTimeToDuration = useCallback(() => {
-    const { hours, minutes } = leadTime;
-    return { hours, minutes };
-  }, [leadTime]);
 
   // Check if the selected time is within off-hours
   const checkIfTimeInOffHours = useCallback(
@@ -107,7 +102,6 @@ const TimeValidation = ({
         second: 0,
         millisecond: 0,
       });
-
 
       // Helper function to format time for user display (no adjustments here)
       const formatTime = (time) => {
@@ -136,6 +130,7 @@ const TimeValidation = ({
           setMessage(
             `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
           );
+          setSeverity('warning'); // Time off warning
           return true;
         }
       } else {
@@ -147,12 +142,14 @@ const TimeValidation = ({
           setMessage(
             `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
           );
+          setSeverity('warning');
           return true;
         }
       }
 
       // If time is not in off-hours, allow bookings
       setMessage('');
+      setSeverity('success');
       return false;
     },
     [offHours, homeTimeZone]
@@ -164,6 +161,7 @@ const TimeValidation = ({
 
     if (!combinedDateAndTime) {
       setMessage('Please select a valid date and time.');
+      setSeverity('error'); // Invalid input
       setIsValidTime(false);
       return;
     }
@@ -180,6 +178,7 @@ const TimeValidation = ({
     // Check if the selected time is in the past
     if (selectedDateTime < now) {
       setMessage('You cannot select a time in the past.');
+      setSeverity('error'); // Past date is an error
       setIsValidTime(false);
       return;
     }
@@ -192,7 +191,7 @@ const TimeValidation = ({
 
     // Check lead time if booking for today
     if (now.toISODate() === selectedDateTime.toISODate()) {
-      const leadTimeDuration = convertLeadTimeToDuration();
+      const leadTimeDuration = { hours: leadTime.hours, minutes: leadTime.minutes };
       const leadTimeLimit = now.plus(leadTimeDuration);
 
       if (selectedDateTime < leadTimeLimit) {
@@ -201,6 +200,7 @@ const TimeValidation = ({
             leadTime.hours === 1 ? 'hour' : 'hours'
           }${leadTime.minutes > 0 ? ` and ${leadTime.minutes} minutes` : ''} notice for a ride request. Please select a later time.`
         );
+        setSeverity('warning'); // Lead time warning
         setIsValidTime(false);
         return;
       }
@@ -229,6 +229,7 @@ const TimeValidation = ({
 
       if (!response.ok) {
         setMessage('This time is unavailable. Please choose another time.');
+        setSeverity('error');
         setIsValidTime(false);
         return;
       }
@@ -237,14 +238,17 @@ const TimeValidation = ({
       const busySlots = jsonResponse.busySlots || [];
       if (busySlots.length > 0) {
         setMessage('This time is unavailable. Please choose another time.');
+        setSeverity('error');
         setIsValidTime(false);
       } else {
         setMessage('This date and time is available.');
+        setSeverity('success');
         setIsValidTime(true);
       }
     } catch (error) {
       console.error('Error checking calendar availability:', error);
       setMessage('An error occurred. Please try again.');
+      setSeverity('error');
       setIsValidTime(false);
     } finally {
       setLoadingAvailability(false);
@@ -252,7 +256,6 @@ const TimeValidation = ({
   }, [
     checkIfDateExceedsLimit,
     checkIfTimeInOffHours,
-    convertLeadTimeToDuration,
     combinedDateAndTime,
     leadTime.hours,
     leadTime.minutes,
@@ -262,7 +265,7 @@ const TimeValidation = ({
   // Validate the time whenever `combinedDateAndTime` changes
   useEffect(() => {
     if (combinedDateAndTime) {
-      setIsValidTime(false); // Re run all validation if combinedDateAndTime changes
+      setIsValidTime(false); // Re-run all validation if combinedDateAndTime changes
       validateTime(); // Run validation when combinedDateAndTime is set
     }
   }, [combinedDateAndTime, setIsValidTime, validateTime]);
@@ -275,25 +278,7 @@ const TimeValidation = ({
           <p>Checking availability...</p>
         </div>
       ) : (
-        message && (
-          <Alert
-            severity={isValidTime ? 'success' : 'error'}
-            icon={
-              isValidTime ? <CheckCircleIcon sx={{ color: 'green' }} /> : false
-            } // Conditional icon
-            sx={{
-              backgroundColor: 'black',
-              color: isValidTime ? 'green' : 'red',
-              borderColor: isValidTime ? 'green' : 'red',
-              borderWidth: 1,
-              borderStyle: 'solid',
-              textAlign: 'center',
-              fontWeight: '600',
-            }}
-          >
-            {message}
-          </Alert>
-        )
+        message && <ValidationAlert severity={severity} message={message} /> // Use ValidationAlert
       )}
     </div>
   );
