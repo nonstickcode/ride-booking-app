@@ -2,22 +2,38 @@
 
 import { DateTime } from 'luxon';
 
-// Function to combine a date and time, ensuring it handles timezones correctly
 export const combineDateAndTime = (selectedDate, selectedTime) => {
-  if (!selectedDate || !selectedTime) return null;
+  if (
+    !selectedDate ||
+    !selectedTime ||
+    typeof selectedTime.hours !== 'number' ||
+    typeof selectedTime.minutes !== 'number'
+  ) {
+    console.error('Date or time is missing or incorrectly formatted.');
+    return null;
+  }
 
-  // Convert selectedDate and selectedTime into Luxon DateTime objects
-  const date = DateTime.fromJSDate(selectedDate); // The date from DatePicker
-  const time = DateTime.fromJSDate(selectedTime); // The time from TimePicker
+  console.log('Selected Date:', selectedDate);
+  console.log('Selected Time:', selectedTime);
 
-  // Combine the date and time, preserving the timezone
-  const combinedDateTime = date.set({
-    hour: time.hour,
-    minute: time.minute,
-    second: 0, // Set seconds to 0
-  });
+  // Create a Luxon DateTime object from the selected date
+  const date = DateTime.fromJSDate(selectedDate); // Base date object
 
-  return combinedDateTime;
+  // Handle the timezone offset, converting it to a timezone string for Luxon
+  const timezone = `UTC${selectedTime.timezoneOffset >= 0 ? '-' : '+'}${Math.abs(selectedTime.timezoneOffset) / 60}`;
+
+  // Combine date and time
+  const combinedDateTime = date
+    .set({
+      hour: selectedTime.hours,
+      minute: selectedTime.minutes,
+      second: 0,
+    })
+    .setZone(timezone);
+
+  console.log('Combined DateTime:', combinedDateTime.toISO()); // Log ISO format
+
+  return combinedDateTime.isValid ? combinedDateTime : null;
 };
 
 // Utility function to format the booking's date and time

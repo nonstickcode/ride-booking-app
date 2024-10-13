@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { DatePicker, TimePicker } from '@/components/pickers/DateAndTimePicker';
+import DateAndTimePicker from '../pickers/DateAndTimePicker';
 import LocationPickers from '@/components/pickers/LocationPickers';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
@@ -15,7 +15,6 @@ import {
 } from '@/utils/routeCalculations';
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
-import { combineDateAndTime } from '@/utils/dateTime';
 
 // Function to fetch admin settings
 const getAdminSettings = async () => {
@@ -54,8 +53,7 @@ const reverseGeocode = async (address) => {
 };
 
 const BookingModal = ({ onClose }) => {
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
+  const [combinedDateTime, setCombinedDateTime] = useState(null); // New state for combined date and time
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [distance, setDistance] = useState('');
@@ -158,15 +156,12 @@ const BookingModal = ({ onClose }) => {
     e.preventDefault();
     setLoadingSubmit(true);
 
-    // Combine date and time using Luxon
-    const combinedDateTime = combineDateAndTime(date, time);
-
     const bookingId = uuidv4(); // Generate a new UUID for the booking
     const bookingData = {
       id: bookingId, // UUID
       user_uuid: user.id, // User UUID
       user_email: user.email, // User email
-      requestedDateAndTime: combinedDateTime.toISO(), // Save in ISO format for timezonez column
+      requestedDateAndTime: combinedDateTime, // Use combined date and time
       pickup_location: pickupLocation,
       dropoff_location: dropoffLocation,
       distance,
@@ -261,19 +256,21 @@ const BookingModal = ({ onClose }) => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             {' '}
-            {/* Added gap-2 here */}
-            <DatePicker date={date} setDate={setDate} />
-            <hr className="border-gray-700" />
-            <div>
-              <TimePicker time={time} setTime={setTime} />
-
-              <TimeValidation
-                date={date}
-                time={time}
-                isValidTime={isValidTime}
-                setIsValidTime={setIsValidTime}
-              />
-            </div>
+            {/* Date and Time Picker */}
+            <DateAndTimePicker
+              setCombinedDateTime={(newDateTime) => {
+                console.log(
+                  'Setting Combined Date and Time in BookingModal:',
+                  newDateTime
+                );
+                setCombinedDateTime(newDateTime);
+              }}
+            />
+            <TimeValidation
+              combinedDateAndTime={combinedDateTime}
+              isValidTime={isValidTime}
+              setIsValidTime={setIsValidTime}
+            />
             <hr className="border-gray-700" />
             <LocationPickers setSelected={setPickupLocation} label="Pickup:" />
             <hr className="border-gray-700" />
@@ -326,8 +323,7 @@ const BookingModal = ({ onClose }) => {
               type="submit"
               disabled={
                 hasSubmitted ||
-                !date ||
-                !time ||
+                !combinedDateTime ||
                 !pickupLocation ||
                 !dropoffLocation ||
                 exceedsRange ||

@@ -11,7 +11,7 @@ import usePlacesAutocomplete, {
 import ClockIcon from '@mui/icons-material/AccessTime';
 import { FaSpinner } from 'react-icons/fa';
 import { MyLocationSharp } from '@mui/icons-material';
-import { getTimezoneAbbreviation } from '@/utils/dateTime';
+import { getTimezoneAbbreviation } from '@/utils/dateLuxon';
 
 const AdminSettingsModal = ({ onClose }) => {
   const [settings, setSettings] = useState({

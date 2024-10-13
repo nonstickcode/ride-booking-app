@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import SignInModal from '@/components/modals/SignInModal';
 import { FaArrowDown } from 'react-icons/fa';
-import { formatDateTime } from '@/utils/dateTime';
+import { formatDateTime } from '@/utils/dateLuxon';
 
 // Helper function to generate the Gmail compose link
 const generateGmailLink = (booking) => {

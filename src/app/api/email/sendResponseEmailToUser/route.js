@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { formatDateTime } from '@/utils/dateTime'; // Importing the utility function
+import { formatDateTime } from '@/utils/dateLuxon'; // Importing the utility function
 
 export async function POST(request) {
   try {
