@@ -4,6 +4,8 @@ import { DateTime } from 'luxon';
 import { combineTimeWithTimezone } from '@/utils/dateTimeUtilsLuxon';
 import { getTimezoneAbbreviation } from '@/utils/dateLuxon';
 import supabase from '@/utils/supabaseClient';
+import { Alert } from '@mui/material';
+import { CheckCircleIcon } from 'lucide-react';
 
 const TimeValidation = ({
   combinedDateAndTime, // The combined date and time in ISO format
@@ -84,39 +86,52 @@ const TimeValidation = ({
   // Check if the selected time is within off-hours
   const checkIfTimeInOffHours = useCallback(
     (selectedDateTime) => {
-      const timeoffStartWithTZ = combineTimeWithTimezone(
+      // Adjust time-off start and end ONLY for comparison, not for display
+      const adjustedTimeoffStartWithTZ = combineTimeWithTimezone(
         offHours.start,
         homeTimeZone
-      ).set({ year: 0, month: 0, day: 0 });
-      const timeoffEndWithTZ = combineTimeWithTimezone(
+      )
+        .minus({ minutes: 1 }) // Subtract 1 minute for internal comparison
+        .set({ year: 0, month: 0, day: 0, second: 0, millisecond: 0 });
+      const adjustedTimeoffEndWithTZ = combineTimeWithTimezone(
         offHours.end,
         homeTimeZone
-      ).set({ year: 0, month: 0, day: 0 });
+      )
+        .minus({ minutes: 1 }) // Subtract 1 minute for internal comparison
+        .set({ year: 0, month: 0, day: 0, second: 0, millisecond: 0 });
 
       const selectedTimeOnly = selectedDateTime.set({
         year: 0,
         month: 0,
         day: 0,
+        second: 0,
+        millisecond: 0,
       });
 
-      // Helper function to format time
+
+      // Helper function to format time for user display (no adjustments here)
       const formatTime = (time) => {
         return time.minute === 0
           ? time.toFormat('h a') // No minutes, just hour and AM/PM
           : time.toFormat('h:mm a'); // Include minutes and AM/PM
       };
 
-      const startDisplay = formatTime(timeoffStartWithTZ);
-      const endDisplay = formatTime(timeoffEndWithTZ);
+      // Use unadjusted times for user display
+      const startDisplay = formatTime(
+        combineTimeWithTimezone(offHours.start, homeTimeZone)
+      );
+      const endDisplay = formatTime(
+        combineTimeWithTimezone(offHours.end, homeTimeZone)
+      );
 
       // Use getTimezoneAbbreviation to get the 3-letter timezone abbreviation
       const timeZoneAbbreviation = getTimezoneAbbreviation(homeTimeZone);
 
-      if (timeoffStartWithTZ > timeoffEndWithTZ) {
-        // Overnight shift (start time is later in the day, end time is in the morning)
+      if (adjustedTimeoffStartWithTZ > adjustedTimeoffEndWithTZ) {
+        // Overnight shift: off-hours start in the evening, end in the morning
         if (
-          selectedTimeOnly >= timeoffStartWithTZ ||
-          selectedTimeOnly < timeoffEndWithTZ
+          selectedTimeOnly >= adjustedTimeoffStartWithTZ ||
+          selectedTimeOnly < adjustedTimeoffEndWithTZ
         ) {
           setMessage(
             `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
@@ -124,10 +139,10 @@ const TimeValidation = ({
           return true;
         }
       } else {
-        // Regular off-hours (start time earlier than end time on the same day)
+        // Regular shift: off-hours start and end on the same day
         if (
-          selectedTimeOnly >= timeoffStartWithTZ &&
-          selectedTimeOnly < timeoffEndWithTZ
+          selectedTimeOnly >= adjustedTimeoffStartWithTZ &&
+          selectedTimeOnly < adjustedTimeoffEndWithTZ
         ) {
           setMessage(
             `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
@@ -135,6 +150,9 @@ const TimeValidation = ({
           return true;
         }
       }
+
+      // If time is not in off-hours, allow bookings
+      setMessage('');
       return false;
     },
     [offHours, homeTimeZone]
@@ -193,7 +211,7 @@ const TimeValidation = ({
     const startTime = selectedDateTime.toISO();
     const endTime = selectedDateTime.plus({ hours: 2 }).toISO();
 
-    console.log('API check times:', { startTime, endTime });
+    console.log('API check for OFF-HOURS:', { startTime, endTime });
 
     const requestBody = {
       timeMin: startTime,
@@ -244,9 +262,10 @@ const TimeValidation = ({
   // Validate the time whenever `combinedDateAndTime` changes
   useEffect(() => {
     if (combinedDateAndTime) {
+      setIsValidTime(false); // Re run all validation if combinedDateAndTime changes
       validateTime(); // Run validation when combinedDateAndTime is set
     }
-  }, [combinedDateAndTime, validateTime]);
+  }, [combinedDateAndTime, setIsValidTime, validateTime]);
 
   return (
     <div className={message || loadingAvailability ? 'mb-1 mt-3' : 'h-0'}>
@@ -256,13 +275,25 @@ const TimeValidation = ({
           <p>Checking availability...</p>
         </div>
       ) : (
-        <p
-          className={`text-md ${
-            isValidTime ? 'text-green-500' : 'text-red-500'
-          }`}
-        >
-          {message}
-        </p>
+        message && (
+          <Alert
+            severity={isValidTime ? 'success' : 'error'}
+            icon={
+              isValidTime ? <CheckCircleIcon sx={{ color: 'green' }} /> : false
+            } // Conditional icon
+            sx={{
+              backgroundColor: 'black',
+              color: isValidTime ? 'green' : 'red',
+              borderColor: isValidTime ? 'green' : 'red',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              textAlign: 'center',
+              fontWeight: '600',
+            }}
+          >
+            {message}
+          </Alert>
+        )
       )}
     </div>
   );
