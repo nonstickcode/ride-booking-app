@@ -30,7 +30,7 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
         <div className="grid grid-cols-1 gap-0">
           {/* Date Picker */}
           <div className="mb-2">
-            <span className="mb-2 block cursor-default text-sm text-white">
+            <span className="mb-1 block cursor-default text-sm text-white">
               Date:
             </span>
 
@@ -51,11 +51,11 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
             />
           </div>
 
-          <hr className="my-4 border-gray-700" />
+          <hr className="my-2 border-gray-700" />
 
           {/* Time Picker */}
           <div>
-            <span className="mb-2 block cursor-default text-sm text-white">
+            <span className="mb-1 block cursor-default text-sm text-white">
               Time:
             </span>
             <MUITimePicker

@@ -268,7 +268,7 @@ const TimeValidation = ({
   }, [combinedDateAndTime, setIsValidTime, validateTime]);
 
   return (
-    <div className={message || loadingAvailability ? 'mb-1 mt-3' : 'h-0'}>
+    <div className={message || loadingAvailability ? 'mb-1 mt-1' : 'h-0'}>
       {loadingAvailability ? (
         <div className="flex items-center">
           <FaSpinner className="mr-2 animate-spin" />

@@ -83,7 +83,7 @@ const LocationPickers = ({ setSelected, label }) => {
     <div className="w-full">
       <div className="grid grid-cols-1 gap-0">
         {/* Label and Google Maps link */}
-        <div className="mb-2 flex items-center justify-between">
+        <div className="mb-1 flex items-center justify-between">
           <span className="cursor-default text-sm text-white">{label}</span>
           <a
             href={generateGoogleMapsLink()}
