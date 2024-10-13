@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FaSpinner } from 'react-icons/fa';
 import { DateTime } from 'luxon';
 import { combineTimeWithTimezone } from '@/utils/dateTimeUtilsLuxon';
+import { getTimezoneAbbreviation } from '@/utils/dateLuxon';
 import supabase from '@/utils/supabaseClient';
 
 const TimeValidation = ({
@@ -115,6 +116,9 @@ const TimeValidation = ({
       const startDisplay = formatTime(timeoffStartWithTZ);
       const endDisplay = formatTime(timeoffEndWithTZ);
   
+      // Use getTimezoneAbbreviation to get the 3-letter timezone abbreviation
+      const timeZoneAbbreviation = getTimezoneAbbreviation(homeTimeZone);
+  
       console.log('Selected time (stripped):', selectedTimeOnly.toFormat('HH:mm:ss ZZZ'));
       console.log('Time-off start:', timeoffStartWithTZ.toFormat('HH:mm:ss ZZZ'));
       console.log('Time-off end:', timeoffEndWithTZ.toFormat('HH:mm:ss ZZZ'));
@@ -122,14 +126,14 @@ const TimeValidation = ({
       if (timeoffStartWithTZ > timeoffEndWithTZ) {
         // Overnight shift (start time is later in the day, end time is in the morning)
         if (selectedTimeOnly >= timeoffStartWithTZ || selectedTimeOnly < timeoffEndWithTZ) {
-          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${homeTimeZone}).`);
+          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`);
           console.log('Off-hours check triggered.');
           return true;
         }
       } else {
         // Regular off-hours (start time earlier than end time on the same day)
         if (selectedTimeOnly >= timeoffStartWithTZ && selectedTimeOnly < timeoffEndWithTZ) {
-          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${homeTimeZone}).`);
+          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`);
           console.log('Off-hours check triggered.');
           return true;
         }
@@ -139,6 +143,7 @@ const TimeValidation = ({
     },
     [offHours, homeTimeZone]
   );
+  
   
 
   // Main time validation logic
