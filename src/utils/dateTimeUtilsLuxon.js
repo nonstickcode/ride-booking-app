@@ -25,11 +25,6 @@ const combineDateAndTimeLuxon = (date, time) => {
     millisecond: timeOnly.millisecond,
   });
 
-  // console.log(
-  //   'combineDateAndTimeLuxon (prop passed to timeValidation) returns: ',
-  //   combinedDateTime.toISO()
-  // );
-
   // Return the combined date and time in `timestamptz` (ISO format with timezone)
   return combinedDateTime.toISO();
 };

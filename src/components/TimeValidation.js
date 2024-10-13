@@ -47,21 +47,11 @@ const TimeValidation = ({
         });
         setBookingLimitMonths(data.misc_advance_booking_limit_months || null);
         setHomeTimeZone(data.home_location_timezone);
-
-        // Log settings fetched
-        console.log('Fetched Timezone:', data.home_location_timezone);
-        console.log('Fetched Time-off Start:', data.timeoff_start_time);
-        console.log('Fetched Time-off End:', data.timeoff_end_time);
       }
     };
 
     fetchSettings();
   }, []);
-
-  // Log combinedDateAndTime whenever it changes
-  useEffect(() => {
-    console.log('Received Combined Date and Time:', combinedDateAndTime);
-  }, [combinedDateAndTime]);
 
   // Check if the selected date exceeds the booking limit
   const checkIfDateExceedsLimit = useCallback(
@@ -70,8 +60,6 @@ const TimeValidation = ({
         const maxAllowedDate = DateTime.now().plus({
           months: bookingLimitMonths,
         });
-
-        console.log('Max allowed date:', maxAllowedDate.toISO());
 
         if (selectedDateTime > maxAllowedDate) {
           const monthText = bookingLimitMonths === 1 ? 'month' : 'months';
@@ -90,61 +78,67 @@ const TimeValidation = ({
   // Convert the lead time to a Luxon Duration for easier comparison
   const convertLeadTimeToDuration = useCallback(() => {
     const { hours, minutes } = leadTime;
-    console.log('Lead time (hours, minutes):', { hours, minutes });
     return { hours, minutes };
   }, [leadTime]);
 
   // Check if the selected time is within off-hours
   const checkIfTimeInOffHours = useCallback(
     (selectedDateTime) => {
-      const timeoffStartWithTZ = combineTimeWithTimezone(offHours.start, homeTimeZone).set({ year: 0, month: 0, day: 0 });
-      const timeoffEndWithTZ = combineTimeWithTimezone(offHours.end, homeTimeZone).set({ year: 0, month: 0, day: 0 });
-  
+      const timeoffStartWithTZ = combineTimeWithTimezone(
+        offHours.start,
+        homeTimeZone
+      ).set({ year: 0, month: 0, day: 0 });
+      const timeoffEndWithTZ = combineTimeWithTimezone(
+        offHours.end,
+        homeTimeZone
+      ).set({ year: 0, month: 0, day: 0 });
+
       const selectedTimeOnly = selectedDateTime.set({
         year: 0,
         month: 0,
         day: 0,
       });
-  
+
       // Helper function to format time
       const formatTime = (time) => {
         return time.minute === 0
           ? time.toFormat('h a') // No minutes, just hour and AM/PM
           : time.toFormat('h:mm a'); // Include minutes and AM/PM
       };
-  
+
       const startDisplay = formatTime(timeoffStartWithTZ);
       const endDisplay = formatTime(timeoffEndWithTZ);
-  
+
       // Use getTimezoneAbbreviation to get the 3-letter timezone abbreviation
       const timeZoneAbbreviation = getTimezoneAbbreviation(homeTimeZone);
-  
-      console.log('Selected time (stripped):', selectedTimeOnly.toFormat('HH:mm:ss ZZZ'));
-      console.log('Time-off start:', timeoffStartWithTZ.toFormat('HH:mm:ss ZZZ'));
-      console.log('Time-off end:', timeoffEndWithTZ.toFormat('HH:mm:ss ZZZ'));
-  
+
       if (timeoffStartWithTZ > timeoffEndWithTZ) {
         // Overnight shift (start time is later in the day, end time is in the morning)
-        if (selectedTimeOnly >= timeoffStartWithTZ || selectedTimeOnly < timeoffEndWithTZ) {
-          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`);
-          console.log('Off-hours check triggered.');
+        if (
+          selectedTimeOnly >= timeoffStartWithTZ ||
+          selectedTimeOnly < timeoffEndWithTZ
+        ) {
+          setMessage(
+            `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
+          );
           return true;
         }
       } else {
         // Regular off-hours (start time earlier than end time on the same day)
-        if (selectedTimeOnly >= timeoffStartWithTZ && selectedTimeOnly < timeoffEndWithTZ) {
-          setMessage(`No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`);
-          console.log('Off-hours check triggered.');
+        if (
+          selectedTimeOnly >= timeoffStartWithTZ &&
+          selectedTimeOnly < timeoffEndWithTZ
+        ) {
+          setMessage(
+            `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
+          );
           return true;
         }
       }
-      console.log('Off-hours check passed.');
       return false;
     },
     [offHours, homeTimeZone]
   );
-  
-  
 
   // Main time validation logic
   const validateTime = useCallback(async () => {
@@ -158,8 +152,6 @@ const TimeValidation = ({
 
     const selectedDateTime = DateTime.fromISO(combinedDateAndTime);
 
-    console.log('Selected combined date and time:', selectedDateTime.toISO());
-
     // Check if date exceeds booking limit
     if (checkIfDateExceedsLimit(selectedDateTime)) {
       return;
@@ -171,7 +163,6 @@ const TimeValidation = ({
     if (selectedDateTime < now) {
       setMessage('You cannot select a time in the past.');
       setIsValidTime(false);
-      console.log('Selected time is in the past.');
       return;
     }
 
@@ -185,8 +176,6 @@ const TimeValidation = ({
     if (now.toISODate() === selectedDateTime.toISODate()) {
       const leadTimeDuration = convertLeadTimeToDuration();
       const leadTimeLimit = now.plus(leadTimeDuration);
-
-      console.log('Lead time limit:', leadTimeLimit.toISO());
 
       if (selectedDateTime < leadTimeLimit) {
         setMessage(
@@ -223,7 +212,6 @@ const TimeValidation = ({
       if (!response.ok) {
         setMessage('This time is unavailable. Please choose another time.');
         setIsValidTime(false);
-        console.log('Time is unavailable.');
         return;
       }
 
@@ -232,11 +220,9 @@ const TimeValidation = ({
       if (busySlots.length > 0) {
         setMessage('This time is unavailable. Please choose another time.');
         setIsValidTime(false);
-        console.log('Time is unavailable due to busy slots.');
       } else {
         setMessage('This date and time is available.');
         setIsValidTime(true);
-        console.log('Time is available.');
       }
     } catch (error) {
       console.error('Error checking calendar availability:', error);
