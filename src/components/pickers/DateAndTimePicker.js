@@ -27,7 +27,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
         <div className="grid grid-cols-1 gap-0">
           {/* Date Picker */}
           <div className="mb-2">
-            <span className="mb-2 block text-sm text-white">Date:</span>
+            <span className="mb-2 block cursor-default text-sm text-white">
+              Date:
+            </span>
 
             <MUIDatePicker
               value={date}
@@ -50,7 +52,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
 
           {/* Time Picker */}
           <div>
-            <span className="mb-2 block text-sm text-white">Time:</span>
+            <span className="mb-2 block cursor-default text-sm text-white">
+              Time:
+            </span>
             <MUITimePicker
               value={time}
               onChange={(newTime) => setTime(newTime)}

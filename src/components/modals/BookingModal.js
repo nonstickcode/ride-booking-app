@@ -246,17 +246,23 @@ const BookingModal = ({ onClose }) => {
 
         {/* Modal Content */}
         <div className="mx-auto w-full max-w-md p-8 shadow-xl">
-          <h2 className="mx-auto text-center text-2xl font-bold text-white">
+          <h2 className="mx-auto cursor-default text-center text-3xl font-bold text-white">
             Book a Ride
           </h2>
 
           {user?.email && (
-            <p className="mb-2 mt-1 text-center text-lg text-gray-300">
-              {user.email}
-            </p>
+            <div>
+              <p className="mt-1 cursor-default text-center text-lg text-gray-300">
+                Hello 👋🏽
+              </p>
+              <p className="mb-2 mt-1 cursor-default text-center text-lg text-gray-300">
+                {user.email}
+              </p>
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+            <hr className="my-2 border-gray-700" />
             {/* Date and Time Picker */}
             <DateAndTimePicker
               setCombinedDateTime={(newDateTime) => {
