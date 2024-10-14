@@ -75,8 +75,6 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   const [statusColorClass, setStatusColorClass] = useState('text-gray-400'); // Initialize
   const [isAlertLoading, setIsAlertLoading] = useState(false); // State to control spinner in the alert
 
-
-
   const session = useSession();
   const supabaseClient = useSupabaseClient();
   const user = session?.user;
@@ -108,7 +106,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
           .select('*')
           .eq('id', bookingId)
           .single();
-  
+
         if (error) {
           console.error('Error fetching booking:', error);
         } else {
@@ -121,15 +119,11 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       }
     }
   }, [bookingId, isAdmin, supabaseClient]);
-  
 
- // Call fetchBooking on component mount
- useEffect(() => {
-  fetchBooking();
-}, [fetchBooking]);
-
-
-
+  // Call fetchBooking on component mount
+  useEffect(() => {
+    fetchBooking();
+  }, [fetchBooking]);
 
   // Handle accept/decline action
   const handleDecision = (status) => {
@@ -183,7 +177,6 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
               await fetchBooking(); // Refetch updated booking after confirmation
               setShowConfirmationAlert(null); // Close the alert on OK
             },
-            
           }));
         } else {
           setShowConfirmationAlert((prevState) => ({
@@ -194,7 +187,6 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
               await fetchBooking(); // Refetch updated booking after confirmation
               setShowConfirmationAlert(null); // Close the alert on OK
             },
-            
           }));
         }
       } else {
@@ -206,7 +198,6 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
             await fetchBooking(); // Refetch updated booking after confirmation
             setShowConfirmationAlert(null); // Close the alert on OK
           },
-          
         }));
       }
     } catch (error) {
@@ -220,13 +211,12 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
           await fetchBooking(); // Refetch updated booking after confirmation
           setShowConfirmationAlert(null); // Close the alert on OK
         },
-        
       }));
     }
   };
 
-   // UseEffect to watch for changes in booking.status and update the color class
-   useEffect(() => {
+  // UseEffect to watch for changes in booking.status and update the color class
+  useEffect(() => {
     if (booking && booking.status) {
       switch (booking.status.toUpperCase()) {
         case 'ACCEPTED':
@@ -361,7 +351,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
                 href={pickupGoogleMapsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-grow text-white  hover:text-green-300"
+                className="flex-grow text-white hover:text-green-300"
               >
                 {booking.pickup_location.address}
               </a>
@@ -375,19 +365,19 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
                 href={dropoffGoogleMapsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-grow text-white  hover:text-green-300"
+                className="flex-grow text-white hover:text-green-300"
               >
                 {booking.dropoff_location.address}
               </a>
             </div>
             <div className="my-2 flex">
-            <strong className="min-w-[110px] italic text-gray-300">
-              Status:
-            </strong>
-            <span className={`flex-grow font-bold ${statusColorClass}`}>
-              {booking.status.toUpperCase()}
-            </span>
-          </div>
+              <strong className="min-w-[110px] italic text-gray-300">
+                Status:
+              </strong>
+              <span className={`flex-grow font-bold ${statusColorClass}`}>
+                {booking.status.toUpperCase()}
+              </span>
+            </div>
           </div>
 
           <div className="mt-4 text-center">
@@ -440,7 +430,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
               className="mt-2 w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
-          
+
           <hr className="my-2 border-gray-700" />
           <div className="mt-4 flex justify-between gap-4">
             <Button
