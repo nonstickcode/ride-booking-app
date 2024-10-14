@@ -15,6 +15,7 @@ import {
 } from '@/utils/routeCalculations';
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
+import CustomAlert from '../CustomAlert';
 
 // Function to fetch admin settings
 const getAdminSettings = async () => {
@@ -62,10 +63,11 @@ const BookingModal = ({ onClose }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [exceedsRange, setExceedsRange] = useState(false);
   const [user, setUser] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isValidTime, setIsValidTime] = useState(false);
   const [cost, setCost] = useState(null);
+  const [showOkAlert, setShowOkAlert] = useState(false); // New state for showing the OK alert
 
   // States for AdminSettings DB values when fetched from Supabase
   const [rangeLimitMiles, setRangeLimitMiles] = useState(0);
@@ -192,12 +194,9 @@ const BookingModal = ({ onClose }) => {
 
       const emailResult = await emailResponse.json();
       if (emailResult.success) {
-        setShowAlert(true);
+        setShowSuccessAlert(true);
         setHasSubmitted(true);
-        setTimeout(() => {
-          setShowAlert(false);
-          onClose();
-        }, 5000);
+        setShowOkAlert(true); // Show the "OK" alert modal here
       } else {
         console.error('Failed to send email:', emailResult.error);
       }
@@ -206,6 +205,11 @@ const BookingModal = ({ onClose }) => {
     } finally {
       setLoadingSubmit(false);
     }
+  };
+
+  const handleOkClick = () => {
+    setShowOkAlert(false); // Hide the success alert modal
+    onClose(); // Close the booking modal
   };
 
   const generateGoogleMapsLinkForTrip = () => {
@@ -262,72 +266,108 @@ const BookingModal = ({ onClose }) => {
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            <hr className="mt-2 border-gray-700" />
-            {/* Date and Time Picker */}
-            <DateAndTimePicker
-              setCombinedDateTime={(newDateTime) => {
-                {
-                  /* console.log(
+            {/* <hr className="mt-2 border-gray-700" /> */}
+            {/* Date and Time Pickers */}
+            <div className="">
+              <DateAndTimePicker
+                setCombinedDateTime={(newDateTime) => {
+                  {
+                    /* console.log(
                   'Setting Combined Date and Time in BookingModal:',
                   newDateTime
                 ); */
-                }
-                setCombinedDateTime(newDateTime);
-              }}
-            />
+                  }
+                  setCombinedDateTime(newDateTime);
+                }}
+              />
+            </div>
+
             <TimeValidation
               combinedDateAndTime={combinedDateTime}
               isValidTime={isValidTime}
               setIsValidTime={setIsValidTime}
             />
-            <hr className="my-0 border-gray-700" />
-            <LocationPickers setSelected={setPickupLocation} label="Pickup:" />
-            <hr className="mb-0 mt-2 border-gray-700" />
-            <LocationPickers
-              setSelected={setDropoffLocation}
-              label="Drop-off:"
-            />
-            {pickupLocation &&
-              dropoffLocation &&
-              !loadingRoute &&
-              distance &&
-              duration &&
-              cost !== null && (
-                <>
-                  <hr className="border-gray-700" />
 
-                  <a
-                    href={generateGoogleMapsLinkForTrip()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline"
-                  >
-                    View trip on Google Maps
-                  </a>
-                  <div className="gap-1">
-                    <p>Estimated Distance: {distance}</p>
-                    <p>Estimated Time: {duration}</p>
-                    <p>Estimated Cost: ${cost}</p>
-                  </div>
+            <hr className="my-0 border-gray-700" />
+
+            {/* Location Picker */}
+            <div className="">
+              <LocationPickers
+                setSelected={setPickupLocation}
+                label="Pickup:"
+              />
+              <LocationPickers
+                setSelected={setDropoffLocation}
+                label="Drop-off:"
+              />
+            </div>
+
+            {/* Drivers Range Exceeded */}
+            <div className={exceedsRange ? 'my-1' : 'm-0 h-0 overflow-hidden'}>
+              {exceedsRange && (
+                <CustomAlert
+                  severity="error"
+                  message={`Driver's current Range Limit is ${rangeLimitMiles} miles from ${homeLocationVisibleToUser}`}
+                />
+              )}
+            </div>
+
+            {/* Conditionally Render Google Maps Link and Trip Details */}
+            <div
+              className={
+                pickupLocation &&
+                dropoffLocation &&
+                !loadingRoute &&
+                distance &&
+                duration &&
+                cost !== null
+                  ? 'block'
+                  : 'h-0 overflow-hidden'
+              }
+            >
+              {pickupLocation &&
+                dropoffLocation &&
+                !loadingRoute &&
+                distance &&
+                duration &&
+                cost !== null && (
+                  <>
+                    <div className="mt-2 grid gap-2 px-4 text-center">
+                      <a
+                        href={generateGoogleMapsLinkForTrip()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline"
+                      >
+                        View trip on Google Maps
+                      </a>
+
+                      <p>Estimated Distance: {distance}</p>
+                      <p>Estimated Time: {duration}</p>
+                      <p>Estimated Cost: ${cost}</p>
+                    </div>
+                  </>
+                )}
+            </div>
+
+            {/* Conditionally Render Loading Spinner */}
+            <div
+              className={
+                loadingRoute
+                  ? 'flex items-center space-x-2'
+                  : 'h-0 overflow-hidden'
+              }
+            >
+              {loadingRoute && (
+                <>
+                  <FaSpinner className="mr-2 animate-spin" />
+                  <p>Calculating Distance and Time...</p>
                 </>
               )}
-            {loadingRoute && (
-              <div className="flex items-center space-x-2">
-                <FaSpinner className="animate-spin font-bold" />
-                <p>Calculating distance and time...</p>
-              </div>
-            )}
-            {exceedsRange && (
-              <p className="text-lg font-bold text-red-500">
-                Driver&apos;s current Range Limit is {rangeLimitMiles} miles
-                from {homeLocationVisibleToUser}
-              </p>
-            )}
-            {showAlert && (
-              <div className="fixed left-0 right-0 top-0 z-50 bg-green-500 p-4 text-center text-xl text-white">
-                Submission successful! Please await an Email or SMS response.
-              </div>
-            )}
+            </div>
+
+            {/* <hr className="my-0 border-gray-700" /> */}
+
             <Button
               type="submit"
               disabled={
@@ -341,7 +381,7 @@ const BookingModal = ({ onClose }) => {
               }
               variant="green"
               size="md"
-              className="mt-4"
+              className="mt-0"
               title="Submit Request"
             >
               {loadingSubmit ? (
@@ -352,6 +392,25 @@ const BookingModal = ({ onClose }) => {
               {loadingSubmit ? 'Submitting...' : 'Submit Request'}
             </Button>
           </form>
+          {showOkAlert && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+              <div className="rounded-lg border border-green-500 bg-gray-900 p-8 shadow-xl">
+                <h2 className="mb-4 text-center text-2xl font-bold">
+                  Booking Request Submitted!
+                </h2>
+                <p className="mb-6 text-center text-lg">
+                  Please await an Email or SMS response.
+                </p>
+                <Button
+                  onClick={handleOkClick}
+                  variant="green"
+                  className="w-full"
+                >
+                  OK
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

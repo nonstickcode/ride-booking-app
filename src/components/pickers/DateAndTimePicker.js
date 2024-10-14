@@ -51,7 +51,7 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
             />
           </div>
 
-          <hr className="my-2 border-gray-700" />
+          {/* <hr className="my-2 border-gray-700" /> */}
 
           {/* Time Picker */}
           <div>

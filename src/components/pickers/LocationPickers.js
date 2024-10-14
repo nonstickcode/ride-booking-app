@@ -83,7 +83,7 @@ const LocationPickers = ({ setSelected, label }) => {
     <div className="w-full">
       <div className="grid grid-cols-1 gap-0">
         {/* Label and Google Maps link */}
-        <div className="mb-1 flex items-center justify-between">
+        <div className="mb-1 mt-2 flex items-center justify-between">
           <span className="cursor-default text-sm text-white">{label}</span>
           <a
             href={generateGoogleMapsLink()}
@@ -119,9 +119,15 @@ const LocationPickers = ({ setSelected, label }) => {
         </div>
 
         {/* Suggestions */}
-        {status === 'OK' && (
-          <div className="rounded-lg bg-gray-500 shadow-lg">
-            {data.map(({ place_id, description }) => (
+        <div
+          className={
+            status === 'OK'
+              ? 'rounded-lg bg-gray-500 shadow-lg'
+              : 'h-0 overflow-hidden'
+          }
+        >
+          {status === 'OK' &&
+            data.map(({ place_id, description }) => (
               <div
                 key={place_id}
                 className="cursor-pointer p-2 text-sm hover:bg-gray-800"
@@ -130,8 +136,7 @@ const LocationPickers = ({ setSelected, label }) => {
                 {description}
               </div>
             ))}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

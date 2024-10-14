@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 import { combineTimeWithTimezone } from '@/utils/dateTimeUtilsLuxon';
 import { getTimezoneAbbreviation } from '@/utils/dateLuxon';
 import supabase from '@/utils/supabaseClient';
-import ValidationAlert from './ValidationAlert'; // Import ValidationAlert
+import CustomAlert from './CustomAlert'; // Import CustomAlert
 
 const TimeValidation = ({
   combinedDateAndTime,
@@ -68,7 +68,7 @@ const TimeValidation = ({
           setMessage(
             `Bookings are not accepted more than ${bookingLimitMonths} ${monthText} in advance.`
           );
-          setSeverity('warning'); // Set severity to warning for booking in advance
+          setSeverity('error');
           setIsValidTime(false);
           return true;
         }
@@ -130,7 +130,7 @@ const TimeValidation = ({
           setMessage(
             `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
           );
-          setSeverity('warning'); // Time off warning
+          setSeverity('error'); // Time off warning
           return true;
         }
       } else {
@@ -142,7 +142,7 @@ const TimeValidation = ({
           setMessage(
             `No bookings are available between ${startDisplay} and ${endDisplay} (${timeZoneAbbreviation}).`
           );
-          setSeverity('warning');
+          setSeverity('error');
           return true;
         }
       }
@@ -191,7 +191,10 @@ const TimeValidation = ({
 
     // Check lead time if booking for today
     if (now.toISODate() === selectedDateTime.toISODate()) {
-      const leadTimeDuration = { hours: leadTime.hours, minutes: leadTime.minutes };
+      const leadTimeDuration = {
+        hours: leadTime.hours,
+        minutes: leadTime.minutes,
+      };
       const leadTimeLimit = now.plus(leadTimeDuration);
 
       if (selectedDateTime < leadTimeLimit) {
@@ -200,7 +203,7 @@ const TimeValidation = ({
             leadTime.hours === 1 ? 'hour' : 'hours'
           }${leadTime.minutes > 0 ? ` and ${leadTime.minutes} minutes` : ''} notice for a ride request. Please select a later time.`
         );
-        setSeverity('warning'); // Lead time warning
+        setSeverity('error'); // Lead time warning
         setIsValidTime(false);
         return;
       }
@@ -241,7 +244,7 @@ const TimeValidation = ({
         setSeverity('error');
         setIsValidTime(false);
       } else {
-        setMessage('This date and time is available.');
+        setMessage('This date and time is available');
         setSeverity('success');
         setIsValidTime(true);
       }
@@ -278,7 +281,7 @@ const TimeValidation = ({
           <p>Checking availability...</p>
         </div>
       ) : (
-        message && <ValidationAlert severity={severity} message={message} /> // Use ValidationAlert
+        message && <CustomAlert severity={severity} message={message} /> // Use CustomAlert
       )}
     </div>
   );
