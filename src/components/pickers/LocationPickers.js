@@ -113,7 +113,7 @@ const LocationPickers = ({ setSelected, label }) => {
             {currentLocationLoading ? (
               <FaSpinner className="animate-spin" />
             ) : (
-              <MyLocationSharp />
+              <MyLocationSharp style={{ fontSize: '20px' }} />
             )}
           </Button>
         </div>
