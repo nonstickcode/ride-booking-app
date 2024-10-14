@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
@@ -98,32 +98,34 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
     return () => clearTimeout(bounceTimeout);
   }, []);
 
-  // Fetch booking data when bookingId is provided
-const fetchBooking = async () => {
-  if (bookingId && isAdmin) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('NewBookingData')
-        .select('*')
-        .eq('id', bookingId)
-        .single();
-
-      if (error) {
+  const fetchBooking = useCallback(async () => {
+    if (bookingId && isAdmin) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('NewBookingData')
+          .select('*')
+          .eq('id', bookingId)
+          .single();
+  
+        if (error) {
+          console.error('Error fetching booking:', error);
+        } else {
+          setBooking(data);
+        }
+      } catch (error) {
         console.error('Error fetching booking:', error);
-      } else {
-        setBooking(data); // Update the booking state with fetched data
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching booking:', error);
-    } finally {
-      setLoading(false);
     }
-  }
-};
+  }, [bookingId, isAdmin, supabaseClient]);
+  
 
-useEffect(() => {
-  fetchBooking(); // Fetch booking data on initial load
-}, [bookingId, isAdmin, supabaseClient]);
+ // Call fetchBooking on component mount
+ useEffect(() => {
+  fetchBooking();
+}, [fetchBooking]);
+
 
 
 
@@ -177,6 +179,7 @@ useEffect(() => {
               await fetchBooking(); // Refetch updated booking after confirmation
               setShowConfirmationAlert(null); // Close the alert on OK
             },
+            
           }));
         } else {
           setShowConfirmationAlert((prevState) => ({
@@ -187,6 +190,7 @@ useEffect(() => {
               await fetchBooking(); // Refetch updated booking after confirmation
               setShowConfirmationAlert(null); // Close the alert on OK
             },
+            
           }));
         }
       } else {
@@ -198,6 +202,7 @@ useEffect(() => {
             await fetchBooking(); // Refetch updated booking after confirmation
             setShowConfirmationAlert(null); // Close the alert on OK
           },
+          
         }));
       }
     } catch (error) {
@@ -211,6 +216,7 @@ useEffect(() => {
           await fetchBooking(); // Refetch updated booking after confirmation
           setShowConfirmationAlert(null); // Close the alert on OK
         },
+        
       }));
     }
   };
