@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { FaSpinner } from 'react-icons/fa';
 
 const ConfirmationAlert = ({
   title,
@@ -38,7 +39,14 @@ const ConfirmationAlert = ({
             className="w-full"
             disabled={loading}
           >
-            {loading ? 'Processing...' : 'OK'}
+            {loading ? (
+              <>
+                <FaSpinner className="mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'OK'
+            )}
           </Button>
         </div>
       </div>

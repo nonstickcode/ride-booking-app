@@ -73,6 +73,8 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   const [isBouncing, setIsBouncing] = useState(true);
   const [showConfirmationAlert, setShowConfirmationAlert] = useState(null);
   const [statusColorClass, setStatusColorClass] = useState('text-gray-400'); // Initialize
+  const [isAlertLoading, setIsAlertLoading] = useState(false); // State to control spinner in the alert
+
 
 
   const session = useSession();
@@ -139,7 +141,9 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       message: `Are you sure you want to ${verb} this booking?`,
       showCancel: true, // Show the cancel button
       onConfirm: async () => {
+        setIsAlertLoading(true); // Show spinner
         await handleApiCall(status); // Call API when confirmed
+        setIsAlertLoading(false); // Hide spinner after API call
       },
       onCancel: () => setShowConfirmationAlert(null), // Close alert on cancel
     });
@@ -174,7 +178,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
           setShowConfirmationAlert((prevState) => ({
             ...prevState,
             message: `Booking ${status.toUpperCase()} and response email/sms sent SUCCESSFULLY 👍`,
-            showCancel: false, // No need to show cancel anymore, it's final
+            showCancel: false,
             onConfirm: async () => {
               await fetchBooking(); // Refetch updated booking after confirmation
               setShowConfirmationAlert(null); // Close the alert on OK
@@ -329,7 +333,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
                 href={gmailLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-grow text-blue-300 underline hover:text-green-300"
+                className="flex-grow text-white hover:text-green-300"
               >
                 {booking.user_email}
               </a>
@@ -357,7 +361,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
                 href={pickupGoogleMapsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-grow text-blue-300 underline hover:text-green-300"
+                className="flex-grow text-white  hover:text-green-300"
               >
                 {booking.pickup_location.address}
               </a>
@@ -371,7 +375,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
                 href={dropoffGoogleMapsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-grow text-blue-300 underline hover:text-green-300"
+                className="flex-grow text-white  hover:text-green-300"
               >
                 {booking.dropoff_location.address}
               </a>
