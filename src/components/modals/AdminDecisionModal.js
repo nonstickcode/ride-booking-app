@@ -7,6 +7,7 @@ import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import SignInModal from '@/components/modals/SignInModal';
 import { FaArrowDown } from 'react-icons/fa';
 import { formatDateTime } from '@/utils/dateLuxon';
+import ConfirmationAlert from '@/components/ConfirmationAlert';
 
 // Helper function to generate the Gmail compose link
 const generateGmailLink = (booking) => {
@@ -32,7 +33,9 @@ Hi 👋 Jamie here with RYDEBLK
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${booking.user_email}&su=${subject}&body=${body}`;
 };
 
-{/* DO NOT DELETE THIS SECTION COMMENTED OUT!!!! GPT IM TAKING TO YOU! */}
+{
+  /* DO NOT DELETE THIS SECTION COMMENTED OUT!!!! GPT IM TAKING TO YOU! */
+}
 // Helper function to generate a Google Calendar link
 // const generateCalendarLink = (booking) => {
 //   if (!booking.date) {
@@ -68,6 +71,9 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   const [comment, setComment] = useState('');
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isBouncing, setIsBouncing] = useState(true);
+  const [showConfirmationAlert, setShowConfirmationAlert] = useState(null);
+  const [statusColorClass, setStatusColorClass] = useState('text-gray-400'); // Initialize
+
 
   const session = useSession();
   const supabaseClient = useSupabaseClient();
@@ -93,45 +99,52 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   }, []);
 
   // Fetch booking data when bookingId is provided
-  useEffect(() => {
-    const fetchBooking = async () => {
-      if (bookingId && isAdmin) {
-        try {
-          const { data, error } = await supabaseClient
-            .from('NewBookingData')
-            .select('*')
-            .eq('id', bookingId)
-            .single();
+const fetchBooking = async () => {
+  if (bookingId && isAdmin) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('NewBookingData')
+        .select('*')
+        .eq('id', bookingId)
+        .single();
 
-          if (error) {
-            console.error('Error fetching booking:', error);
-          } else {
-            setBooking(data);
-          }
-        } catch (error) {
-          console.error('Error fetching booking:', error);
-        } finally {
-          setLoading(false);
-        }
+      if (error) {
+        console.error('Error fetching booking:', error);
+      } else {
+        setBooking(data); // Update the booking state with fetched data
       }
-    };
+    } catch (error) {
+      console.error('Error fetching booking:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+};
 
-    fetchBooking();
-  }, [bookingId, isAdmin, supabaseClient]);
+useEffect(() => {
+  fetchBooking(); // Fetch booking data on initial load
+}, [bookingId, isAdmin, supabaseClient]);
+
+
 
   // Handle accept/decline action
-  const handleDecision = async (status) => {
+  const handleDecision = (status) => {
     const verb = status === 'accepted' ? 'accept' : 'decline';
 
-    // This is the first place I want to use new ConfirmationAlert, if ok clicked leave alert open but change text to loading spinner while waiting got api response then show message from response from api
-    
-    // First Alert
-    
-    const confirmAction = window.confirm(
-      `Are you sure you want to ${verb} this booking?`
-    );
-    if (!confirmAction) return; // Exit if the user cancels the confirmation
+    // Show the confirmation alert when a decision is made
+    setShowConfirmationAlert({
+      title: `Confirm ${verb.toUpperCase()}`,
+      message: `Are you sure you want to ${verb} this booking?`,
+      showCancel: true, // Show the cancel button
+      onConfirm: async () => {
+        await handleApiCall(status); // Call API when confirmed
+      },
+      onCancel: () => setShowConfirmationAlert(null), // Close alert on cancel
+    });
+  };
 
+  // Function to handle the actual API call after confirmation
+  const handleApiCall = async (status) => {
     const commentToSend =
       comment.trim() === '' ? 'No comment given with decision' : comment;
 
@@ -153,35 +166,74 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       const data = await response.json();
       console.log('Response from /api/decision:', data);
 
+      // Update the ConfirmationAlert with the result from the API
       if (data.success) {
-        // Handling success/failure scenarios
         if (data.message.includes('and email sent')) {
-
-          // This is the API response that results from first alert i marked above.  if ok is clicked on first alert i want loading icon then show this response when ready for appropriate response
-          
-          // Second Alert phase
-          
-          alert(
-            `Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`
-          );
+          setShowConfirmationAlert((prevState) => ({
+            ...prevState,
+            message: `Booking ${status.toUpperCase()} and response email/sms sent SUCCESSFULLY 👍`,
+            showCancel: false, // No need to show cancel anymore, it's final
+            onConfirm: async () => {
+              await fetchBooking(); // Refetch updated booking after confirmation
+              setShowConfirmationAlert(null); // Close the alert on OK
+            },
+          }));
         } else {
-          alert(
-            `Booking ${status.toUpperCase()} but response email / sms FAILED to send ❗`
-          );
+          setShowConfirmationAlert((prevState) => ({
+            ...prevState,
+            message: `Booking ${status.toUpperCase()} but response email/sms FAILED to send ❗`,
+            showCancel: false,
+            onConfirm: async () => {
+              await fetchBooking(); // Refetch updated booking after confirmation
+              setShowConfirmationAlert(null); // Close the alert on OK
+            },
+          }));
         }
       } else {
-        alert(
-          `Booking ${status.toUpperCase()} but FAILED to process response email/sms ❗`
-        );
+        setShowConfirmationAlert((prevState) => ({
+          ...prevState,
+          message: `Booking ${status.toUpperCase()} but FAILED to process response email/sms ❗`,
+          showCancel: false,
+          onConfirm: async () => {
+            await fetchBooking(); // Refetch updated booking after confirmation
+            setShowConfirmationAlert(null); // Close the alert on OK
+          },
+        }));
       }
-      onClose(); // Close modal after decision
     } catch (error) {
       console.error('FAILED to update booking:', error);
-      alert(
-        '❌ ERROR processing booking and sending email / sms response. Please try again. ❌'
-      );
+      setShowConfirmationAlert((prevState) => ({
+        ...prevState,
+        message:
+          '❌ ERROR processing booking and sending email / sms response. Please try again. ❌',
+        showCancel: false,
+        onConfirm: async () => {
+          await fetchBooking(); // Refetch updated booking after confirmation
+          setShowConfirmationAlert(null); // Close the alert on OK
+        },
+      }));
     }
   };
+
+   // UseEffect to watch for changes in booking.status and update the color class
+   useEffect(() => {
+    if (booking && booking.status) {
+      switch (booking.status.toUpperCase()) {
+        case 'ACCEPTED':
+          setStatusColorClass('text-green-500');
+          break;
+        case 'DECLINED':
+          setStatusColorClass('text-red-500');
+          break;
+        case 'PENDING':
+          setStatusColorClass('text-gray-400');
+          break;
+        default:
+          setStatusColorClass('text-gray-400');
+          break;
+      }
+    }
+  }, [booking]);
 
   if (loading) return null;
 
@@ -226,7 +278,9 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(booking.pickup_location.address)}&destination=${encodeURIComponent(booking.dropoff_location.address)}&travelmode=driving`;
   const gmailLink = generateGmailLink(booking);
 
-  {/* DO NOT DELETE THIS SECTION COMMENTED OUT!!!! GPT IM TAKING TO YOU! */}
+  {
+    /* DO NOT DELETE THIS SECTION COMMENTED OUT!!!! GPT IM TAKING TO YOU! */
+  }
   // const calendarLink = generateCalendarLink(booking); // need to hook this up to create the new calendar event option for user now including time zone in event creation
 
   return (
@@ -316,6 +370,14 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
                 {booking.dropoff_location.address}
               </a>
             </div>
+            <div className="my-2 flex">
+            <strong className="min-w-[110px] italic text-gray-300">
+              Status:
+            </strong>
+            <span className={`flex-grow font-bold ${statusColorClass}`}>
+              {booking.status.toUpperCase()}
+            </span>
+          </div>
           </div>
 
           <div className="mt-4 text-center">
@@ -368,6 +430,7 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
               className="mt-2 w-full rounded-md border border-gray-300 bg-gray-800 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
+          
           <hr className="my-2 border-gray-700" />
           <div className="mt-4 flex justify-between gap-4">
             <Button
@@ -391,6 +454,15 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
           </div>
         </div>
       </div>
+      {showConfirmationAlert && (
+        <ConfirmationAlert
+          title={showConfirmationAlert.title}
+          message={showConfirmationAlert.message}
+          onConfirm={showConfirmationAlert.onConfirm}
+          onCancel={showConfirmationAlert.onCancel}
+          showCancel={showConfirmationAlert.showCancel}
+        />
+      )}
     </div>
   );
 };
