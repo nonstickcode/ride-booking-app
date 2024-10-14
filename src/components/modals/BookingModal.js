@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import DateAndTimePicker from '../pickers/DateAndTimePicker';
+import DateAndTimePicker from '@/components/pickers/DateAndTimePicker';
 import LocationPickers from '@/components/pickers/LocationPickers';
 import { Button } from '@/components/ui/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
@@ -15,7 +15,8 @@ import {
 } from '@/utils/routeCalculations';
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
-import CustomAlert from '../CustomAlert';
+import CustomAlert from '@/components/CustomAlert';
+import ConfirmationAlert from '@/components/ConfirmationAlert';
 
 // Function to fetch admin settings
 const getAdminSettings = async () => {
@@ -393,23 +394,11 @@ const BookingModal = ({ onClose }) => {
             </Button>
           </form>
           {showOkAlert && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-              <div className="rounded-lg border border-green-500 bg-gray-900 p-8 shadow-xl">
-                <h2 className="mb-4 text-center text-2xl font-bold">
-                  Booking Request Submitted!
-                </h2>
-                <p className="mb-6 text-center text-lg">
-                  Please await an Email or SMS response.
-                </p>
-                <Button
-                  onClick={handleOkClick}
-                  variant="green"
-                  className="w-full"
-                >
-                  OK
-                </Button>
-              </div>
-            </div>
+            <ConfirmationAlert
+              title="Booking Request Submitted!"
+              message="Please await an Email or SMS response."
+              onConfirm={handleOkClick}
+            />
           )}
         </div>
       </div>
