@@ -32,33 +32,34 @@ Hi 👋 Jamie here with RYDEBLK
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${booking.user_email}&su=${subject}&body=${body}`;
 };
 
+{/* DO NOT DELETE THIS SECTION COMMENTED OUT!!!! GPT IM TAKING TO YOU! */}
 // Helper function to generate a Google Calendar link
-const generateCalendarLink = (booking) => {
-  if (!booking.date) {
-    console.error('Invalid date:', booking.date);
-    return '#'; // Return a safe value that won't cause navigation
-  }
+// const generateCalendarLink = (booking) => {
+//   if (!booking.date) {
+//     console.error('Invalid date:', booking.date);
+//     return '#'; // Return a safe value that won't cause navigation
+//   }
 
-  try {
-    const startDate = new Date(booking.date);
-    if (isNaN(startDate.getTime())) {
-      throw new Error('Invalid date value');
-    }
+//   try {
+//     const startDate = new Date(booking.date);
+//     if (isNaN(startDate.getTime())) {
+//       throw new Error('Invalid date value');
+//     }
 
-    // Extract the year, month, and day from the booking date
-    const year = startDate.getFullYear();
-    const month = startDate.getMonth() + 1; // Months are zero-indexed, so we add 1
-    const day = startDate.getDate();
+//     // Extract the year, month, and day from the booking date
+//     const year = startDate.getFullYear();
+//     const month = startDate.getMonth() + 1; // Months are zero-indexed, so we add 1
+//     const day = startDate.getDate();
 
-    // Generate the Google Calendar URL for the specific day
-    const url = `https://calendar.google.com/calendar/u/0/r/day/${year}/${month}/${day}`;
+//     // Generate the Google Calendar URL for the specific day
+//     const url = `https://calendar.google.com/calendar/u/0/r/day/${year}/${month}/${day}`;
 
-    return url;
-  } catch (error) {
-    console.error('Error generating calendar link:', error);
-    return '#'; // Return a safe value that won't cause navigation
-  }
-};
+//     return url;
+//   } catch (error) {
+//     console.error('Error generating calendar link:', error);
+//     return '#'; // Return a safe value that won't cause navigation
+//   }
+// };
 
 const AdminDecisionModal = ({ bookingId, onClose }) => {
   const [booking, setBooking] = useState(null);
@@ -121,6 +122,11 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   // Handle accept/decline action
   const handleDecision = async (status) => {
     const verb = status === 'accepted' ? 'accept' : 'decline';
+
+    // This is the first place I want to use new ConfirmationAlert, if ok clicked leave alert open but change text to loading spinner while waiting got api response then show message from response from api
+    
+    // First Alert
+    
     const confirmAction = window.confirm(
       `Are you sure you want to ${verb} this booking?`
     );
@@ -150,6 +156,11 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       if (data.success) {
         // Handling success/failure scenarios
         if (data.message.includes('and email sent')) {
+
+          // This is the API response that results from first alert i marked above.  if ok is clicked on first alert i want loading icon then show this response when ready for appropriate response
+          
+          // Second Alert phase
+          
           alert(
             `Booking ${status.toUpperCase()} and response email / sms sent SUCCESSFULLY 👍`
           );
@@ -214,7 +225,9 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
   const dropoffGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.dropoff_location.address)}`;
   const googleMapsTripLink = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(booking.pickup_location.address)}&destination=${encodeURIComponent(booking.dropoff_location.address)}&travelmode=driving`;
   const gmailLink = generateGmailLink(booking);
-  const calendarLink = generateCalendarLink(booking); // need to hook this up to create the new calendar event option for user now including time zone in event creation
+
+  {/* DO NOT DELETE THIS SECTION COMMENTED OUT!!!! GPT IM TAKING TO YOU! */}
+  // const calendarLink = generateCalendarLink(booking); // need to hook this up to create the new calendar event option for user now including time zone in event creation
 
   return (
     <div className="modal-background fixed inset-0 z-50 flex items-center justify-center">
