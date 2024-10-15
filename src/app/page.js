@@ -7,7 +7,7 @@ import {
 } from '@supabase/auth-helpers-react';
 import supabaseClient from '@/utils/supabaseClient'; // Import the singleton client
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/modifiedUI/button';
 import Header from '@/components/Header';
 import RideImage from '@/components/RideImage';
 import BookingModal from '@/components/modals/BookingModal';
@@ -17,7 +17,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useSearchParams } from 'next/navigation';
-import AdminDecisionModal from '@/components/modals/AdminDecisionModal';
+import AdminDecisionModal from '@/components/admin/AdminDecisionModal';
 
 function HomeContent() {
   const [showBookingModal, setShowBookingModal] = useState(false);

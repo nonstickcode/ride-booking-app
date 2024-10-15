@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 import { combineTimeWithTimezone } from '@/utils/dateTimeUtilsLuxon';
 import { getTimezoneAbbreviation } from '@/utils/dateLuxon';
 import supabase from '@/utils/supabaseClient';
-import CustomAlert from './CustomAlert'; // Import CustomAlert
+import CustomAlert from './alerts/CustomAlert'; // Import CustomAlert
 
 const TimeValidation = ({
   combinedDateAndTime,

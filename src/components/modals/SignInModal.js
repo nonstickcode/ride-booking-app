@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/modifiedUI/button';
+import { Input } from '@/components/modifiedUI/input';
 import { FaGoogle, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react'; // Use Supabase hooks
 import validator from 'validator';

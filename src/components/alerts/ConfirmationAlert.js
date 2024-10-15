@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/modifiedUI/button';
 import { FaSpinner } from 'react-icons/fa';
 
 const ConfirmationAlert = ({

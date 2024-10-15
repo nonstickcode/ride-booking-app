@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import DateAndTimePicker from '@/components/pickers/DateAndTimePicker';
 import LocationPickers from '@/components/pickers/LocationPickers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/modifiedUI/button';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid'; // UUID generation
@@ -15,8 +15,8 @@ import {
 } from '@/utils/routeCalculations';
 import supabase from '@/utils/supabaseClient';
 import TimeValidation from '@/components/TimeValidation';
-import CustomAlert from '@/components/CustomAlert';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
+import CustomAlert from '@/components/alerts/CustomAlert';
+import ConfirmationAlert from '@/components/alerts/ConfirmationAlert';
 
 // Function to fetch admin settings
 const getAdminSettings = async () => {

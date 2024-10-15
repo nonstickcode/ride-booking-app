@@ -11,7 +11,7 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; //
 import NotificationsModal from '@/components/modals/NotificationsModal';
 import MyRidesModal from '@/components/modals/MyRidesModal';
 import SettingsModal from '@/components/modals/SettingsModal';
-import AdminSettingsModal from '@/components/modals/AdminSettingsModal'; // New Admin Settings Modal import
+import AdminSettingsModal from '@/components/admin/AdminSettingsModal'; // New Admin Settings Modal import
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -19,8 +19,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+} from '@/components/modifiedUI/dropdown-menu';
+import { Button } from '@/components/modifiedUI/button';
 
 const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
   const [activeModal, setActiveModal] = useState(null);

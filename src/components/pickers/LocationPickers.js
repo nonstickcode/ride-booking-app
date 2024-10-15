@@ -4,7 +4,7 @@ import useLocationPickers, {
   getLatLng,
 } from 'use-places-autocomplete';
 import TextField from '@mui/material/TextField';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/modifiedUI/button';
 import { MyLocationSharp } from '@mui/icons-material';
 import { FaSpinner } from 'react-icons/fa';
 
@@ -103,6 +103,7 @@ const LocationPickers = ({ setSelected, label }) => {
             disabled={!ready || currentLocationLoading}
             placeholder="Search by Name or Address"
             className="flex-grow text-sm"
+            autoComplete="off"
           />
           <Button
             onClick={handleCurrentLocation}

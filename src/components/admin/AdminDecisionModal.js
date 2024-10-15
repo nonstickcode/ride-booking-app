@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/modifiedUI/button';
 import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 import SignInModal from '@/components/modals/SignInModal';
 import { FaArrowDown } from 'react-icons/fa';
 import { formatDateTime } from '@/utils/dateLuxon';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
+import ConfirmationAlert from '@/components/alerts/ConfirmationAlert';
 
 // Helper function to generate the Gmail compose link
 const generateGmailLink = (booking) => {
