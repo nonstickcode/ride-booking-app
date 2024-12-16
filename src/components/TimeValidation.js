@@ -222,7 +222,7 @@ const TimeValidation = ({
     };
 
     try {
-      const response = await fetch('/api/calendar/checkCalendarAvailability', {
+      const response = await fetch('/api/calendar/checkAvailability', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
