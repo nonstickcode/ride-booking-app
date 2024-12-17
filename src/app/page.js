@@ -1,15 +1,13 @@
 'use client';
 
-export const dynamic = "force-dynamic";
-
-
+export const dynamic = 'force-dynamic';
 
 import {
   SessionContextProvider,
   useSession,
   useSupabaseClient,
 } from '@supabase/auth-helpers-react';
-import supabaseClient from '@/utils/supabaseClient'; // Import the singleton client
+import supabaseClient from '@/utils/supabaseClient';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/modifiedUI/button';
 import Header from '@/components/Header';
@@ -29,114 +27,77 @@ function HomeContent() {
   const [showAdminDecisionModal, setShowAdminDecisionModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const session = useSession(); // Supabase session hook to get the current user session
-  const supabase = useSupabaseClient(); // Supabase client for authentication and data fetching
-  const user = session?.user; // Extract the user from the session
+  const session = useSession();
+  const supabase = useSupabaseClient();
+  const user = session?.user;
 
-  // State to manage alerts for sign-in/sign-out events
   const [authAlert, setAuthAlert] = useState(null);
-
-  // Admin check state
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Handle decisions update
   const searchParams = useSearchParams();
-  const bookingId = searchParams.get('bookingId'); // Extract the bookingId from the query params
+  const bookingId = searchParams?.get('bookingId');
 
-  // Consistently check session status and modals based on sign-in state
   useEffect(() => {
-    const handleSessionChange = () => {
-      if (bookingId && user) {
-        setShowAdminDecisionModal(true); // Open the Admin Decision Modal if user is logged in and bookingId is present
-        setShowSignInModal(false); // Ensure SignInModal is closed
-      } else if (bookingId && !user) {
-        setShowSignInModal(true); // Show the SignInModal if no user is logged in
-        setShowAdminDecisionModal(false); // Ensure the Admin Decision Modal is closed if not signed in
-      } else if (!bookingId && !user) {
-        setShowSignInModal(true); // Show SignInModal for other interactions when user is not logged in
-      } else {
-        setShowSignInModal(false); // Close SignInModal once signed in
+    const initialize = async () => {
+      // Wait for session to load
+      const { data } = await supabase.auth.getSession();
+      setLoading(false);
+
+      // Check for bookingId and user state
+      if (bookingId) {
+        if (user) {
+          setShowAdminDecisionModal(true);
+          setShowSignInModal(false);
+        } else {
+          setShowSignInModal(true);
+        }
       }
     };
 
-    // Call the function initially and on session changes
-    handleSessionChange();
-  }, [user, bookingId]);
+    initialize();
+  }, [bookingId, user, supabase]);
 
-  // Monitor session changes and handle admin check
   useEffect(() => {
     if (session && user) {
       const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
       setIsAdmin(user.email === adminEmail);
       setAuthAlert({ message: 'Signed in successfully!', type: 'success' });
-    } else if (session && !user) {
-      setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
     }
 
     const alertTimeout = setTimeout(() => setAuthAlert(null), 3000);
     return () => clearTimeout(alertTimeout);
   }, [user, session]);
 
-  // Stop loading after checking session
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      setLoading(false);
-    };
-    fetchUser();
-  }, [supabase]);
-
-  // Handle showing the booking modal or sign-in modal
   const openBooking = () => {
-    if (user) {
-      setShowBookingModal(true);
-    } else {
-      setShowSignInModal(true);
-    }
+    if (user) setShowBookingModal(true);
+    else setShowSignInModal(true);
   };
 
-  // Close booking modal
   const closeBooking = (e) => {
     if (e) e.stopPropagation();
     setShowBookingModal(false);
   };
 
-  // Close sign-in modal
   const closeSignIn = (e) => {
     if (e) e.stopPropagation();
     setShowSignInModal(false);
   };
 
-  // Handle completion of sign-in
-  const handleSignInComplete = async () => {
-    setShowSignInModal(false); // Close the sign-in modal
-
-    // After sign-in, check if bookingId is present to open the AdminDecisionModal
-    if (bookingId) {
-      setShowAdminDecisionModal(true); // Open decision modal if bookingId is in the query params
-    } else {
-      setShowBookingModal(false); // Otherwise close the booking modal
-    }
+  const handleSignInComplete = () => {
+    setShowSignInModal(false);
+    if (bookingId) setShowAdminDecisionModal(true);
   };
 
-  // Handle sign out
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error signing out:', error);
-    } else {
-      setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
-    }
+    if (!error) setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
   };
 
-  if (loading) {
-    return null; // Wait for loading to complete
-  }
+  if (loading) return null; // Loading state
 
   return (
     <div className="main-content --font-oxygen min-h-screen text-white">
       <div className="mx-auto flex min-h-screen max-w-96 flex-col items-center justify-center px-4">
-        {/* Alert banner for sign-in/sign-out messages */}
         {authAlert?.message && (
           <div
             className={`fixed left-0 right-0 top-0 z-50 p-4 text-center text-2xl text-white ${
@@ -157,7 +118,6 @@ function HomeContent() {
 
         <main className="mt-10 flex flex-col items-center space-y-8">
           <RideImage />
-
           <Button
             onClick={openBooking}
             variant="blue"
@@ -170,36 +130,29 @@ function HomeContent() {
           </Button>
         </main>
 
-        {/* Show Admin Decision Modal if bookingId exists and modal is triggered */}
+        {/* Modals */}
         {showAdminDecisionModal && (
-          <AdminDecisionModal
-            bookingId={bookingId}
-            onClose={() => setShowAdminDecisionModal(false)} // Close modal when done
-          />
+          <AdminDecisionModal bookingId={bookingId} onClose={() => setShowAdminDecisionModal(false)} />
         )}
-
-        {/* Show Booking Modal */}
         {showBookingModal && <BookingModal onClose={closeBooking} />}
-
-        {/* Show Sign In Modal */}
         {showSignInModal && (
           <SignInModal
             onClose={closeSignIn}
-            onSignInComplete={handleSignInComplete} // Pass the sign-in complete handler
-            bookingId={bookingId} // Pass bookingId (optional)
+            onSignInComplete={handleSignInComplete}
+            bookingId={bookingId}
           />
         )}
 
         <footer className="mt-8 text-center">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>
-          <a
+          {/* <a
             href="https://www.youtube.com/@MicDropBBQ"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-2 block text-gray-200 hover:text-blue-300"
           >
             Check out our recommended YouTube partner
-          </a>
+          </a> */}
         </footer>
       </div>
     </div>
@@ -207,10 +160,6 @@ function HomeContent() {
 }
 
 export default function Home() {
-  const handleLoad = () => {
-    console.log('Google Maps API is fully loaded and ready to use.');
-  };
-
   return (
     <>
       <Head>
@@ -221,9 +170,8 @@ export default function Home() {
         strategy="beforeInteractive"
         async
         defer
-        onLoad={handleLoad}
+        onLoad={() => console.log('Google Maps API loaded')}
       />
-
       <SessionContextProvider supabaseClient={supabaseClient}>
         <HomeContent />
       </SessionContextProvider>
