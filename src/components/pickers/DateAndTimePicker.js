@@ -21,8 +21,8 @@ const getAdminSettings = async () => {
 };
 
 const DateAndTimePicker = ({ setCombinedDateTime }) => {
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [maxDate, setMaxDate] = useState(null);
   const minDate = new Date();
 
@@ -41,7 +41,7 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
 
   useEffect(() => {
     if (date && time) {
-      const combinedDateTime = combineDateAndTimeLuxon(date, time);
+      const combinedDateTime = combineDateAndTimeLuxon(new Date(date), new Date(`1970-01-01T${time}:00`));
       setCombinedDateTime(combinedDateTime);
     }
   }, [date, time, setCombinedDateTime]);
@@ -52,34 +52,31 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
         <div className="grid grid-cols-1 gap-0">
           {/* Date Picker */}
           <div className="mb-2">
-            <span className="mb-1 block cursor-default text-sm text-white">
-              Date:
-            </span>
+            <label className="mb-1 block cursor-default text-sm text-white">Date:</label>
             {isMobile() ? (
               <input
                 type="date"
-                value={date ? date.toISOString().split('T')[0] : ''}
-                onChange={(e) => setDate(new Date(e.target.value))}
-                placeholder="Select a Date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
                 min={minDate.toISOString().split('T')[0]}
                 max={maxDate ? maxDate.toISOString().split('T')[0] : ''}
+                placeholder="Select a Date"
                 className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
               />
             ) : (
               <MUIDatePicker
                 value={date}
-                onChange={(newDate) => setDate(newDate)}
+                onChange={(newDate) => setDate(newDate?.toISOString().split('T')[0])}
                 minDate={minDate}
                 maxDate={maxDate}
                 slots={{
-                  openPickerIcon: () => (
-                    <CalendarMonthIcon className="h-5 w-5" />
-                  ),
+                  openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
                 }}
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Date',
-                    className: 'w-full text-sm placeholder-gray-400',
+                    InputLabelProps: { shrink: true },
+                    className: 'flex-grow text-sm text-white placeholder-gray-400',
                     fullWidth: true,
                   },
                 }}
@@ -89,39 +86,35 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
 
           {/* Time Picker */}
           <div>
-            <span className="mb-1 block cursor-default text-sm text-white">
-              Time:
-            </span>
+            <label className="mb-1 block cursor-default text-sm text-white">Time:</label>
             {isMobile() ? (
               <input
                 type="time"
-                step="300" // 5-minute increments (300 seconds)
-                value={
-                  time
-                    ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`
-                    : ''
-                }
-                onChange={(e) => {
-                  const [hours, minutes] = e.target.value.split(':');
-                  const newTime = new Date();
-                  newTime.setHours(hours, minutes, 0);
-                  setTime(newTime);
-                }}
+                step="300" // 5-minute increments
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
                 placeholder="Select a Time"
                 className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
               />
             ) : (
               <MUITimePicker
                 value={time}
-                onChange={(newTime) => setTime(newTime)}
-                minutesStep={5} // Restrict to 5-minute increments
+                onChange={(newTime) => {
+                  const formattedTime = newTime?.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                  setTime(formattedTime);
+                }}
+                minutesStep={5} // Limit to 5-minute increments
                 slots={{
                   openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
                 }}
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Time',
-                    className: 'w-full text-sm placeholder-gray-400',
+                    InputLabelProps: { shrink: true },
+                    className: 'flex-grow text-sm text-white placeholder-gray-400',
                     fullWidth: true,
                   },
                 }}
