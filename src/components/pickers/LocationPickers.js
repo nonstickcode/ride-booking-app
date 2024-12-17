@@ -46,30 +46,57 @@ const LocationPickers = ({ setSelected, label }) => {
       alert('Geolocation is not supported by your browser');
       return;
     }
-
+  
     setCurrentLocationLoading(true);
-
+  
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        console.log(`Geolocation Success: Latitude: ${latitude}, Longitude: ${longitude}`);
+  
         try {
           const results = await getGeocode({
             location: { lat: latitude, lng: longitude },
           });
-          const address = results[0].formatted_address;
-          setValue(address, false);
-          setSelected({ lat: latitude, lng: longitude, address });
+  
+          if (results && results.length > 0) {
+            const address = results[0].formatted_address;
+            setValue(address, false);
+            setSelected({ lat: latitude, lng: longitude, address });
+          } else {
+            alert('No address found for the current location.');
+          }
         } catch (error) {
-          console.error('Error fetching location:', error);
+          console.error('Error fetching geocode results:', error);
+          alert('Failed to fetch address for your location. Please try again.');
         }
         setCurrentLocationLoading(false);
       },
       (error) => {
-        console.error('Error getting current location:', error);
+        console.error('Geolocation Error:', error);
         setCurrentLocationLoading(false);
-      }
+  
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert(
+              'Permission to access location was denied. Please allow location permissions in your browser settings.'
+            );
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert('Location information is unavailable. Please try again later.');
+            break;
+          case error.TIMEOUT:
+            alert('The request to get your location timed out. Please try again.');
+            break;
+          default:
+            alert('An unknown error occurred while retrieving your location.');
+            break;
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
+  
 
   // Generate Google Maps link based on the current value in the input field
   const generateGoogleMapsLink = () => {
