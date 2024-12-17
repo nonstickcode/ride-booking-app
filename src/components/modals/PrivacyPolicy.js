@@ -12,7 +12,7 @@ const PrivacyPolicyModal = ({ onClose }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="modal-background fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="modal-background fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
       aria-modal="true"
       role="dialog"
       onClick={onClose}
