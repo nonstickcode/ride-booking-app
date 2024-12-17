@@ -87,7 +87,7 @@ Booking Details:
         useDefault: false,
         overrides: [
           { method: 'email', minutes: 24 * 60 }, // Email reminder 24 hours before
-          { method: 'popup', minutes: 10 }, // Popup reminder 10 minutes before
+          { method: 'popup', minutes: 60 }, // Popup reminder 60 minutes before
         ],
       },
     };
