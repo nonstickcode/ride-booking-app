@@ -6,12 +6,14 @@ import {
   FaCog,
   FaSignOutAlt,
   FaSignInAlt,
+  FaFileAlt, // Privacy Policy Icon
 } from 'react-icons/fa';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; // Use Supabase session hooks
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; // Supabase hooks
 import NotificationsModal from '@/components/modals/NotificationsModal';
 import MyRidesModal from '@/components/modals/MyRidesModal';
 import SettingsModal from '@/components/modals/SettingsModal';
-import AdminSettingsModal from '@/components/admin/AdminSettingsModal'; // New Admin Settings Modal import
+import AdminSettingsModal from '@/components/admin/AdminSettingsModal';
+import PrivacyPolicyModal from '@/components/modals/PrivacyPolicy';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -25,19 +27,16 @@ import { Button } from '@/components/modifiedUI/button';
 const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
   const [activeModal, setActiveModal] = useState(null);
 
-  // Supabase hooks to access session and perform auth operations
   const session = useSession();
   const supabase = useSupabaseClient();
-
-  // Extract user from session
   const user = session?.user;
 
   const handleModalOpen = (modalType) => {
-    setActiveModal(modalType); // Open specific modal
+    setActiveModal(modalType);
   };
 
   const handleModalClose = () => {
-    setActiveModal(null); // Close any open modal
+    setActiveModal(null);
   };
 
   const handleSignIn = () => {
@@ -46,11 +45,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error signing out:', error);
-    } else {
-      onSignOut();
-    }
+    if (!error) onSignOut();
   };
 
   return (
@@ -70,39 +65,39 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
               <DropdownMenuLabel className="text-2xl font-bold text-white">
                 {isAdmin ? 'Hi Jamie!' : 'My Account'}
               </DropdownMenuLabel>
-
               <DropdownMenuSeparator />
               {isAdmin ? (
                 <DropdownMenuItem
                   onSelect={() => handleModalOpen('adminSettings')}
                   className="flex items-center"
-                  title="Admin Settings"
                 >
                   <FaCog className="mr-2" /> Admin Settings
                 </DropdownMenuItem>
               ) : (
                 <>
-                  {/* Regular user menu */}
                   <DropdownMenuItem
                     onSelect={() => handleModalOpen('rides')}
                     className="flex items-center"
-                    title="My Rides"
                   >
                     <FaCar className="mr-2" /> My Rides
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onSelect={() => handleModalOpen('notifications')}
                     className="flex items-center"
-                    title="Notifications"
                   >
                     <FaBell className="mr-2" /> Notifications
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onSelect={() => handleModalOpen('settings')}
                     className="flex items-center"
-                    title="Settings"
                   >
                     <FaCog className="mr-2" /> Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => handleModalOpen('privacyPolicy')}
+                    className="flex items-center"
+                  >
+                    <FaFileAlt className="mr-2" /> Privacy Policy
                   </DropdownMenuItem>
                 </>
               )}
@@ -110,24 +105,31 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
               <DropdownMenuItem
                 onSelect={handleSignOut}
                 className="flex items-center text-red-400"
-                title="Sign-Out"
               >
                 <FaSignOutAlt className="mr-2" /> Sign-Out
               </DropdownMenuItem>
             </>
           ) : (
-            <DropdownMenuItem
-              onSelect={handleSignIn}
-              className="flex items-center text-green-400"
-              title="Sign-In"
-            >
-              <FaSignInAlt className="mr-2" /> Sign-In
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem
+                onSelect={() => handleModalOpen('privacyPolicy')}
+                className="flex items-center"
+              >
+                <FaFileAlt className="mr-2" /> Privacy Policy
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={handleSignIn}
+                className="flex items-center text-green-400"
+              >
+                <FaSignInAlt className="mr-2" /> Sign-In
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Conditionally render modals based on the active modal */}
+      {/* Conditionally render modals */}
       {activeModal === 'notifications' && (
         <NotificationsModal onClose={handleModalClose} />
       )}
@@ -137,6 +139,9 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
       )}
       {activeModal === 'adminSettings' && (
         <AdminSettingsModal onClose={handleModalClose} />
+      )}
+      {activeModal === 'privacyPolicy' && (
+        <PrivacyPolicyModal onClose={handleModalClose} />
       )}
     </div>
   );
