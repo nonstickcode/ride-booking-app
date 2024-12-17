@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths } from 'date-fns';
+import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker as MUITimePicker } from '@mui/x-date-pickers/TimePicker';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import supabase from '@/utils/supabaseClient';
+import { ClockIcon } from '@mui/x-date-pickers';
+import { addMonths } from 'date-fns';
 import { combineDateAndTimeLuxon } from '@/utils/dateTimeUtilsLuxon';
+import supabase from '@/utils/supabaseClient';
 
+// Detect mobile devices
 const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const DateAndTimePicker = ({ setCombinedDateTime }) => {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [date, setDate] = useState(null);
+  const [time, setTime] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const minDate = new Date();
 
-  // Fetch maximum date from database
   useEffect(() => {
     const fetchMaxDate = async () => {
       const { data, error } = await supabase
@@ -27,13 +29,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
     fetchMaxDate();
   }, []);
 
-  // Combine date and time when both are set
   useEffect(() => {
     if (date && time) {
-      const combinedDateTime = combineDateAndTimeLuxon(
-        new Date(date),
-        new Date(`1970-01-01T${time}`)
-      );
+      const combinedDateTime = combineDateAndTimeLuxon(date, time);
       setCombinedDateTime(combinedDateTime);
     }
   }, [date, time, setCombinedDateTime]);
@@ -43,40 +41,44 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="grid grid-cols-1 gap-0">
           {/* Date Picker */}
-          <div className="relative mb-4">
-            <label className="mb-1 block text-sm text-white">Date:</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={date}
-                onFocus={(e) => isMobile() && (e.target.type = 'date')} // Show native picker on mobile
-                onBlur={(e) => (e.target.type = 'text')}
-                onChange={(e) => setDate(e.target.value)}
-                min={minDate.toISOString().split('T')[0]}
-                max={maxDate ? maxDate.toISOString().split('T')[0] : ''}
-                placeholder="Select a Date"
-                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 pl-10 text-white placeholder-gray-400"
-              />
-              <CalendarMonthIcon className="absolute left-3 top-3 text-gray-400 pointer-events-none" />
-            </div>
+          <div className="mb-2 relative">
+            <label className="mb-1 block cursor-default text-sm text-white">
+              Date:
+            </label>
+            <input
+              type="text"
+              value={date ? date.toLocaleDateString() : ''}
+              onFocus={(e) => {
+                if (isMobile()) e.target.type = 'date'; // Open native date picker
+              }}
+              onBlur={(e) => (e.target.type = 'text')} // Revert input type to text
+              onChange={(e) => setDate(new Date(e.target.value))}
+              placeholder="Select a Date"
+              className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
+            />
           </div>
 
           {/* Time Picker */}
           <div className="relative">
-            <label className="mb-1 block text-sm text-white">Time:</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={time}
-                onFocus={(e) => isMobile() && (e.target.type = 'time')} // Show native picker on mobile
-                onBlur={(e) => (e.target.type = 'text')}
-                onChange={(e) => setTime(e.target.value)}
-                step="300" // 5-minute increments
-                placeholder="Select a Time"
-                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 pl-10 text-white placeholder-gray-400"
-              />
-              <AccessTimeIcon className="absolute left-3 top-3 text-gray-400 pointer-events-none" />
-            </div>
+            <label className="mb-1 block cursor-default text-sm text-white">
+              Time:
+            </label>
+            <input
+              type="text"
+              value={time ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+              onFocus={(e) => {
+                if (isMobile()) e.target.type = 'time'; // Open native time picker
+              }}
+              onBlur={(e) => (e.target.type = 'text')} // Revert input type to text
+              onChange={(e) => {
+                const [hours, minutes] = e.target.value.split(':');
+                const newTime = new Date();
+                newTime.setHours(hours, minutes, 0);
+                setTime(newTime);
+              }}
+              placeholder="Select a Time"
+              className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
+            />
           </div>
         </div>
       </LocalizationProvider>
