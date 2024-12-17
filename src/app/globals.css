@@ -52,7 +52,8 @@ body {
 }
 
 /* Fallback for page reloads and transitions */
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -73,7 +74,9 @@ html, body {
   background-repeat: no-repeat;
 
   /* Stretch to full height and account for safe areas */
-  min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
+  min-height: calc(
+    100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom)
+  );
   padding-top: env(safe-area-inset-top, 0);
   padding-bottom: env(safe-area-inset-bottom, 0);
   background-color: black; /* Fill safe zones with black */
