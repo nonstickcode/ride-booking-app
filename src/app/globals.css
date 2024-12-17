@@ -54,9 +54,11 @@ body {
 /* Fallback for page reloads and transitions */
 html,
 body {
-  background-color: black; /* Set a black fallback background color */
-  min-height: 100vh;
-  margin: 0;
+  background-color: black; /* Fallback background */
+  min-height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+  overflow: hidden; /* Prevent scrollbars */
 }
 
 /* ======================== Main Content ======================== */
@@ -67,7 +69,12 @@ body {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+
+  /* Ensure full screen with safe area inset padding for mobile */
+  min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
+  padding-top: env(safe-area-inset-top, 0); /* Top safe area padding */
+  padding-bottom: env(safe-area-inset-bottom, 0); /* Bottom safe area padding */
+  background-color: black; /* Black background for safe area */
 }
 
 /* Main title style using Bebas Neue */
