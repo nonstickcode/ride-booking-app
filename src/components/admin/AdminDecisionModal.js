@@ -183,20 +183,21 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       title: 'Booking Update Results',
       message: (
         <ul className="text-left">
-          <li>
-            {updateSuccess ? '✅ ' : '❌ '} Booking status{' '}
-            {updateSuccess ? 'successfully updated' : 'update failed'}
+          <li className="flex items-center">
+            <span className="mr-2">{updateSuccess ? '✅' : '❌'}</span>
+            Booking status {updateSuccess ? 'successfully updated' : 'update failed'}
           </li>
-          <li>
-            {emailSuccess ? '✅ ' : '❌ '} User email response{' '}
-            {emailSuccess ? 'successfully sent' : 'sending failed'}
+          <li className="flex items-center">
+            <span className="mr-2">{emailSuccess ? '✅' : '❌'}</span>
+            User email response {emailSuccess ? 'successfully sent' : 'sending failed'}
           </li>
-          <li>
-            {calendarSuccess ? '✅ ' : '❌ '} Calendar event{' '}
-            {calendarSuccess ? 'successfully created' : 'creation failed'}
+          <li className="flex items-center">
+            <span className="mr-2">{calendarSuccess ? '✅' : '❌'}</span>
+            Calendar event {calendarSuccess ? 'successfully created' : 'creation failed'}
           </li>
         </ul>
       ),
+      
 
       showCancel: false,
       onConfirm: async () => {
