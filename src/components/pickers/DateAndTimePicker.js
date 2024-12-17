@@ -41,7 +41,10 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
 
   useEffect(() => {
     if (date && time) {
-      const combinedDateTime = combineDateAndTimeLuxon(new Date(date), new Date(`1970-01-01T${time}:00`));
+      const combinedDateTime = combineDateAndTimeLuxon(
+        new Date(date),
+        new Date(`1970-01-01T${time}:00`)
+      );
       setCombinedDateTime(combinedDateTime);
     }
   }, [date, time, setCombinedDateTime]);
@@ -52,7 +55,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
         <div className="grid grid-cols-1 gap-0">
           {/* Date Picker */}
           <div className="mb-2">
-            <label className="mb-1 block cursor-default text-sm text-white">Date:</label>
+            <label className="mb-1 block cursor-default text-sm text-white">
+              Date:
+            </label>
             {isMobile() ? (
               <input
                 type="date"
@@ -66,17 +71,22 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
             ) : (
               <MUIDatePicker
                 value={date}
-                onChange={(newDate) => setDate(newDate?.toISOString().split('T')[0])}
+                onChange={(newDate) =>
+                  setDate(newDate?.toISOString().split('T')[0])
+                }
                 minDate={minDate}
                 maxDate={maxDate}
                 slots={{
-                  openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
+                  openPickerIcon: () => (
+                    <CalendarMonthIcon className="h-5 w-5" />
+                  ),
                 }}
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Date',
                     InputLabelProps: { shrink: true },
-                    className: 'flex-grow text-sm text-white placeholder-gray-400',
+                    className:
+                      'flex-grow text-sm text-white placeholder-gray-400',
                     fullWidth: true,
                   },
                 }}
@@ -86,7 +96,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
 
           {/* Time Picker */}
           <div>
-            <label className="mb-1 block cursor-default text-sm text-white">Time:</label>
+            <label className="mb-1 block cursor-default text-sm text-white">
+              Time:
+            </label>
             {isMobile() ? (
               <input
                 type="time"
@@ -114,7 +126,8 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                   textField: {
                     placeholder: 'Select a Time',
                     InputLabelProps: { shrink: true },
-                    className: 'flex-grow text-sm text-white placeholder-gray-400',
+                    className:
+                      'flex-grow text-sm text-white placeholder-gray-400',
                     fullWidth: true,
                   },
                 }}
