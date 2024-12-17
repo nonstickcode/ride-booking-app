@@ -116,7 +116,7 @@ const PrivacyPolicyModal = ({ onClose }) => {
           <h3 className="text-lg font-semibold">Changes to this Policy</h3>
           <p>
             We may update this Privacy Policy periodically. Any changes will be posted here with an 
-            updated "Last Updated" date. Please review this policy regularly to stay informed.
+            updated &quot;Last Updated&quot; date. Please review this policy regularly to stay informed.
           </p>
 
           {/* Contact Us */}
