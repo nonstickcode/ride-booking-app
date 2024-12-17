@@ -52,8 +52,7 @@ body {
 }
 
 /* Fallback for page reloads and transitions */
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -74,9 +73,7 @@ body {
   background-repeat: no-repeat;
 
   /* Stretch to full height and account for safe areas */
-  min-height: calc(
-    100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom)
-  );
+  min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
   padding-top: env(safe-area-inset-top, 0);
   padding-bottom: env(safe-area-inset-bottom, 0);
   background-color: black; /* Fill safe zones with black */
@@ -91,57 +88,6 @@ body {
 }
 
 /* ======================== Input Fields ======================== */
-
-/* General input field styles */
-.input-field {
-  background-color: var(--input-bg-color); /* Tailwind gray-800 background */
-  color: var(--input-text-color); /* Tailwind white text */
-  border: 1px solid var(--input-border-color); /* Tailwind gray-500 border */
-  border-radius: var(--input-radius); /* Tailwind rounded-md */
-  padding: var(--input-padding); /* Tailwind padding for inputs */
-  height: var(--input-height); /* Standard input height */
-  width: 100%; /* Full width for inputs */
-  font-family: var(--input-font-family); /* Oxygen font */
-  font-size: var(--input-font-size); /* Font size */
-  font-weight: var(--input-font-weight); /* Normal font weight */
-}
-
-/* ======================== Unified Date and Time Picker Styling ======================== */
-
-input[type='date'],
-input[type='time'] {
-  width: 100%; /* Full width */
-  background-color: var(--input-bg-color); /* Background color */
-  color: var(--input-text-color); /* Text color */
-  border: 1px solid var(--input-border-color); /* Border color */
-  border-radius: var(--input-radius); /* Rounded corners */
-  padding: var(--input-padding); /* Consistent padding */
-  height: var(--input-height); /* Consistent height */
-  font-family: var(--input-font-family); /* Oxygen font */
-  font-size: var(--input-font-size); /* Font size */
-  text-align: left; /* Align text to the left */
-  box-sizing: border-box; /* Include padding and border */
-  -webkit-appearance: none; /* Remove native styling */
-  appearance: none;
-}
-
-/* Placeholder styling for date and time */
-input[type='date']::before,
-input[type='time']::before {
-  content: attr(placeholder); /* Use placeholder attribute */
-  color: var(--input-placeholder-color); /* Placeholder text color */
-  font-size: 0.9rem;
-}
-
-input[type='date']:focus::before,
-input[type='time']:focus::before {
-  content: ''; /* Remove placeholder on focus */
-}
-
-input[type='date']:valid,
-input[type='time']:valid {
-  color: var(--input-text-color); /* Ensure selected value appears correctly */
-}
 
 /* Global Admin Input Style */
 .admin-input {
