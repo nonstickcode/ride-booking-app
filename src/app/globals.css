@@ -52,13 +52,15 @@ body {
 }
 
 /* Fallback for page reloads and transitions */
-html,
-body {
-  background-color: black; /* Fallback background */
-  min-height: 100vh; /* Full viewport height */
-  margin: 0; /* Remove margin */
-  padding: 0; /* Remove padding */
-  overflow: hidden; /* Prevent scrollbars */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  height: 100%; /* Ensure height stretches to viewport */
+  background-color: black; /* Set fallback color */
+  overflow-y: auto; /* Allow scrolling */
+  -webkit-touch-callout: none; /* iOS Safari - prevent accidental selections */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS Safari */
 }
 
 /* ======================== Main Content ======================== */
@@ -67,14 +69,14 @@ body {
 .main-content {
   background-image: url('/images/black-leather-background.jpeg');
   background-size: cover;
-  background-position: center center;
+  background-position: center;
   background-repeat: no-repeat;
 
-  /* Ensure full screen with safe area inset padding for mobile */
+  /* Stretch to full height and account for safe areas */
   min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-  padding-top: env(safe-area-inset-top, 0); /* Top safe area padding */
-  padding-bottom: env(safe-area-inset-bottom, 0); /* Bottom safe area padding */
-  background-color: black; /* Black background for safe area */
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  background-color: black; /* Fill safe zones with black */
 }
 
 /* Main title style using Bebas Neue */
