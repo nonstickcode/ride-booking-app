@@ -1,22 +1,11 @@
 import { google } from 'googleapis';
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 
-// Path to your service account credentials JSON file
-const SERVICE_ACCOUNT_KEY_PATH = path.resolve(
-  process.cwd(),
-  'config',
-  'rydeblk-745fa49e3a56.json'
-);
+// Load service account credentials from the environment variable
+const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
 
 // Access the Calendar ID from environment variables
 const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
-
-// Load credentials from the service account JSON file
-const credentials = JSON.parse(
-  fs.readFileSync(SERVICE_ACCOUNT_KEY_PATH, 'utf8')
-);
 
 // Initialize Google OAuth client for the service account
 function getGoogleClient() {
