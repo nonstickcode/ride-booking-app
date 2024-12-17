@@ -60,9 +60,10 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                 type="date"
                 value={date ? date.toISOString().split('T')[0] : ''}
                 onChange={(e) => setDate(new Date(e.target.value))}
+                placeholder="Select a Date"
                 min={minDate.toISOString().split('T')[0]}
                 max={maxDate ? maxDate.toISOString().split('T')[0] : ''}
-                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white"
+                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
               />
             ) : (
               <MUIDatePicker
@@ -71,12 +72,14 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                 minDate={minDate}
                 maxDate={maxDate}
                 slots={{
-                  openPickerIcon: () => <CalendarMonthIcon className="h-5 w-5" />,
+                  openPickerIcon: () => (
+                    <CalendarMonthIcon className="h-5 w-5" />
+                  ),
                 }}
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Date',
-                    className: 'flex-grow text-sm',
+                    className: 'w-full text-sm placeholder-gray-400',
                     fullWidth: true,
                   },
                 }}
@@ -92,26 +95,33 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
             {isMobile() ? (
               <input
                 type="time"
-                value={time ? time.toTimeString().split(' ')[0] : ''}
+                step="300" // 5-minute increments (300 seconds)
+                value={
+                  time
+                    ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`
+                    : ''
+                }
                 onChange={(e) => {
                   const [hours, minutes] = e.target.value.split(':');
                   const newTime = new Date();
                   newTime.setHours(hours, minutes, 0);
                   setTime(newTime);
                 }}
-                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white"
+                placeholder="Select a Time"
+                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
               />
             ) : (
               <MUITimePicker
                 value={time}
                 onChange={(newTime) => setTime(newTime)}
+                minutesStep={5} // Restrict to 5-minute increments
                 slots={{
                   openPickerIcon: () => <ClockIcon className="h-5 w-5" />,
                 }}
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Time',
-                    className: 'flex-grow text-sm',
+                    className: 'w-full text-sm placeholder-gray-400',
                     fullWidth: true,
                   },
                 }}
