@@ -46,19 +46,21 @@ const LocationPickers = ({ setSelected, label }) => {
       alert('Geolocation is not supported by your browser');
       return;
     }
-  
+
     setCurrentLocationLoading(true);
-  
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        console.log(`Geolocation Success: Latitude: ${latitude}, Longitude: ${longitude}`);
-  
+        console.log(
+          `Geolocation Success: Latitude: ${latitude}, Longitude: ${longitude}`
+        );
+
         try {
           const results = await getGeocode({
             location: { lat: latitude, lng: longitude },
           });
-  
+
           if (results && results.length > 0) {
             const address = results[0].formatted_address;
             setValue(address, false);
@@ -75,7 +77,7 @@ const LocationPickers = ({ setSelected, label }) => {
       (error) => {
         console.error('Geolocation Error:', error);
         setCurrentLocationLoading(false);
-  
+
         switch (error.code) {
           case error.PERMISSION_DENIED:
             alert(
@@ -83,10 +85,14 @@ const LocationPickers = ({ setSelected, label }) => {
             );
             break;
           case error.POSITION_UNAVAILABLE:
-            alert('Location information is unavailable. Please try again later.');
+            alert(
+              'Location information is unavailable. Please try again later.'
+            );
             break;
           case error.TIMEOUT:
-            alert('The request to get your location timed out. Please try again.');
+            alert(
+              'The request to get your location timed out. Please try again.'
+            );
             break;
           default:
             alert('An unknown error occurred while retrieving your location.');
@@ -96,7 +102,6 @@ const LocationPickers = ({ setSelected, label }) => {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
-  
 
   // Generate Google Maps link based on the current value in the input field
   const generateGoogleMapsLink = () => {
