@@ -1,8 +1,16 @@
 import { google } from 'googleapis';
 import { NextResponse } from 'next/server';
 
-// Load service account credentials from the environment variable
-const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+// Safely load service account credentials from the environment variable
+let credentials;
+try {
+  credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+} catch (error) {
+  console.error('Error parsing GOOGLE_SERVICE_ACCOUNT_JSON:', error.message);
+  throw new Error(
+    'Invalid or missing GOOGLE_SERVICE_ACCOUNT_JSON environment variable.'
+  );
+}
 
 // Access the Calendar ID from environment variables
 const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
@@ -38,7 +46,7 @@ export async function POST(request) {
     const auth = getGoogleClient();
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // Generate Google Maps links for pickup and dropoff
+    // Generate Google Maps links
     const pickupLink = bookingData.pickupLocation
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(bookingData.pickupLocation)}`
       : 'Unavailable';
@@ -52,7 +60,7 @@ export async function POST(request) {
         ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(bookingData.pickupLocation)}&destination=${encodeURIComponent(bookingData.dropoffLocation)}&travelmode=driving`
         : 'Unavailable';
 
-    // Build the event description with clickable links
+    // Build event description with links
     const detailedDescription = `
 Booking Details:
 - <strong>User Email:</strong> ${bookingData.userEmail || 'N/A'}
@@ -63,7 +71,6 @@ Booking Details:
 - <strong>Cost:</strong> $${bookingData.cost || 'N/A'}
 
 <p><a href="${tripNavigationLink}" target="_blank"><strong>Trip Navigation Link</strong></a></p>
-<p>Click the links above to view pickup, dropoff locations, or start navigation in Google Maps.</p>
 `;
 
     // Prepare the event payload
@@ -75,13 +82,13 @@ Booking Details:
       reminders: {
         useDefault: false,
         overrides: [
-          { method: 'email', minutes: 24 * 60 }, // Email reminder 24 hours before
-          { method: 'popup', minutes: 60 }, // Popup reminder 60 minutes before
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 60 },
         ],
       },
     };
 
-    // Insert the event into Google Calendar
+    // Insert event into Google Calendar
     const response = await calendar.events.insert({
       calendarId: CALENDAR_ID,
       requestBody: event,
