@@ -34,7 +34,8 @@ const PrivacyPolicyModal = ({ onClose }) => {
         </Button>
 
         {/* Modal Content */}
-        <h2 className="mb-4 text-center text-3xl font-bold">Privacy Policy</h2>
+        <h2 className="mb-4 pt-6 text-center text-3xl font-bold">Privacy Policy</h2>
+
         <div className="space-y-6 overflow-y-auto text-sm p-4">
           {/* Introduction */}
           <p>
