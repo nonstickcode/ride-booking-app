@@ -66,14 +66,14 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                 min={minDate.toISOString().split('T')[0]}
                 max={maxDate ? maxDate.toISOString().split('T')[0] : ''}
                 placeholder="Select a Date"
-                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
+                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400 text-left"
               />
             ) : (
               <MUIDatePicker
-                value={date}
-                onChange={(newDate) =>
-                  setDate(newDate?.toISOString().split('T')[0])
-                }
+                value={date ? new Date(date) : null}
+                onChange={(newDate) => {
+                  setDate(newDate?.toISOString().split('T')[0]);
+                }}
                 minDate={minDate}
                 maxDate={maxDate}
                 slots={{
@@ -84,9 +84,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Date',
-                    InputLabelProps: { shrink: true },
+                    InputLabelProps: { shrink: false }, // Prevent stacked labels
                     className:
-                      'flex-grow text-sm text-white placeholder-gray-400',
+                      'flex-grow text-sm text-white placeholder-gray-400 text-left',
                     fullWidth: true,
                   },
                 }}
@@ -106,17 +106,19 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 placeholder="Select a Time"
-                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400"
+                className="w-full rounded-md border border-gray-500 bg-gray-800 p-2 text-white placeholder-gray-400 text-left"
               />
             ) : (
               <MUITimePicker
-                value={time}
+                value={time ? new Date(`1970-01-01T${time}:00`) : null}
                 onChange={(newTime) => {
-                  const formattedTime = newTime?.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  });
-                  setTime(formattedTime);
+                  if (newTime) {
+                    const formattedTime = newTime
+                      .toISOString()
+                      .split('T')[1]
+                      .substring(0, 5);
+                    setTime(formattedTime);
+                  }
                 }}
                 minutesStep={5} // Limit to 5-minute increments
                 slots={{
@@ -125,9 +127,9 @@ const DateAndTimePicker = ({ setCombinedDateTime }) => {
                 slotProps={{
                   textField: {
                     placeholder: 'Select a Time',
-                    InputLabelProps: { shrink: true },
+                    InputLabelProps: { shrink: false }, // Prevent stacked labels
                     className:
-                      'flex-grow text-sm text-white placeholder-gray-400',
+                      'flex-grow text-sm text-white placeholder-gray-400 text-left',
                     fullWidth: true,
                   },
                 }}
