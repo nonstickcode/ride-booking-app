@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// Manually set the path to your service account credentials JSON file
+// Path to your service account credentials JSON file
 const SERVICE_ACCOUNT_KEY_PATH = path.resolve(
   process.cwd(),
   'config',
@@ -13,74 +13,80 @@ const SERVICE_ACCOUNT_KEY_PATH = path.resolve(
 // Access the Calendar ID from environment variables
 const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
 
-// Load service account credentials from the JSON file
+// Load credentials from the service account JSON file
 const credentials = JSON.parse(
   fs.readFileSync(SERVICE_ACCOUNT_KEY_PATH, 'utf8')
 );
 
-// Helper function to set up Google OAuth2 client for the service account
+// Initialize Google OAuth client for the service account
 function getGoogleClient() {
-  const SCOPES = ['https://www.googleapis.com/auth/calendar'];
-
-  const auth = new google.auth.JWT(
+  return new google.auth.JWT(
     credentials.client_email,
     null,
     credentials.private_key,
-    SCOPES
+    ['https://www.googleapis.com/auth/calendar']
   );
-
-  return auth;
 }
 
 export async function POST(request) {
   try {
-    // Parse the request body (expecting event details)
-    const { summary, description, start, end, attendees } = await request.json();
+    // Parse event data from the request body
+    const { summary, description, start, end, timeZone, attendees } =
+      await request.json();
 
-    // Validate the request parameters
-    if (!summary || !start || !end) {
+    // Validate required fields
+    if (!summary || !start || !end || !timeZone) {
       return NextResponse.json(
-        { error: 'Missing required parameters: summary, start, and end' },
+        { error: 'Missing required fields: summary, start, end, or timeZone' },
         { status: 400 }
       );
     }
 
-    // Set up Google OAuth2 client with the service account
+    // Set up Google OAuth client
     const auth = getGoogleClient();
 
     // Initialize Google Calendar API
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // Create a new event
+    // Prepare the event payload
     const event = {
       summary,
       description,
-      start: {
-        dateTime: start, // Must be in ISO 8601 format
-        timeZone: 'UTC', // Replace with the desired time zone if necessary
+      start: { dateTime: start, timeZone },
+      end: { dateTime: end, timeZone },
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 }, // Email reminder 24 hours before
+          { method: 'popup', minutes: 10 }, // Popup reminder 10 minutes before
+        ],
       },
-      end: {
-        dateTime: end, // Must be in ISO 8601 format
-        timeZone: 'UTC', // Replace with the desired time zone if necessary
-      },
-      attendees: attendees || [], // Optional array of attendee objects
     };
 
-    // Insert the event into the calendar
+    // Insert the event into Google Calendar
     const response = await calendar.events.insert({
       calendarId: CALENDAR_ID,
       requestBody: event,
     });
 
-    // Return the created event details
-    return NextResponse.json({ event: response.data });
+    console.log('Google Calendar API Response:', response.data);
+
+    // Return success response with event details
+    return NextResponse.json({
+      success: true,
+      message: 'Event created successfully',
+      eventLink: response.data.htmlLink,
+      eventId: response.data.id,
+    });
   } catch (error) {
-    // Log the exact error message to understand what went wrong
-    console.error('Error details:', error);
+    console.error(
+      'Error creating calendar event:',
+      error.response?.data || error.message
+    );
     return NextResponse.json(
       {
-        error: 'Failed to create calendar event',
-        details: error.message,
+        error: 'Failed to create event',
+        details: error.response?.data || error.message,
       },
       { status: 500 }
     );

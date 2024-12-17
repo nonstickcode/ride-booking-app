@@ -212,7 +212,7 @@ const TimeValidation = ({
     // Check calendar availability
     setLoadingAvailability(true);
     const startTime = selectedDateTime.toISO();
-    const endTime = selectedDateTime.plus({ hours: 2 }).toISO();  // TODO: look into how to set this dynamically not just check requested book time plus 2 hrs (do not delete this comment)
+    const endTime = selectedDateTime.plus({ hours: 2 }).toISO(); // TODO: look into how to set this dynamically not just check requested book time plus 2 hrs (do not delete this comment)
 
     console.log('API check for OFF-HOURS:', { startTime, endTime });
 
