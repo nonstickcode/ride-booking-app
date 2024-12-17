@@ -69,15 +69,26 @@ export async function POST(request) {
       requestBody: event,
     });
 
-    console.log('Google Calendar API Response:', response.data);
-
-    // Return success response with event details
-    return NextResponse.json({
-      success: true,
-      message: 'Event created successfully',
-      eventLink: response.data.htmlLink,
-      eventId: response.data.id,
-    });
+    if (response.data && response.data.htmlLink) {
+      console.log(
+        'Google Calendar Event created successfully:',
+        response.data.htmlLink
+      );
+      return NextResponse.json({
+        success: true,
+        message: 'Event created successfully',
+        eventLink: response.data.htmlLink,
+        eventId: response.data.id,
+      });
+    } else {
+      console.warn(
+        'Google Calendar Event creation failed: No event link returned.'
+      );
+      return NextResponse.json(
+        { success: false, error: 'Event creation failed, no link returned.' },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error(
       'Error creating calendar event:',

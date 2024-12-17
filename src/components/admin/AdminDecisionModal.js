@@ -150,12 +150,14 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
 
     console.log('Submitting decision with comment:', commentToSend);
 
+    let updateSuccess = false;
+    let emailSuccess = false;
+    let calendarSuccess = false;
+
     try {
       const response = await fetch(`/api/decision`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: bookingId,
           status,
@@ -166,53 +168,42 @@ const AdminDecisionModal = ({ bookingId, onClose }) => {
       const data = await response.json();
       console.log('Response from /api/decision:', data);
 
-      // Update the ConfirmationAlert with the result from the API
-      if (data.success) {
-        if (data.message.includes('and email sent')) {
-          setShowConfirmationAlert((prevState) => ({
-            ...prevState,
-            message: `Booking ${status.toUpperCase()} and response email/sms sent SUCCESSFULLY 👍`,
-            showCancel: false,
-            onConfirm: async () => {
-              await fetchBooking(); // Refetch updated booking after confirmation
-              setShowConfirmationAlert(null); // Close the alert on OK
-            },
-          }));
-        } else {
-          setShowConfirmationAlert((prevState) => ({
-            ...prevState,
-            message: `Booking ${status.toUpperCase()} but response email/sms FAILED to send ❗`,
-            showCancel: false,
-            onConfirm: async () => {
-              await fetchBooking(); // Refetch updated booking after confirmation
-              setShowConfirmationAlert(null); // Close the alert on OK
-            },
-          }));
-        }
-      } else {
-        setShowConfirmationAlert((prevState) => ({
-          ...prevState,
-          message: `Booking ${status.toUpperCase()} but FAILED to process response email/sms ❗`,
-          showCancel: false,
-          onConfirm: async () => {
-            await fetchBooking(); // Refetch updated booking after confirmation
-            setShowConfirmationAlert(null); // Close the alert on OK
-          },
-        }));
-      }
+      // Use explicit success flags
+      updateSuccess = data.updateSuccess || false;
+      emailSuccess = data.emailSuccess || false;
+      calendarSuccess = data.calendarSuccess || false;
+
+      console.log({ updateSuccess, emailSuccess, calendarSuccess });
     } catch (error) {
       console.error('FAILED to update booking:', error);
-      setShowConfirmationAlert((prevState) => ({
-        ...prevState,
-        message:
-          '❌ ERROR processing booking and sending email / sms response. Please try again. ❌',
-        showCancel: false,
-        onConfirm: async () => {
-          await fetchBooking(); // Refetch updated booking after confirmation
-          setShowConfirmationAlert(null); // Close the alert on OK
-        },
-      }));
     }
+
+    // Display results as a confirmation list
+    setShowConfirmationAlert({
+      title: 'Booking Update Results',
+      message: (
+        <ul className="text-left">
+          <li>
+            {updateSuccess ? '✅ ' : '❌ '} Booking status{' '}
+            {updateSuccess ? 'successfully updated' : 'update failed'}
+          </li>
+          <li>
+            {emailSuccess ? '✅ ' : '❌ '} User email response{' '}
+            {emailSuccess ? 'successfully sent' : 'sending failed'}
+          </li>
+          <li>
+            {calendarSuccess ? '✅ ' : '❌ '} Calendar event{' '}
+            {calendarSuccess ? 'successfully created' : 'creation failed'}
+          </li>
+        </ul>
+      ),
+
+      showCancel: false,
+      onConfirm: async () => {
+        await fetchBooking();
+        setShowConfirmationAlert(null);
+      },
+    });
   };
 
   // UseEffect to watch for changes in booking.status and update the color class

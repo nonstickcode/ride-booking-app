@@ -8,7 +8,7 @@ function parseDuration(durationString) {
   const hours = hoursMatch ? parseInt(hoursMatch[1], 10) : 0;
   const minutes = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
 
-  return (hours * 60) + minutes; // Convert to total minutes
+  return hours * 60 + minutes; // Convert to total minutes
 }
 
 export async function POST(request) {
@@ -17,7 +17,6 @@ export async function POST(request) {
 
     console.log('Received decision data:', { id, status, comment });
 
-    // Validate required fields
     if (!id || !status) {
       return new Response(
         JSON.stringify({ success: false, message: 'Missing required fields' }),
@@ -25,14 +24,11 @@ export async function POST(request) {
       );
     }
 
-    // Fetch the booking data
     const { data: booking, error: fetchError } = await supabase
       .from('NewBookingData')
       .select('*')
       .eq('id', id)
       .single();
-
-    console.log('Fetched booking data:', booking);
 
     if (fetchError || !booking) {
       console.error('Booking not found:', fetchError);
@@ -42,13 +38,9 @@ export async function POST(request) {
       );
     }
 
-    // Update the booking status and comment
     const { error: updateError } = await supabase
       .from('NewBookingData')
-      .update({
-        status,
-        comment: comment || 'No comment given with decision',
-      })
+      .update({ status, comment: comment || 'No comment given with decision' })
       .eq('id', id);
 
     if (updateError) {
@@ -62,33 +54,22 @@ export async function POST(request) {
       );
     }
 
-    // Create Google Calendar Event only if status is accepted
+    let calendarSuccess = false;
+    let emailSuccess = false;
+
+    // Create Google Calendar Event if accepted
     if (status === 'accepted') {
       try {
         const { requestedDateAndTime, duration } = booking;
 
-        if (!requestedDateAndTime || !duration) {
-          throw new Error('Missing requestedDateAndTime or duration in booking data.');
-        }
-
-        // Parse duration and double it
         const totalMinutes = parseDuration(duration);
-        if (isNaN(totalMinutes)) {
-          throw new Error('Invalid duration format');
-        }
-
         const doubledDuration = totalMinutes * 2;
 
-        // Use the existing ISO format time and calculate end time
         const startDateTime = new Date(requestedDateAndTime).toISOString();
         const endDateTime = new Date(
           new Date(requestedDateAndTime).getTime() + doubledDuration * 60000
         ).toISOString();
 
-        console.log('Start DateTime:', startDateTime);
-        console.log('End DateTime:', endDateTime);
-
-        // Call Google Calendar API to create an event
         const calendarResponse = await fetch(
           `${process.env.APP_URL}/api/calendar/createEvent`,
           {
@@ -99,20 +80,17 @@ export async function POST(request) {
               description: `Pickup: ${booking.pickup_location.address}\nDropoff: ${booking.dropoff_location.address}\nCost: $${booking.cost}`,
               start: startDateTime,
               end: endDateTime,
-              timeZone: 'UTC', // Using UTC
+              timeZone: 'UTC',
             }),
           }
         );
 
         const calendarData = await calendarResponse.json();
-
-        if (!calendarResponse.ok || !calendarData.success) {
-          console.warn(
-            'Google Calendar event creation failed:',
-            calendarData.error || 'Event response not OK'
-          );
-        } else {
+        if (calendarResponse.ok && calendarData.success) {
+          calendarSuccess = true;
           console.log('Google Calendar Event created:', calendarData.eventLink);
+        } else {
+          console.warn('Calendar event creation failed:', calendarData.error);
         }
       } catch (calendarError) {
         console.warn(
@@ -122,44 +100,42 @@ export async function POST(request) {
       }
     }
 
-    // Send email to the user
-    const emailResponse = await fetch(
-      `${process.env.APP_URL}/api/email/sendResponseEmailToUser`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          booking: { ...booking, status, comment },
-        }),
+    // Send email to user
+    try {
+      const emailResponse = await fetch(
+        `${process.env.APP_URL}/api/email/sendResponseEmailToUser`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ booking: { ...booking, status, comment } }),
+        }
+      );
+
+      const emailData = await emailResponse.json();
+      if (emailResponse.ok && emailData.success) {
+        emailSuccess = true;
+        console.log('Email sent successfully');
+      } else {
+        console.warn('Email sending failed:', emailData.error);
       }
-    );
-
-    const emailData = await emailResponse.json();
-
-    if (!emailResponse.ok || !emailData.success) {
-      console.error(
-        'Failed to send email:',
-        emailData.error || 'Email response not OK'
-      );
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: `Booking ${status.toUpperCase()} but failed to send email.`,
-        }),
-        { status: 500 }
-      );
+    } catch (emailError) {
+      console.warn('Error sending email:', emailError.message);
     }
 
-    // Return success response
+    // Return combined success response
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Booking ${status.toUpperCase()} and email sent successfully.`,
-        booking: { ...booking, status, comment },
+        updateSuccess: true,
+        emailSuccess,
+        calendarSuccess,
+        message: `Booking ${status.toUpperCase()}, email ${
+          emailSuccess ? 'sent' : 'failed'
+        }, and calendar event ${
+          calendarSuccess ? 'created' : 'failed'
+        } successfully.`,
       }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200 }
     );
   } catch (error) {
     console.error('Error in decision route:', error.message);
