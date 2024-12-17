@@ -188,6 +188,14 @@ function HomeContent() {
 
         <footer className="mt-8 text-center">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>
+          <a
+            href="https://www.youtube.com/@MicDropBBQ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 block text-gray-200 hover:text-blue-300"
+          >
+            Check out our recommended YouTube partner
+          </a>
         </footer>
       </div>
     </div>
