@@ -19,6 +19,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import AdminDecisionModal from '@/components/admin/AdminDecisionModal';
 
 function HomeContent() {
@@ -90,7 +91,8 @@ function HomeContent() {
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (!error) setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
+    if (!error)
+      setAuthAlert({ message: 'Signed out successfully!', type: 'error' });
   };
 
   if (loading) return null; // Loading state
@@ -132,7 +134,10 @@ function HomeContent() {
 
         {/* Modals */}
         {showAdminDecisionModal && (
-          <AdminDecisionModal bookingId={bookingId} onClose={() => setShowAdminDecisionModal(false)} />
+          <AdminDecisionModal
+            bookingId={bookingId}
+            onClose={() => setShowAdminDecisionModal(false)}
+          />
         )}
         {showBookingModal && <BookingModal onClose={closeBooking} />}
         {showSignInModal && (
@@ -173,7 +178,9 @@ export default function Home() {
         onLoad={() => console.log('Google Maps API loaded')}
       />
       <SessionContextProvider supabaseClient={supabaseClient}>
-        <HomeContent />
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomeContent />
+        </Suspense>
       </SessionContextProvider>
     </>
   );
