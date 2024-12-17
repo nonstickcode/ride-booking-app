@@ -81,6 +81,14 @@ export async function POST(request) {
               start: startDateTime,
               end: endDateTime,
               timeZone: 'UTC',
+              bookingData: {
+                userEmail: booking.user_email,
+                pickupLocation: booking.pickup_location.address,
+                dropoffLocation: booking.dropoff_location.address,
+                distance: booking.distance,
+                duration: booking.duration,
+                cost: booking.cost,
+              },
             }),
           }
         );

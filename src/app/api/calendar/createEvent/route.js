@@ -31,27 +31,56 @@ function getGoogleClient() {
 export async function POST(request) {
   try {
     // Parse event data from the request body
-    const { summary, description, start, end, timeZone, attendees } =
+    const { summary, description, start, end, timeZone, bookingData } =
       await request.json();
 
     // Validate required fields
-    if (!summary || !start || !end || !timeZone) {
+    if (!summary || !start || !end || !timeZone || !bookingData) {
       return NextResponse.json(
-        { error: 'Missing required fields: summary, start, end, or timeZone' },
+        {
+          error:
+            'Missing required fields: summary, start, end, timeZone, or bookingData',
+        },
         { status: 400 }
       );
     }
 
     // Set up Google OAuth client
     const auth = getGoogleClient();
-
-    // Initialize Google Calendar API
     const calendar = google.calendar({ version: 'v3', auth });
+
+    // Generate Google Maps links for pickup and dropoff
+    const pickupLink = bookingData.pickupLocation
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(bookingData.pickupLocation)}`
+      : 'Unavailable';
+
+    const dropoffLink = bookingData.dropoffLocation
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(bookingData.dropoffLocation)}`
+      : 'Unavailable';
+
+    const tripNavigationLink =
+      bookingData.pickupLocation && bookingData.dropoffLocation
+        ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(bookingData.pickupLocation)}&destination=${encodeURIComponent(bookingData.dropoffLocation)}&travelmode=driving`
+        : 'Unavailable';
+
+    // Build the event description with clickable links
+    const detailedDescription = `
+Booking Details:
+- <strong>User Email:</strong> ${bookingData.userEmail || 'N/A'}
+- <strong>Pickup Location:</strong> <a href="${pickupLink}" target="_blank">${bookingData.pickupLocation || 'N/A'}</a>
+- <strong>Dropoff Location:</strong> <a href="${dropoffLink}" target="_blank">${bookingData.dropoffLocation || 'N/A'}</a>
+- <strong>Distance:</strong> ${bookingData.distance || 'N/A'}
+- <strong>Duration:</strong> ${bookingData.duration || 'N/A'}
+- <strong>Cost:</strong> $${bookingData.cost || 'N/A'}
+
+<p><a href="${tripNavigationLink}" target="_blank"><strong>Trip Navigation Link</strong></a></p>
+<p>Click the links above to view pickup, dropoff locations, or start navigation in Google Maps.</p>
+`;
 
     // Prepare the event payload
     const event = {
       summary,
-      description,
+      description: detailedDescription,
       start: { dateTime: start, timeZone },
       end: { dateTime: end, timeZone },
       reminders: {
@@ -81,24 +110,12 @@ export async function POST(request) {
         eventId: response.data.id,
       });
     } else {
-      console.warn(
-        'Google Calendar Event creation failed: No event link returned.'
-      );
-      return NextResponse.json(
-        { success: false, error: 'Event creation failed, no link returned.' },
-        { status: 500 }
-      );
+      throw new Error('Event creation failed, no event link returned.');
     }
   } catch (error) {
-    console.error(
-      'Error creating calendar event:',
-      error.response?.data || error.message
-    );
+    console.error('Error creating calendar event:', error.message);
     return NextResponse.json(
-      {
-        error: 'Failed to create event',
-        details: error.response?.data || error.message,
-      },
+      { error: 'Failed to create event', details: error.message },
       { status: 500 }
     );
   }
