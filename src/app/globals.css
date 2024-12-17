@@ -89,6 +89,60 @@ html, body {
 
 /* ======================== Input Fields ======================== */
 
+/* General input field styles */
+.input-field {
+  background-color: var(--input-bg-color); /* Tailwind gray-800 background */
+  color: var(--input-text-color); /* Tailwind white text */
+  border: 1px solid var(--input-border-color); /* Tailwind gray-500 border */
+  border-radius: var(--input-radius); /* Tailwind rounded-md */
+  padding: var(--input-padding); /* Tailwind padding for inputs */
+  height: var(--input-height); /* Standard input height */
+  width: 100%; /* Full width for inputs */
+  font-family: var(--input-font-family); /* Oxygen font */
+  font-size: var(--input-font-size); /* Font size */
+  font-weight: var(--input-font-weight); /* Normal font weight */
+}
+
+/* ======================== Unified Input Styling ======================== */
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+.input-field {
+  width: 100%; /* Full width */
+  background-color: var(--input-bg-color); /* Background color */
+  color: var(--input-text-color); /* Text color */
+  border: 1px solid var(--input-border-color); /* Border color */
+  border-radius: var(--input-radius); /* Rounded corners */
+  padding: var(--input-padding); /* Padding */
+  height: var(--input-height); /* Consistent height */
+  font-family: var(--input-font-family); /* Font family */
+  font-size: var(--input-font-size); /* Font size */
+  font-weight: var(--input-font-weight); /* Font weight */
+  box-sizing: border-box; /* Include padding and border in the width */
+  -webkit-appearance: none; /* Remove native appearance */
+  appearance: none; /* Remove native appearance */
+}
+
+/* Focus state for inputs */
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="datetime-local"]:focus,
+.input-field:focus {
+  outline: none;
+  border-color: var(--input-focus-border-color); /* Highlighted border */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Subtle focus ring */
+}
+
+/* Placeholder styling for all inputs */
+input::placeholder {
+  color: var(--input-placeholder-color); /* Placeholder text color */
+  font-size: 0.9rem;
+}
+
+
 /* Global Admin Input Style */
 .admin-input {
   background-color: var(--input-bg-color); /* Tailwind gray-800 background */
