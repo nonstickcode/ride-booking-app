@@ -135,7 +135,7 @@ function HomeContent() {
             onClick={openBooking}
             variant="blue"
             size="lg"
-            className="mb-6"
+            className="mb-2"
             title="Book Ride Now"
           >
             <FaCheckCircle className="mr-2" />
