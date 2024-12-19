@@ -125,24 +125,38 @@ function HomeContent() {
           isAdmin={isAdmin}
         />
 
-        {/* Page header */}
-        <Header />
+        <div className="main-content --font-oxygen flex min-h-dvh flex-col text-white">
+          {/* Header */}
+          <header className="mt-auto pb-8 flex items-center justify-center">
+            <Header />
+          </header>
 
-        {/* Main content */}
-        <main className="mt-10 flex flex-col items-center space-y-8">
-          <RideImage />
-          <Button
-            onClick={openBooking}
-            variant="blue"
-            size="lg"
-            className="mb-2"
-            title="Book Ride Now"
-          >
-            <FaCheckCircle className="mr-2" />
-            Book Ride Now
-          </Button>
-          <p className="text-lg text-gray-300">or text 310-947-9464</p>
-        </main>
+          {/* Main Content */}
+          <main className="flex flex-col items-center justify-center">
+            <RideImage />
+            <Button
+              onClick={openBooking}
+              variant="blue"
+              size="lg"
+              className="m-6"
+              title="Book Ride Now"
+            >
+              <FaCheckCircle className="mr-2" />
+              Book Ride Now
+            </Button>
+            <p className="text-lg text-gray-300">or text 310-947-9464</p>
+          </main>
+
+          {/* Footer anchored to bottom */}
+          <footer className="mt-auto flex flex-shrink-0 items-center justify-center pb-4">
+            <a
+              href="/privacypolicy"
+              className="text-sm font-light text-gray-500 hover:text-gray-400"
+            >
+              Privacy Policy
+            </a>
+          </footer>
+        </div>
 
         {/* Modals */}
         {showAdminDecisionModal && (
@@ -159,16 +173,6 @@ function HomeContent() {
             bookingId={bookingId}
           />
         )}
-
-        {/* Footer */}
-        <footer className="absolute bottom-0 left-0 right-0 flex flex-col items-center space-y-2 pb-4">
-          <a
-            href="/privacypolicy"
-            className="text-md font-light text-gray-300 transition-colors duration-300 hover:text-gray-400"
-          >
-            Privacy Policy
-          </a>
-        </footer>
       </div>
     </div>
   );

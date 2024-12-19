@@ -93,7 +93,7 @@ const PrivacyPolicy = () => {
         {/* Footer */}
         <div className="mt-8 flex justify-center">
           <Link href="/">
-            <Button variant="blue" size="lg" className="text-white mb-2">
+            <Button variant="blue" size="lg" className="mb-2 text-white">
               Return to Home
             </Button>
           </Link>
