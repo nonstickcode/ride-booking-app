@@ -30,9 +30,9 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/site.webmanifest" />
 
         {/* Add iOS meta tags for Home Screen */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta
-          name="apple-mobile-web-app-status-bar-style"
+          name="mobile-web-app-status-bar-style"
           content="black-translucent"
         />
         <meta name="theme-color" content="#000000" />
