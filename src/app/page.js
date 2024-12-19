@@ -160,11 +160,11 @@ function HomeContent() {
         )}
 
         {/* Footer */}
-        <footer className="absolute bottom-0 left-0 right-0 text-center pb-4">
-          <p className="text-lg text-gray-200">or text 310-947-9464</p>
+        <footer className="absolute bottom-0 left-0 right-0 flex flex-col items-center space-y-2 pb-4">
+          <p className="text-lg text-gray-300">or text 310-947-9464</p>
           <a
             href="/privacypolicy"
-            className="mt-2 block text-gray-200 hover:text-blue-300"
+            className="text-sm font-light text-gray-500 transition-colors duration-300 hover:text-gray-400"
           >
             Privacy Policy
           </a>
