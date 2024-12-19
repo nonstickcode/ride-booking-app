@@ -25,7 +25,7 @@ const ConfirmationAlert = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div
-        className="w-full sm:max-w-[85vw] lg:max-w-[30vw] rounded-xl border border-green-500 bg-gray-900 p-8 shadow-xl"
+        className="w-full rounded-xl border border-green-500 bg-gray-900 p-8 shadow-xl sm:max-w-[85vw] lg:max-w-[30vw]"
         style={{
           marginLeft: 'auto',
           marginRight: 'auto',

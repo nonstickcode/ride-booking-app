@@ -59,36 +59,43 @@ function HomeContent() {
   }, [bookingId, user, supabase]);
 
   useEffect(() => {
+    // Check session and user for admin status
     if (session && user) {
       const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
       setIsAdmin(user.email === adminEmail);
       setAuthAlert({ message: 'Signed in successfully!', type: 'success' });
     }
 
+    // Hide auth alert after 3 seconds
     const alertTimeout = setTimeout(() => setAuthAlert(null), 3000);
     return () => clearTimeout(alertTimeout);
   }, [user, session]);
 
+  // Function to open booking modal
   const openBooking = () => {
     if (user) setShowBookingModal(true);
     else setShowSignInModal(true);
   };
 
+  // Function to close booking modal
   const closeBooking = (e) => {
     if (e) e.stopPropagation();
     setShowBookingModal(false);
   };
 
+  // Function to close sign-in modal
   const closeSignIn = (e) => {
     if (e) e.stopPropagation();
     setShowSignInModal(false);
   };
 
+  // Callback for successful sign-in
   const handleSignInComplete = () => {
     setShowSignInModal(false);
     if (bookingId) setShowAdminDecisionModal(true);
   };
 
+  // Function to sign out user
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error)
@@ -100,6 +107,7 @@ function HomeContent() {
   return (
     <div className="main-content --font-oxygen min-h-screen text-white">
       <div className="mx-auto flex min-h-screen max-w-96 flex-col items-center justify-center px-4">
+        {/* Alert for authentication */}
         {authAlert?.message && (
           <div
             className={`fixed left-0 right-0 top-0 z-50 p-4 text-center text-2xl text-white ${
@@ -110,14 +118,17 @@ function HomeContent() {
           </div>
         )}
 
+        {/* Hamburger menu */}
         <HamburgerMenu
           openSignInModal={() => setShowSignInModal(true)}
           onSignOut={handleSignOut}
           isAdmin={isAdmin}
         />
 
+        {/* Page header */}
         <Header />
 
+        {/* Main content */}
         <main className="mt-10 flex flex-col items-center space-y-8">
           <RideImage />
           <Button
@@ -148,16 +159,15 @@ function HomeContent() {
           />
         )}
 
-        <footer className="mt-8 text-center">
+        {/* Footer */}
+        <footer className="absolute bottom-0 left-0 right-0 text-center pb-4">
           <p className="text-lg text-gray-200">or text 310-947-9464</p>
-          {/* <a
-            href="https://www.youtube.com/@MicDropBBQ"
-            target="_blank"
-            rel="noopener noreferrer"
+          <a
+            href="/privacypolicy"
             className="mt-2 block text-gray-200 hover:text-blue-300"
           >
-            Check out our recommended YouTube partner
-          </a> */}
+            Privacy Policy
+          </a>
         </footer>
       </div>
     </div>
@@ -167,9 +177,11 @@ function HomeContent() {
 export default function Home() {
   return (
     <>
+      {/* Meta for theme color */}
       <Head>
         <meta name="theme-color" content="#000000" />
       </Head>
+      {/* Google Maps Script */}
       <Script
         src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
         strategy="beforeInteractive"
@@ -177,6 +189,7 @@ export default function Home() {
         defer
         onLoad={() => console.log('Google Maps API loaded')}
       />
+      {/* Supabase session provider */}
       <SessionContextProvider supabaseClient={supabaseClient}>
         <Suspense fallback={<div>Loading...</div>}>
           <HomeContent />
