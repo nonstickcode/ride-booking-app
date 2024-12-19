@@ -141,6 +141,7 @@ function HomeContent() {
             <FaCheckCircle className="mr-2" />
             Book Ride Now
           </Button>
+          <p className="text-lg text-gray-300">or text 310-947-9464</p>
         </main>
 
         {/* Modals */}
@@ -161,10 +162,9 @@ function HomeContent() {
 
         {/* Footer */}
         <footer className="absolute bottom-0 left-0 right-0 flex flex-col items-center space-y-2 pb-4">
-          <p className="text-lg text-gray-300">or text 310-947-9464</p>
           <a
             href="/privacypolicy"
-            className="text-sm font-light text-gray-500 transition-colors duration-300 hover:text-gray-400"
+            className="text-md font-light text-gray-300 transition-colors duration-300 hover:text-gray-400"
           >
             Privacy Policy
           </a>
