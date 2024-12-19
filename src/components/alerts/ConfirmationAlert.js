@@ -31,6 +31,7 @@ const ConfirmationAlert = ({
           marginRight: 'auto',
           paddingLeft: 'env(safe-area-inset-left)',
           paddingRight: 'env(safe-area-inset-right)',
+          maxWidth: '85vw',
         }}
       >
         <h2 className="m-4 text-center text-2xl font-bold">{title}</h2>
