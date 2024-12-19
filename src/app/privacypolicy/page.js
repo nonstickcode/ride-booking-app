@@ -21,7 +21,7 @@ const PrivacyPolicy = () => {
         {/* Content */}
         <div className="space-y-6 text-sm">
           <p>
-            Welcome to <strong>RydeBlk</strong>. This Privacy Policy explains
+            Welcome to <strong>RYDEBLK</strong>. This Privacy Policy explains
             how we collect, use, and protect your personal information when
             using our app and services.
           </p>
@@ -93,7 +93,7 @@ const PrivacyPolicy = () => {
         {/* Footer */}
         <div className="mt-8 flex justify-center">
           <Link href="/">
-            <Button variant="blue" size="lg" className="text-white">
+            <Button variant="blue" size="lg" className="text-white mb-2">
               Return to Home
             </Button>
           </Link>
