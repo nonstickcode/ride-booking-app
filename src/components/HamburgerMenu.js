@@ -6,14 +6,12 @@ import {
   FaCog,
   FaSignOutAlt,
   FaSignInAlt,
-  FaFileAlt, // Privacy Policy Icon
 } from 'react-icons/fa';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'; // Supabase hooks
 import NotificationsModal from '@/components/modals/NotificationsModal';
 import MyRidesModal from '@/components/modals/MyRidesModal';
 import SettingsModal from '@/components/modals/SettingsModal';
 import AdminSettingsModal from '@/components/admin/AdminSettingsModal';
-import PrivacyPolicyModal from '@/components/modals/PrivacyPolicy';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -93,12 +91,6 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
                   >
                     <FaCog className="mr-2" /> Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onSelect={() => handleModalOpen('privacyPolicy')}
-                    className="flex items-center"
-                  >
-                    <FaFileAlt className="mr-2" /> Privacy Policy
-                  </DropdownMenuItem>
                 </>
               )}
               <DropdownMenuSeparator />
@@ -111,13 +103,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
             </>
           ) : (
             <>
-              <DropdownMenuItem
-                onSelect={() => handleModalOpen('privacyPolicy')}
-                className="flex items-center"
-              >
-                <FaFileAlt className="mr-2" /> Privacy Policy
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              
               <DropdownMenuItem
                 onSelect={handleSignIn}
                 className="flex items-center text-green-400"
@@ -140,9 +126,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
       {activeModal === 'adminSettings' && (
         <AdminSettingsModal onClose={handleModalClose} />
       )}
-      {activeModal === 'privacyPolicy' && (
-        <PrivacyPolicyModal onClose={handleModalClose} />
-      )}
+      
     </div>
   );
 };

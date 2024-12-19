@@ -151,7 +151,7 @@ function HomeContent() {
           <footer className="mt-auto flex flex-shrink-0 items-center justify-center pb-4">
             <a
               href="/privacypolicy"
-              className="text-sm font-light text-gray-500 hover:text-gray-400"
+              className="text-sm font-light text-gray-400 hover:text-gray-200"
             >
               Privacy Policy
             </a>
