@@ -234,7 +234,7 @@ const BookingModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="modal-container relative z-50 max-h-[95vh] w-[90vw] max-w-[90vw] md:max-w-[96] overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
+        className="modal-container relative z-50 max-h-[95vh] w-[90vw] max-w-[90vw] md:max-w-96 overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
