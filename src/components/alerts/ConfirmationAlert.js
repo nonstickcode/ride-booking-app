@@ -8,8 +8,8 @@ const ConfirmationAlert = ({
   onConfirm,
   onCancel,
   showCancel = false,
-  onLoadingComplete, // New prop: function to call when loading completes
-  isLoading = false, // New prop: control whether the alert is in loading state
+  onLoadingComplete,
+  isLoading = false,
 }) => {
   const [loading, setLoading] = useState(isLoading);
 
@@ -24,16 +24,7 @@ const ConfirmationAlert = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div
-        className="w-full rounded-xl border border-green-500 bg-gray-900 p-8 shadow-xl sm:max-w-[85vw] lg:max-w-[30vw]"
-        style={{
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          paddingLeft: 'env(safe-area-inset-left)',
-          paddingRight: 'env(safe-area-inset-right)',
-          maxWidth: '85vw',
-        }}
-      >
+      <div className="w-full rounded-xl border border-green-500 bg-gray-900 p-8 shadow-xl sm:max-w-[85vw] md:max-w-[110px] lg:max-w-[110px] mx-auto">
         <h2 className="m-4 text-center text-2xl font-bold">{title}</h2>
         <p className="m-6 text-center text-lg">{message}</p>
         <div className="mx-8 flex justify-center gap-4">
