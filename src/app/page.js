@@ -106,7 +106,7 @@ function HomeContent() {
 
   return (
     <div className="main-content --font-oxygen min-h-screen text-white">
-      <div className="mx-auto flex min-h-screen max-w-96 flex-col items-center justify-center px-4">
+      <div className="mx-auto flex min-h-[110vh] max-w-96 flex-col items-center justify-center px-4">
         {/* Alert for authentication */}
         {authAlert?.message && (
           <div
@@ -127,12 +127,11 @@ function HomeContent() {
 
         <div className="main-content --font-oxygen flex min-h-dvh flex-col text-white">
           {/* Header */}
-          <header className="mt-auto pb-8 flex items-center justify-center">
+          <header className="mt-auto flex items-center justify-center pb-8">
             <Header />
           </header>
-
           {/* Main Content */}
-          <main className="flex flex-col items-center justify-center">
+          <main className="flex flex-col items-center justify-center pb-10">
             <RideImage />
             <Button
               onClick={openBooking}
@@ -146,14 +145,22 @@ function HomeContent() {
             </Button>
             <p className="text-lg text-gray-300">or text 310-947-9464</p>
           </main>
-
+          {/* Spacer to push footer out of view */}
+          <div className="h-10"></div> {/* Adjust the height as needed */}
           {/* Footer anchored to bottom */}
-          <footer className="mt-auto flex flex-shrink-0 items-center justify-center pb-4">
+          <footer className="mt-auto flex flex-shrink-0 items-center justify-center space-x-2 pb-4">
             <a
               href="/privacypolicy"
               className="text-sm font-light text-gray-400 hover:text-gray-200"
             >
               Privacy Policy
+            </a>
+            <span className="text-sm font-light text-gray-400">/</span>
+            <a
+              href="/siteinformation"
+              className="text-sm font-light text-gray-400 hover:text-gray-200"
+            >
+              Site Information
             </a>
           </footer>
         </div>

@@ -103,7 +103,6 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
             </>
           ) : (
             <>
-              
               <DropdownMenuItem
                 onSelect={handleSignIn}
                 className="flex items-center text-green-400"
@@ -126,7 +125,6 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
       {activeModal === 'adminSettings' && (
         <AdminSettingsModal onClose={handleModalClose} />
       )}
-      
     </div>
   );
 };
