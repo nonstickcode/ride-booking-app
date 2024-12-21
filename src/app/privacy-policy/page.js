@@ -32,11 +32,8 @@ const PrivacyPolicy = () => {
             <li>Your email address for authentication</li>
             <li>Pickup and drop-off locations for booking rides</li>
             <li>
-              Basic profile information (e.g., name) provided by Google OAuth
-            </li>
-            <li>
-              Usage data, including IP address, device details, and session
-              activity
+              Basic profile information (e.g., name, avatar) provided through
+              Google OAuth
             </li>
           </ul>
 
@@ -45,41 +42,39 @@ const PrivacyPolicy = () => {
           <p>We use the collected information to:</p>
           <ul className="list-inside list-disc space-y-1 pl-4">
             <li>Authenticate users securely</li>
-            <li>Provide and improve ride-booking services</li>
-            <li>Enhance app functionality and user experience</li>
-            <li>Monitor usage patterns and resolve technical issues</li>
+            <li>Provide and manage ride-booking services</li>
+            <li>Communicate booking confirmations and updates</li>
           </ul>
 
           {/* Data Protection */}
           <h3 className="text-lg font-semibold">Data Protection</h3>
           <p>
-            Your data is stored securely using encryption methods. We use
-            trusted third-party services, such as <strong>Supabase</strong>, to
-            ensure data privacy and protection. Access to your data is
-            restricted to authorized personnel only.
+            Your data is stored securely using encrypted methods to ensure
+            privacy and protection. Access to your information is limited to
+            authorized personnel for essential operations.
           </p>
 
           {/* No Data Sale */}
           <h3 className="text-lg font-semibold">No Data Sale or Misuse</h3>
           <p>
             Your personal data is <strong>never sold</strong> or shared with
-            unauthorized third parties. It is only used for essential app
-            functionalities, such as user authentication and booking rides.
+            unauthorized third parties. It is solely used for essential
+            functionalities, such as user identification and ride bookings.
           </p>
 
-          {/* Cookies */}
+          {/* Cookies and Tracking */}
           <h3 className="text-lg font-semibold">Cookies and Tracking</h3>
           <p>
-            We use cookies to enhance user experience, analyze traffic, and
-            improve app performance. You can manage or disable cookies through
-            your browser settings.
+            We do not use tracking cookies or analytics tools beyond what is
+            necessary for core functionality. Your privacy is a priority, and no
+            unnecessary data tracking is conducted.
           </p>
 
           {/* User Rights */}
           <h3 className="text-lg font-semibold">Your Rights</h3>
           <p>
             You have the right to access, update, or delete your personal
-            information. To make such requests, please contact us at{' '}
+            information. If you wish to make such requests, please contact us at{' '}
             <a
               href="mailto:rydeblk@gmail.com"
               className="text-blue-400 underline"

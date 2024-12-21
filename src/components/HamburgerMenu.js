@@ -47,7 +47,7 @@ const HamburgerMenu = ({ openSignInModal, onSignOut, isAdmin }) => {
   };
 
   return (
-    <div className="absolute right-2 top-2 z-50 md:right-4 md:top-4">
+    <div className="">
       <DropdownMenu>
         {/* Trigger button */}
         <DropdownMenuTrigger asChild>

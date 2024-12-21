@@ -32,36 +32,34 @@ const SiteInformation = () => {
           <p>
             RYDEBLK is a ride-booking platform designed to provide seamless and
             reliable transportation services. Our app allows users to book and
-            manage rides easily while prioritizing user convenience and safety.
+            manage rides effortlessly, while prioritizing convenience and safety.
           </p>
 
-          {/* Why We Request Your Data */}
-          <h3 className="text-lg font-semibold">Why We Request Your Data</h3>
-          <p>We collect user data for the following purposes:</p>
+          {/* Why We Collect Your Information */}
+          <h3 className="text-lg font-semibold">Why We Collect Your Information</h3>
+          <p>We only collect basic account information such as your name, email, and profile avatar for the following purposes:</p>
           <ul className="list-inside list-disc space-y-1 pl-4">
-            <li>To facilitate ride bookings</li>
-            <li>To communicate important updates or confirmations</li>
-            <li>To enhance the overall app experience</li>
+            <li>To identify users and personalize the app experience</li>
+            <li>To communicate important updates and confirmations about bookings</li>
+            <li>To improve our services and ensure smooth operation</li>
           </ul>
 
           {/* Data Security */}
           <h3 className="text-lg font-semibold">Data Security</h3>
           <p>
-            Your data is handled securely and used solely to provide core
-            functionalities. We utilize trusted services and encryption to
-            ensure your information remains protected.
+            Your information is stored securely using encrypted systems and is used solely for the purposes outlined above. We do not utilize tracking cookies or analytics tools that monitor user behavior beyond the core functionality of the app.
           </p>
 
           {/* Contact */}
           <h3 className="text-lg font-semibold">Questions or Concerns?</h3>
           <p>
-            If you have any questions or need additional information, feel free
-            to reach out to us at{' '}
+            If you have any questions or require further information, please
+            feel free to reach out to us at{' '}
             <a
-              href="mailto:support@rydeblk.co"
+              href="mailto:rydeblk@gmail.com"
               className="text-blue-400 underline"
             >
-              support@rydeblk.co
+              rydeblk@gmail.com
             </a>
             .
           </p>
