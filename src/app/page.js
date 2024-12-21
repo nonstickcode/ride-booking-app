@@ -146,21 +146,22 @@ function HomeContent() {
             <p className="text-lg text-gray-300">or text 310-947-9464</p>
           </main>
           {/* Spacer to push footer out of view */}
-          <div className="h-10"></div> {/* Adjust the height as needed */}
+          <div className="h-10"></div>
           {/* Footer anchored to bottom */}
           <footer className="mt-auto flex flex-shrink-0 items-center justify-center space-x-2 pb-4">
             <a
-              href="/privacypolicy"
-              className="text-sm font-light text-gray-400 hover:text-gray-200"
-            >
-              Privacy Policy
-            </a>
-            <span className="text-sm font-light text-gray-400">/</span>
-            <a
-              href="/siteinformation"
+              href="/site-information"
               className="text-sm font-light text-gray-400 hover:text-gray-200"
             >
               Site Information
+            </a>
+            <span className="text-sm font-light text-gray-400">/</span>
+
+            <a
+              href="/privacy-policy"
+              className="text-sm font-light text-gray-400 hover:text-gray-200"
+            >
+              Privacy Policy
             </a>
           </footer>
         </div>
