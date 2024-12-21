@@ -105,7 +105,7 @@ function HomeContent() {
   if (loading) return null; // Loading state
 
   return (
-    <div className="main-content --font-oxygen min-h-screen text-white">
+    <div className="main-content min-h-[110vh] --font-oxygen text-white">
       <div id='hamburger-container' className='w-full flex justify-end pr-4 pt-4'>
           {/* Hamburger menu */}
           <HamburgerMenu
@@ -114,7 +114,7 @@ function HomeContent() {
             isAdmin={isAdmin}
           />
         </div>
-      <div className="mx-auto flex min-h-[110vh] max-w-96 flex-col items-center justify-center px-4">
+      <div className="mx-auto flex max-w-96 flex-col items-center justify-center px-4">
         {/* Alert for authentication */}
         {authAlert?.message && (
           <div
