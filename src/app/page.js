@@ -148,7 +148,7 @@ function HomeContent() {
             <p className="text-lg text-gray-300">or text 310-947-9464</p>
           </main>
           {/* Spacer to push footer out of view */}
-          <div className="h-20"></div>
+          <div className="h-25"></div>
           {/* Footer anchored to bottom */}
           <footer className="mt-auto flex flex-shrink-0 items-center justify-center space-x-2 pb-4">
             <a
