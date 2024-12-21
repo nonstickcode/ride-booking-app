@@ -105,15 +105,18 @@ function HomeContent() {
   if (loading) return null; // Loading state
 
   return (
-    <div className="main-content min-h-[110vh] --font-oxygen text-white">
-      <div id='hamburger-container' className='w-full flex justify-end pr-4 pt-4'>
-          {/* Hamburger menu */}
-          <HamburgerMenu
-            openSignInModal={() => setShowSignInModal(true)}
-            onSignOut={handleSignOut}
-            isAdmin={isAdmin}
-          />
-        </div>
+    <div className="main-content --font-oxygen min-h-[110vh] text-white">
+      <div
+        id="hamburger-container"
+        className="flex w-full justify-end pr-4 pt-4"
+      >
+        {/* Hamburger menu */}
+        <HamburgerMenu
+          openSignInModal={() => setShowSignInModal(true)}
+          onSignOut={handleSignOut}
+          isAdmin={isAdmin}
+        />
+      </div>
       <div className="mx-auto flex max-w-96 flex-col items-center justify-center px-4">
         {/* Alert for authentication */}
         {authAlert?.message && (
@@ -125,7 +128,6 @@ function HomeContent() {
             {authAlert.message}
           </div>
         )}
-        
 
         <div className="main-content --font-oxygen flex min-h-dvh flex-col text-white">
           {/* Header */}

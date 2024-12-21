@@ -23,8 +23,8 @@ const ConfirmationAlert = ({
   };
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="rounded-xl border border-green-500 bg-gray-900 p-8 shadow-xl sm:max-w-[80vw] md:max-w-[50vw] lg:max-w-[30vw] mx-auto">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-gray-900 bg-opacity-50">
+      <div className="w-[95%] rounded-xl border border-green-500 bg-gray-900 p-8 shadow-xl sm:w-[95%]">
         <h2 className="m-4 text-center text-2xl font-bold">{title}</h2>
         <p className="m-6 text-center text-lg">{message}</p>
         <div className="mx-8 flex justify-center gap-4">

@@ -234,7 +234,7 @@ const BookingModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="modal-container relative max-h-[95vh] w-[90vw] max-w-sm overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
+        className="modal-container relative z-50 max-h-[95vh] w-[90vw] max-w-[90vw] overflow-y-auto p-4 shadow-xl lg:max-h-[100vh]"
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the modal
       >
         {/* Close Button */}
@@ -360,10 +360,10 @@ const BookingModal = ({ onClose }) => {
               }
             >
               {loadingRoute && (
-                <>
+                <div className="pb-2">
                   <FaSpinner className="mr-2 animate-spin" />
                   <p>Calculating Distance and Time...</p>
-                </>
+                </div>
               )}
             </div>
 
